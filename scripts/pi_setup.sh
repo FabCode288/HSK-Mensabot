@@ -92,11 +92,29 @@ net-tools \
 mesa-utils \
 v4l-utils
 
-echo ">>> 14. System final updaten (ROS Updates)"
+```bash id="vs1c0d"
+
+echo ">>> 14. VS Code installieren"
+
+# Microsoft GPG Key
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/packages.microsoft.gpg
+
+# VS Code Repository
+echo "deb [arch=arm64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | \
+sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+
+# Installation
+sudo apt-get update
+sudo apt-get install -y code
+```
+
+
+echo ">>> 15. System final updaten (ROS Updates)"
 sudo apt-get update
 sudo apt-get upgrade -y
 
-echo ">>> 15. ROS2 Environment setzen"
+echo ">>> 16. ROS2 Environment setzen"
 if ! grep -Fxq "source /opt/ros/jazzy/setup.bash" ~/.bashrc; then
   echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 fi
@@ -105,5 +123,5 @@ if ! grep -Fxq "export ROS_DOMAIN_ID=3" ~/.bashrc; then
   echo "export ROS_DOMAIN_ID=3" >> ~/.bashrc
 fi
 
-echo ">>> 16. Installation abgeschlossen"
+echo ">>> 17. Installation abgeschlossen"
 echo ""
