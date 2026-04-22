@@ -128,5 +128,9 @@ if ! grep -Fxq "export ROS_DOMAIN_ID=3" ~/.bashrc; then
   echo "export ROS_DOMAIN_ID=3" >> ~/.bashrc
 fi
 
+echo "if [ -f ~/ros2_mensabot_ws/install/setup.bash ]; then
+    source ~/ros2_mensabot_ws/install/setup.bash
+fi" >> ~/.bashrc
+
 echo ">>> 17. Installation abgeschlossen"
 echo ""
