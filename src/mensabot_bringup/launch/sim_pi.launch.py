@@ -105,6 +105,78 @@ def generate_launch_description():
         output="screen"
     )
 
+    ####################
+
+        # Path to the Slam Toolbox launch file
+    nav2_localization_launch_path = os.path.join(
+        get_package_share_directory('nav2_bringup'),
+        'launch',
+        'localization_launch.py'
+    )
+
+    nav2_navigation_launch_path = os.path.join(
+        get_package_share_directory('nav2_bringup'),
+        'launch',
+        'navigation_launch.py'
+    )
+
+    localization_params_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'config',
+        'amcl_localization.yaml'
+    )
+
+    navigation_params_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'config',
+        'navigation.yaml'
+    )
+
+    map_file_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'maps',
+        'map3.yaml'
+    )
+
+    # Path to the Slam Toolbox launch file
+    slam_toolbox_launch_path = os.path.join(
+        get_package_share_directory('slam_toolbox'),
+        'launch',
+        'localization_launch.py'
+    )
+
+    slam_toolbox_params_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'config',
+        'slam_toolbox_localization.yaml'
+    )
+
+    amcl_localization_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(nav2_localization_launch_path),
+        launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'params_file': localization_params_path,
+                'map': map_file_path,
+        }.items()
+    )
+
+    slam_toolbox_localization_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(slam_toolbox_launch_path),
+        launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'slam_params_file': slam_toolbox_params_path,
+                'map': map_file_path,
+        }.items()
+    )
+
+    navigation_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(nav2_navigation_launch_path),
+        launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'params_file': navigation_params_path,
+        }.items()
+    )
+
 
     launchDescriptionObject = LaunchDescription()
 
@@ -115,6 +187,12 @@ def generate_launch_description():
     launchDescriptionObject.add_action(diff_drive_controller_node)
     launchDescriptionObject.add_action(ekf_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
-    launchDescriptionObject.add_action(laser_scan_merger_node)
+    #launchDescriptionObject.add_action(laser_scan_merger_node)
+
+
+
+    #launchDescriptionObject.add_action(amcl_localization_launch)
+    #launchDescriptionObject.add_action(slam_toolbox_localization_launch)
+    #launchDescriptionObject.add_action(navigation_launch)
 
     return launchDescriptionObject
