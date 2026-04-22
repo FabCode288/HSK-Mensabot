@@ -92,23 +92,28 @@ net-tools \
 mesa-utils \
 v4l-utils
 
-```bash id="vs1c0d"
+echo ">>> 14. VS Code installieren (sauber & konfliktfrei)"
 
-echo ">>> 14. VS Code installieren"
+# Alte Microsoft / VS Code Quellen entfernen (wichtig!)
+sudo rm -f /etc/apt/sources.list.d/vscode.list
+sudo rm -f /etc/apt/sources.list.d/vscode.sources
+sudo rm -f /etc/apt/sources.list.d/*microsoft*.list
 
-# Microsoft GPG Key
+# Alte Keys entfernen
+sudo rm -f /usr/share/keyrings/microsoft.gpg
+sudo rm -f /usr/share/keyrings/packages.microsoft.gpg
+
+# Microsoft GPG Key neu setzen
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 sudo install -D -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/packages.microsoft.gpg
 
-# VS Code Repository
+# VS Code Repository sauber hinzufügen
 echo "deb [arch=arm64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | \
 sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
 
 # Installation
 sudo apt-get update
 sudo apt-get install -y code
-```
-
 
 echo ">>> 15. System final updaten (ROS Updates)"
 sudo apt-get update

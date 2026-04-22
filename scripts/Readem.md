@@ -12,6 +12,9 @@ Then create the workspace and copy the folders src and setup:
 cd
 mkdir ros2_mensabot_ws
 
+clone the Repo here to have this structure:
+student@Mensabot:~/ros2_mensabot_ws/ README.md  scripts  src
+
 Then run the pi_setup.sh:
 
 cd
