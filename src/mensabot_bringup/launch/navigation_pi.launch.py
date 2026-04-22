@@ -1,0 +1,95 @@
+import os
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
+from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
+
+def generate_launch_description():
+
+    pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
+
+    sim_time_arg = DeclareLaunchArgument(
+        'use_sim_time', default_value='True',
+        description='Flag to enable use_sim_time'
+    )
+
+    # Path to the Slam Toolbox launch file
+    nav2_localization_launch_path = os.path.join(
+        get_package_share_directory('nav2_bringup'),
+        'launch',
+        'localization_launch.py'
+    )
+
+    nav2_navigation_launch_path = os.path.join(
+        get_package_share_directory('nav2_bringup'),
+        'launch',
+        'navigation_launch.py'
+    )
+
+    localization_params_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'config',
+        'amcl_localization.yaml'
+    )
+
+    navigation_params_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'config',
+        'navigation.yaml'
+    )
+
+    map_file_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'maps',
+        'map3.yaml'
+    )
+
+    # Path to the Slam Toolbox launch file
+    slam_toolbox_launch_path = os.path.join(
+        get_package_share_directory('slam_toolbox'),
+        'launch',
+        'localization_launch.py'
+    )
+
+    slam_toolbox_params_path = os.path.join(
+        get_package_share_directory('mensabot_navigation'),
+        'config',
+        'slam_toolbox_localization.yaml'
+    )
+
+    amcl_localization_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(nav2_localization_launch_path),
+        launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'params_file': localization_params_path,
+                'map': map_file_path,
+        }.items()
+    )
+
+    slam_toolbox_localization_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(slam_toolbox_launch_path),
+        launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'slam_params_file': slam_toolbox_params_path,
+                'map': map_file_path,
+        }.items()
+    )
+
+    navigation_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(nav2_navigation_launch_path),
+        launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'params_file': navigation_params_path,
+        }.items()
+    )
+
+    launchDescriptionObject = LaunchDescription()
+
+    launchDescriptionObject.add_action(sim_time_arg)
+    launchDescriptionObject.add_action(amcl_localization_launch)
+    #launchDescriptionObject.add_action(slam_toolbox_localization_launch)
+    launchDescriptionObject.add_action(navigation_launch)
+
+    return launchDescriptionObject
