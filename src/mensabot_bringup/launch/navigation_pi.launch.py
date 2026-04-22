@@ -1,6 +1,7 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch_ros.actions import Node
@@ -9,6 +10,16 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
+
+    rviz_launch_arg = DeclareLaunchArgument(
+        'rviz', default_value='true',
+        description='Open RViz'
+    )
+
+    rviz_config_arg = DeclareLaunchArgument(
+        'rviz_config', default_value='navigation.rviz',
+        description='RViz config file'
+    )
 
     sim_time_arg = DeclareLaunchArgument(
         'use_sim_time', default_value='True',
@@ -59,6 +70,17 @@ def generate_launch_description():
         'slam_toolbox_localization.yaml'
     )
 
+    # Launch rviz
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        arguments=['-d', PathJoinSubstitution([pkg_mensabot_navigation, 'rviz', LaunchConfiguration('rviz_config')])],
+        condition=IfCondition(LaunchConfiguration('rviz')),
+        parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ]
+    )
+
     amcl_localization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(nav2_localization_launch_path),
         launch_arguments={
@@ -87,7 +109,10 @@ def generate_launch_description():
 
     launchDescriptionObject = LaunchDescription()
 
+    #launchDescriptionObject.add_action(rviz_launch_arg)
+    #launchDescriptionObject.add_action(rviz_config_arg)
     launchDescriptionObject.add_action(sim_time_arg)
+    #launchDescriptionObject.add_action(rviz_node)
     launchDescriptionObject.add_action(amcl_localization_launch)
     #launchDescriptionObject.add_action(slam_toolbox_localization_launch)
     launchDescriptionObject.add_action(navigation_launch)

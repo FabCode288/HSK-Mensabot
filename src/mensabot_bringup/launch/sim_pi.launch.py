@@ -3,7 +3,6 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
-from launch.conditions import IfCondition
 from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
 from ament_index_python.packages import get_package_share_directory
@@ -16,16 +15,34 @@ def generate_launch_description():
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')    
     pkg_laser_scan_merger = get_package_share_directory('laser_scan_merger')
 
-    # Define the path to your URDF or Xacro file
-    urdf_file_path = PathJoinSubstitution([
-        pkg_mensabot_description,  # Replace with your package name
-        "urdf",
-        LaunchConfiguration('model')  # Replace with your URDF or Xacro file
-    ])
+    world_arg = DeclareLaunchArgument(
+        'world',
+        default_value=os.path.join(
+            pkg_mensabot_simulation,
+            'worlds',
+            'world3.sdf'
+        ),
+        description='Full path to the Gazebo world file'
+    )
 
     model_arg = DeclareLaunchArgument(
         'model',
         default_value='mensabot.urdf.xacro',
+    )
+
+    x_arg = DeclareLaunchArgument(
+        'x', default_value='0.0',
+        description='x coordinate of spawned robot'
+    )
+
+    y_arg = DeclareLaunchArgument(
+        'y', default_value='0.0',
+        description='y coordinate of spawned robot'
+    )
+
+    yaw_arg = DeclareLaunchArgument(
+        'yaw', default_value='0.0',
+        description='yaw angle of spawned robot'
     )
 
     sim_time_arg = DeclareLaunchArgument(
@@ -33,6 +50,56 @@ def generate_launch_description():
         description='Flag to enable use_sim_time'
     )
 
+    # Define the path to your URDF or Xacro file
+    urdf_file_path = PathJoinSubstitution([
+        pkg_mensabot_description,  # Replace with your package name
+        "urdf",
+        LaunchConfiguration('model')  # Replace with your URDF or Xacro file
+    ])
+
+    gz_bridge_params_path = os.path.join(
+        pkg_mensabot_simulation,
+        'config',
+        'gz_bridge.yaml'
+    )
+
+    world_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_mensabot_simulation, 'launch', 'world.launch.py'),
+        ),
+        launch_arguments={
+            'world': LaunchConfiguration('world'),
+        }.items()
+    )
+
+    # Spawn the URDF model using the /world/<world_name>/create service
+    spawn_urdf_node = Node(
+        package="ros_gz_sim",
+        executable="create",
+        arguments=[
+            "-name", "mensabot",
+            "-topic", "robot_description",
+            "-x", LaunchConfiguration('x'), "-y", LaunchConfiguration('y'), "-z", "0.5", "-Y", LaunchConfiguration('yaw')  # Initial spawn position
+        ],
+        output="screen",
+        parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ]
+    )
+
+    # Node to bridge /cmd_vel and /odom
+    gz_bridge_node = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        arguments=[
+            '--ros-args', '-p',
+            f'config_file:={gz_bridge_params_path}'
+        ],
+        output="screen",
+        parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ]
+    )
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
@@ -105,94 +172,22 @@ def generate_launch_description():
         output="screen"
     )
 
-    ####################
-
-        # Path to the Slam Toolbox launch file
-    nav2_localization_launch_path = os.path.join(
-        get_package_share_directory('nav2_bringup'),
-        'launch',
-        'localization_launch.py'
-    )
-
-    nav2_navigation_launch_path = os.path.join(
-        get_package_share_directory('nav2_bringup'),
-        'launch',
-        'navigation_launch.py'
-    )
-
-    localization_params_path = os.path.join(
-        get_package_share_directory('mensabot_navigation'),
-        'config',
-        'amcl_localization.yaml'
-    )
-
-    navigation_params_path = os.path.join(
-        get_package_share_directory('mensabot_navigation'),
-        'config',
-        'navigation.yaml'
-    )
-
-    map_file_path = os.path.join(
-        get_package_share_directory('mensabot_navigation'),
-        'maps',
-        'map3.yaml'
-    )
-
-    # Path to the Slam Toolbox launch file
-    slam_toolbox_launch_path = os.path.join(
-        get_package_share_directory('slam_toolbox'),
-        'launch',
-        'localization_launch.py'
-    )
-
-    slam_toolbox_params_path = os.path.join(
-        get_package_share_directory('mensabot_navigation'),
-        'config',
-        'slam_toolbox_localization.yaml'
-    )
-
-    amcl_localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(nav2_localization_launch_path),
-        launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
-                'params_file': localization_params_path,
-                'map': map_file_path,
-        }.items()
-    )
-
-    slam_toolbox_localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(slam_toolbox_launch_path),
-        launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
-                'slam_params_file': slam_toolbox_params_path,
-                'map': map_file_path,
-        }.items()
-    )
-
-    navigation_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(nav2_navigation_launch_path),
-        launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
-                'params_file': navigation_params_path,
-        }.items()
-    )
-
-
     launchDescriptionObject = LaunchDescription()
 
+    launchDescriptionObject.add_action(world_arg)
     launchDescriptionObject.add_action(model_arg)
+    launchDescriptionObject.add_action(x_arg)
+    launchDescriptionObject.add_action(y_arg)
+    launchDescriptionObject.add_action(yaw_arg)
     launchDescriptionObject.add_action(sim_time_arg)
+    launchDescriptionObject.add_action(world_launch)
+    launchDescriptionObject.add_action(spawn_urdf_node)
+    launchDescriptionObject.add_action(gz_bridge_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
     launchDescriptionObject.add_action(joint_state_broadcaster_node)
     launchDescriptionObject.add_action(diff_drive_controller_node)
     launchDescriptionObject.add_action(ekf_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
-    #launchDescriptionObject.add_action(laser_scan_merger_node)
-
-
-
-    #launchDescriptionObject.add_action(amcl_localization_launch)
-    #launchDescriptionObject.add_action(slam_toolbox_localization_launch)
-    #launchDescriptionObject.add_action(navigation_launch)
+    launchDescriptionObject.add_action(laser_scan_merger_node)
 
     return launchDescriptionObject
