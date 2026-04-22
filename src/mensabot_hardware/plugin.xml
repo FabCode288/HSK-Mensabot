@@ -1,0 +1,5 @@
+<library path="mensabot_hardware">
+  <class name="mensabot_hardware/MensabotHardware"
+         type="mensabot_hardware::MensabotHardware"
+         base_class_type="hardware_interface::SystemInterface"/>
+</library>

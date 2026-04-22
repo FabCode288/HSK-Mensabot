@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="mensabot_ros2_control">
+
+    <ros2_control name="mensabot_control" type="system">
+
+      <hardware>
+        <plugin>mensabot_hardware/MensabotHardware</plugin>
+
+        <param name="device">/dev/ttyACM0</param>
+        <param name="baudrate">115200</param>
+      </hardware>
+
+      <!-- ========================= -->
+      <!-- LEFT WHEEL JOINT -->
+      <!-- ========================= -->
+      <joint name="left_wheel_joint" type="continuous">
+        <command_interface name="velocity"/>
+      </joint>
+
+      <!-- ========================= -->
+      <!-- RIGHT WHEEL JOINT -->
+      <!-- ========================= -->
+      <joint name="right_wheel_joint" type="continuous">
+        <command_interface name="velocity"/>
+      </joint>
+
+    </ros2_control>
+
+  </xacro:macro>
+
+</robot>

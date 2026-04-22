@@ -1,0 +1,68 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100                        # Controller update frequency in Hz (how often control loop runs)
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster   # Publishes joint states (required for TF and visualization)
+
+    mensabot_base_controller:
+      type: diff_drive_controller/DiffDriveController       # Differential drive controller for mobile robot
+
+
+mensabot_base_controller:
+  ros__parameters:
+    command_interfaces:
+      - velocity                    # Controller receives velocity commands (cmd_vel)
+
+    state_interfaces:
+      - position                    # Joint position feedback (used if available)
+      - velocity                    # Joint velocity feedback
+
+    publish_rate: 50.0              # Frequency (Hz) at which odometry and controller state are published
+
+    left_wheel_names: ["left_wheel_joint"]     # Name of the left wheel joint in URDF
+    right_wheel_names: ["right_wheel_joint"]   # Name of the right wheel joint in URDF
+
+    wheel_separation: 0.4           # Distance between left and right wheels (meters)
+    wheel_radius: 0.11              # Radius of the wheels (meters)
+
+    wheel_separation_multiplier: 1.0          # Scaling factor for wheel separation (for calibration)
+    left_wheel_radius_multiplier: 1.0         # Scaling factor for left wheel radius
+    right_wheel_radius_multiplier: 1.0        # Scaling factor for right wheel radius
+
+    odom_frame_id: odom             # Odometry reference frame (fixed world frame for local motion)
+    base_frame_id: base_footprint   # Robot base frame (moving frame attached to robot)
+    
+    pose_covariance_diagonal: [0.05, 0.05, 0.1, 0.1, 0.1, 0.2]            # Covariance values define how much the EKF trusts this odometry source.
+    twist_covariance_diagonal: [0.05, 0.05, 0.1, 0.1, 0.1, 0.2]           # Smaller values = higher confidence ("this data is accurate")
+                                                                          # Larger values = lower confidence ("this data is noisy, trust other sensors more")
+                                                                          #
+                                                                          # The EKF uses these values to weight sensor fusion:
+                                                                          # - If too small → EKF will over-trust wheel odometry and ignore IMU
+                                                                          # - If too large → EKF will rely more on IMU (or other sensors)
+                                                                          #
+                                                                          # In this setup (no encoders, open-loop odometry), odometry is only an estimate,
+                                                                          # so covariance should NOT be zero. Use moderate values to allow IMU correction.
+                                                                          #
+                                                                          # Order:
+                                                                          # pose_covariance_diagonal  = [x, y, z, roll, pitch, yaw]
+                                                                          # twist_covariance_diagonal = [vx, vy, vz, vroll, vpitch, vyaw]
+
+    position_feedback: false        # Do NOT use real encoder feedback (no hardware encoders available)
+    open_loop: true                 # Estimate motion from commanded velocities instead of measured feedback
+    enable_odom_tf: false           # Do not publish odom→base_link TF (EKF is responsible for this)
+
+    cmd_vel_timeout: 0.5            # Stop robot if no velocity command is received within this time (seconds)
+    publish_limited_velocity: true  # Publish the velocity after limiting (useful for debugging controller behavior)
+    velocity_rolling_window_size: 10 # Window size for smoothing velocity estimates
+
+    # ===== tuned for Nav2 =====
+    linear.x.max_velocity: 0.5         # Maximum forward velocity (m/s)
+    linear.x.min_velocity: -0.5        # Maximum backward velocity (m/s)
+    linear.x.max_acceleration: 0.5      # Maximum forward acceleration (m/s^2)
+    linear.x.max_deceleration: -0.5     # Maximum braking (negative acceleration)
+
+    angular.z.max_velocity: 0.6         # Maximum rotational velocity (rad/s)
+    angular.z.min_velocity: -0.6        # Maximum rotational velocity in opposite direction
+    angular.z.max_acceleration: 1.0     # Maximum angular acceleration (rad/s^2)
+    angular.z.max_deceleration: -1.0    # Maximum angular deceleration

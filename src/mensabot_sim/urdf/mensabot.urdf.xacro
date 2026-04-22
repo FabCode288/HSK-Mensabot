@@ -1,0 +1,576 @@
+<?xml version='1.0'?>
+
+<robot name="mensabot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="use_sim" default="false"/>
+
+  <!-- nur wenn Simulation -->
+  <xacro:if value="$(arg use_sim)">
+    <xacro:include filename="$(find mensabot_sim)/urdf/mensabot.gazebo" />
+  </xacro:if>
+
+  <xacro:include filename="$(find mensabot_sim)/urdf/materials.xacro" />
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 -0.11" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="base_footprint" />
+  </joint>
+  
+  <link name="base_footprint">
+    <inertial>
+      <mass value="25.0"/>
+      <origin xyz="-0.08 0 0.21"/>      <!-- Center of mass -->
+      <inertia
+        ixx="1.2" iyy="1.5" izz="2.0"
+        ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <link name='base_link'>
+    <collision name="base_collision">
+      <origin xyz="-0.2 0 0.15" rpy="0 0 0"/>       <!-- Collision geometry -->
+      <geometry>
+        <box size="0.7 0.55 0.01"/>
+      </geometry>
+    </collision>
+
+    <collision name='left_caster_collision'>
+      <origin xyz="-0.45 0.2 -0.0475" rpy=" 0 0 0"/>
+      <geometry>
+        <sphere radius="0.0625"/>
+      </geometry>
+    </collision>
+
+    <visual name='left_caster_visual'>
+      <origin xyz="-0.45 0.2 -0.0475 " rpy=" 0 0 0"/>
+      <geometry>
+        <sphere radius="0.0625"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+
+    <collision name='right_caster_collision'>
+      <origin xyz="-0.45 -0.2 -0.0475" rpy=" 0 0 0"/>
+      <geometry>
+        <sphere radius="0.0625"/>
+      </geometry>
+    </collision>
+
+    <visual name='right_caster_visual'>
+      <origin xyz="-0.45 -0.2 -0.0475" rpy=" 0 0 0"/>
+      <geometry>
+        <sphere radius="0.0625"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>   
+
+  <!--CENTER LINK-->
+
+  <joint name="center_joint" type="fixed">
+    <origin xyz="-0.2 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="center_link" />
+  </joint>
+
+  <link name="center_link">
+    <visual name='center_visual'>
+       <geometry>
+         <sphere radius="0.01"/>
+       </geometry>
+       <material name="red"/>
+    </visual>
+  </link>
+
+<!-- Bottom Layer -->
+
+  <joint name="bottom_front_rod_joint" type="fixed">
+    <origin xyz="0.355 0 0" rpy="0 0 ${pi/2}" />
+    <parent link="center_link"/>
+    <child link="bottom_front_rod_link" />
+  </joint>
+
+  <link name="bottom_front_rod_link">
+    <visual name='bottom_front_rod_visual'>
+       <geometry>
+         <box size="0.538 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="bottom_rear_rod_joint" type="fixed">
+    <origin xyz="-0.355 0 0" rpy="0 0 ${pi/2}" />
+    <parent link="center_link"/>
+    <child link="bottom_rear_rod_link" />
+  </joint>
+  
+  <link name="bottom_rear_rod_link">
+    <visual name='bottom_rear_rod_visual'>
+       <geometry>
+         <box size="0.538 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="bottom_left_rod_joint" type="fixed">
+    <origin xyz="0.0 0.2915 0" rpy="0 0 0" />
+    <parent link="center_link"/>
+    <child link="bottom_left_rod_link" />
+  </joint>
+  
+  <link name="bottom_left_rod_link">
+    <visual name='bottom_left_rod_visual'>
+       <geometry>
+         <box size="0.755 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="bottom_right_rod_joint" type="fixed">
+    <origin xyz="0.0 -0.2915 0" rpy="0 0 0" />
+    <parent link="center_link"/>
+    <child link="bottom_right_rod_link" />
+  </joint>
+  
+  <link name="bottom_right_rod_link">
+    <visual name='bottom_right_rod_visual'>
+       <geometry>
+         <box size="0.755 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <!-- Top Layer -->
+
+  <joint name="top_front_rod_joint" type="fixed">
+    <origin xyz="0.355 0 0.295" rpy="0 0 ${pi/2}" />
+    <parent link="center_link"/>
+    <child link="top_front_rod_link" />
+  </joint>
+
+  <link name="top_front_rod_link">
+    <visual name='top_front_rod_visual'>
+       <geometry>
+         <box size="0.538 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="top_rear_rod_joint" type="fixed">
+    <origin xyz="-0.355 0 0.295" rpy="0 0 ${pi/2}" />
+    <parent link="center_link"/>
+    <child link="top_rear_rod_link" />
+  </joint>
+  
+  <link name="top_rear_rod_link">
+    <visual name='top_rear_rod_visual'>
+       <geometry>
+         <box size="0.538 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="top_left_rod_joint" type="fixed">
+    <origin xyz="0.0 0.2915 0.295" rpy="0 0 0" />
+    <parent link="center_link"/>
+    <child link="top_left_rod_link" />
+  </joint>
+  
+  <link name="top_left_rod_link">
+    <visual name='top_left_rod_visual'>
+       <geometry>
+         <box size="0.755 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="top_right_rod_joint" type="fixed">
+    <origin xyz="0.0 -0.2915 0.295" rpy="0 0 0" />
+    <parent link="center_link"/>
+    <child link="top_right_rod_link" />
+  </joint>
+  
+  <link name="top_right_rod_link">
+    <visual name='top_right_rod_visual'>
+       <geometry>
+         <box size="0.755 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <!-- Vertical Rods -->
+
+  <joint name="front_right1_joint" type="fixed">
+    <origin xyz="0.355 0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="front_right1_link" />
+  </joint>
+
+  <link name="front_right1_link">
+    <visual name='front_right1_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="front_left1_joint" type="fixed">
+    <origin xyz="0.355 -0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="front_left1_link" />
+  </joint>
+
+  <link name="front_left1_link">
+    <visual name='front_left1_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="front_right2_joint" type="fixed">
+    <origin xyz="0.265 0.2915 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="front_right2_link" />
+  </joint>
+
+  <link name="front_right2_link">
+    <visual name='front_right2_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="front_left2_joint" type="fixed">
+    <origin xyz="0.265 -0.2915 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="front_left2_link" />
+  </joint>
+
+  <link name="front_left2_link">
+    <visual name='front_left2_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="back_left1_joint" type="fixed">
+    <origin xyz="-0.355 -0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="back_left1_link" />
+  </joint>
+
+  <link name="back_left1_link">
+    <visual name='back_left1_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="back_right1_joint" type="fixed">
+    <origin xyz="-0.355 0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="back_right1_link" />
+  </joint>
+
+  <link name="back_right1_link">
+    <visual name='back_right1_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="back_left2_joint" type="fixed">
+    <origin xyz="-0.265 -0.2915 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="back_left2_link" />
+  </joint>
+
+  <link name="back_left2_link">
+    <visual name='back_left2_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+  <joint name="back_right2_joint" type="fixed">
+    <origin xyz="-0.265 0.2915 0.1475" rpy="0 ${pi/2} 0" />
+    <parent link="center_link"/>
+    <child link="back_right2_link" />
+  </joint>
+
+  <link name="back_right2_link">
+    <visual name='back_right2_visual'>
+       <geometry>
+         <box size="0.25 0.045 0.045"/>
+       </geometry>
+       <material name="grey"/>
+    </visual>
+    
+  </link>
+
+
+
+  <!--LEFT WHEEL-->
+
+  <joint type="continuous" name="left_wheel_joint">
+    <origin xyz="0.0 0.2 0" rpy="0 0 0"/>
+    <child link="left_wheel"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="10"/>
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+  <link name='left_wheel'>
+    <inertial> 
+      <mass value="5.0"/>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/> 
+      <inertia ixx="0.014" ixy="0" ixz="0" iyy="0.014" iyz="0" izz="0.025" />
+    </inertial>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".11" length=".05"/>
+      </geometry>
+    </collision>
+
+    <visual name='left_wheel_visual'>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".11" length=".05"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <gazebo reference="left_wheel">
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <kp>10000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.0001</minDepth>
+    <maxVel>1.0</maxVel>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <!--RIGHT WHEEL-->
+
+  <joint type="continuous" name="right_wheel_joint">
+    <origin xyz="0.0 -0.2 0" rpy="0 0 0"/>
+    <child link="right_wheel"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="10"/>
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+  <link name='right_wheel'>
+    <inertial> 
+      <mass value="5.0"/>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/> 
+      <inertia ixx="0.014" ixy="0" ixz="0" iyy="0.014" iyz="0" izz="0.025" />
+    </inertial>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".11" length=".05"/>
+      </geometry>
+    </collision>
+
+    <visual name='right_wheel_visual'>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius=".11" length=".05"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <gazebo reference="right_wheel">
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <kp>10000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.0001</minDepth>
+    <maxVel>1.0</maxVel>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <mu1>0.0002</mu1>
+    <mu2>0.0002</mu2>
+  </gazebo>
+
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0.0 0 0.05" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="imu_link" />
+  </joint>
+
+  <link name="imu_link">
+    <visual name='imu_visual'>
+       <geometry>
+         <box size=".04 .02 .01"/>
+       </geometry>
+       <material name="brown"/>
+    </visual>
+  </link>
+
+  <gazebo reference="imu_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/BROWN</material>
+  </gazebo>
+
+  <!--FRONT LASER SCANNER  -->
+
+  <joint type="fixed" name="scan_front_joint">
+    <origin xyz="0.4 0.33 0.1" rpy="0 0 0"/>     <!--origin xyz="0.3775 0.314 0.1" rpy="0 0 0"/-->
+    <child link="scan_front_link"/>
+    <parent link="center_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name='scan_front_link'>
+    
+
+    <visual name='scan_front_link_visual'>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius=".05" length=".04"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+
+  <gazebo reference="scan_front_link">
+    <selfCollide>false</selfCollide>
+    <mu1 value="0.05" />
+    <mu2 value="0.05" />
+    <material>Gazebo/GREEN</material>
+  </gazebo>
+
+  <!--REAR LASER SCANNER  -->
+
+  <joint type="fixed" name="scan_rear_joint">
+    <origin xyz="-0.4 -0.33 0.1" rpy="0 0 ${pi}"/>
+    <child link="scan_rear_link"/>
+    <parent link="center_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name='scan_rear_link'>
+    
+
+    <visual name='scan_rear_link_visual'>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius=".05" length=".04"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+
+  <gazebo reference="scan_rear_link">
+    <selfCollide>false</selfCollide>
+    <mu1 value="0.05" />
+    <mu2 value="0.05" />
+    <material>Gazebo/GREEN</material>
+  </gazebo>
+
+    <!-- Motors >
+
+  <joint name="left_motor_joint" type="fixed">
+    <origin xyz="0.0275 0.0 0.09" rpy="0 ${pi/2} ${pi/2}" />
+    <parent link="center_link"/>
+    <child link="left_motor_link" />
+  </joint>
+
+  <link name="left_motor_link">
+    <visual name='left_motor_visual'>
+       <geometry>
+         <box size="0.05 0.05 0.25"/>
+       </geometry>
+       <material name="red"/>
+    </visual>
+    
+  </link>
+
+  <joint name="right_motor_joint" type="fixed">
+    <origin xyz="0.1 0.0 0.09" rpy="0 ${pi/2} ${pi/2}" />
+    <parent link="center_link"/>
+    <child link="right_motor_link" />
+  </joint>
+
+  <link name="right_motor_link">
+    <visual name='right_motor_visual'>
+       <geometry>
+          <box size="0.05 0.05 0.25"/>
+       </geometry>
+       <material name="red"/>
+    </visual>
+    
+  </link-->
+
+  <!-- Battery -->
+
+  <!--joint name="battery_joint" type="fixed">
+    <origin xyz="-0.180 0 0.0625" rpy="0 0 0" />
+    <parent link="center_link"/>
+    <child link="battery_link" />
+  </joint>
+
+  <link name="battery_link">
+    <visual name='battery_visual'>
+       <geometry>
+         <box size="0.280 0.22 0.07"/>
+       </geometry>
+       <material name="red"/>
+    </visual>
+    
+  </link -->
+
+</robot>
