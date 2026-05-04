@@ -4,8 +4,10 @@
 #include <unistd.h>
 #include <termios.h>
 #include <cstring>
-#include <cstdio>
-#include <cmath>
+#include <sstream>
+
+#include "pluginlib/class_list_macros.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 namespace mensabot_hardware
 {
@@ -23,39 +25,39 @@ hardware_interface::CallbackReturn MensabotHardware::on_init(
   hw_velocities_ = {0.0, 0.0};
   hw_commands_ = {0.0, 0.0};
 
-  // Serial öffnen
-  serial_fd_ = open("/dev/ttyACM0", O_RDWR | O_NOCTTY);
+  // Serial open
+  serial_fd_ = open(port_.c_str(), O_RDWR | O_NOCTTY);
 
   if (serial_fd_ < 0) {
     perror("Serial open failed");
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  // Serial konfigurieren
   struct termios tty;
   memset(&tty, 0, sizeof tty);
 
-  if (tcgetattr(serial_fd_, &tty) != 0) {
-    perror("tcgetattr failed");
-    return hardware_interface::CallbackReturn::ERROR;
-  }
+  tcgetattr(serial_fd_, &tty);
 
   cfsetospeed(&tty, B115200);
   cfsetispeed(&tty, B115200);
 
   tty.c_cflag |= (CLOCAL | CREAD);
-  tty.c_cflag &= ~CSIZE;
   tty.c_cflag |= CS8;
   tty.c_cflag &= ~PARENB;
   tty.c_cflag &= ~CSTOPB;
 
   tcsetattr(serial_fd_, TCSANOW, &tty);
 
-  // 🔥 WICHTIG: Arduino reset → kurz warten
-  usleep(2000000); // 2 Sekunden
+  connected_ = false;
+  ready_ = false;
+  active_ = false;
+
+  last_msg_time_ = rclcpp::Clock().now();
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
+
+// ================= INTERFACES =================
 
 std::vector<hardware_interface::StateInterface>
 MensabotHardware::export_state_interfaces()
@@ -98,84 +100,147 @@ MensabotHardware::export_command_interfaces()
   interfaces.emplace_back(
     info_.joints[1].name,
     hardware_interface::HW_IF_VELOCITY,
-    &hw_commands_[1]);
+    &hw_commands_[1]); 
 
   return interfaces;
 }
 
+// ================= ACTIVATE =================
+
 hardware_interface::CallbackReturn MensabotHardware::on_activate(
   const rclcpp_lifecycle::State &)
 {
-  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Hardware activated");
-
-  // 🔥 Safety: initial STOP
-  hw_commands_[0] = 0.0;
-  hw_commands_[1] = 0.0;
-
-  const char * stop_msg = "0.0,0.0\n";
-  ::write(serial_fd_, stop_msg, strlen(stop_msg));
-
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Activated");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
 hardware_interface::CallbackReturn MensabotHardware::on_deactivate(
   const rclcpp_lifecycle::State &)
 {
-  // 🔥 STOP beim Beenden
-  const char * stop_msg = "0.0,0.0\n";
-  ::write(serial_fd_, stop_msg, strlen(stop_msg));
-
   close(serial_fd_);
-
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
+// ================= READ =================
+
 hardware_interface::return_type MensabotHardware::read(
-  const rclcpp::Time &, const rclcpp::Duration &)
+  const rclcpp::Time & time, const rclcpp::Duration & period)
 {
-  char buffer[256];
-  int n = ::read(serial_fd_, buffer, sizeof(buffer) - 1);
+  std::string line = read_line();
 
-  if (n > 0) {
-    buffer[n] = '\0'; // Null-terminieren
-    std::string line(buffer);
+  if (!line.empty()) {
+    last_msg_time_ = time;
 
-    double t, pos_l, pos_r, vel_l, vel_r;
-
-    if (sscanf(line.c_str(), "%lf,%lf,%lf,%lf,%lf",
-               &t, &pos_l, &pos_r, &vel_l, &vel_r) == 5)
-    {
-      hw_positions_[0] = pos_l;
-      hw_positions_[1] = pos_r;
-      hw_velocities_[0] = vel_l;
-      hw_velocities_[1] = vel_r;
+    if (line == "READY") {
+      connected_ = true;
+      ready_ = true;
     }
+
+    if (line == "HB") {
+      connected_ = true;
+    }
+  }
+
+  // Timeout
+  if ((time - last_msg_time_).seconds() > heartbeat_timeout_) {
+    connected_ = false;
+    ready_ = false;
+    active_ = false;
+  }
+
+  // Fake odom nur wenn aktiv
+  if (active_ && connected_) {
+    hw_positions_[0] += hw_commands_[0] * period.seconds();
+    hw_positions_[1] += hw_commands_[1] * period.seconds();
+
+    hw_velocities_[0] = hw_commands_[0];
+    hw_velocities_[1] = hw_commands_[1];
+  } else {
+    hw_velocities_[0] = 0.0;
+    hw_velocities_[1] = 0.0;
   }
 
   return hardware_interface::return_type::OK;
 }
+
+// ================= WRITE =================
 
 hardware_interface::return_type MensabotHardware::write(
   const rclcpp::Time &, const rclcpp::Duration &)
 {
-  // 🔥 Safety: NaN/Inf verhindern
-  if (!std::isfinite(hw_commands_[0]) || !std::isfinite(hw_commands_[1])) {
-    hw_commands_[0] = 0.0;
-    hw_commands_[1] = 0.0;
+  // NICHT verbunden → nur PING
+  if (!connected_) {
+    send_string("PING");
+    return hardware_interface::return_type::OK;
   }
 
-  char msg[128];
-  snprintf(msg, sizeof(msg), "%.3f,%.3f\n",
-           hw_commands_[0], hw_commands_[1]);
+  // ESTOP
+  if (estop_) {
+    send_string("ESTOP");
+    estop_sent_ = true;
+    active_ = false;
+    return hardware_interface::return_type::OK;
+  }
 
-  ::write(serial_fd_, msg, strlen(msg));
+  // RESET nach ESTOP
+  if (estop_sent_ && !estop_) {
+    send_string("RESET");
+    estop_sent_ = false;
+    ready_ = false;
+    return hardware_interface::return_type::OK;
+  }
+
+  // READY → ACTIVE
+  if (ready_) {
+    active_ = true;
+  }
+
+  // wenn nicht aktiv → nichts senden
+  if (!active_) {
+    return hardware_interface::return_type::OK;
+  }
+
+  // CMD senden
+  std::stringstream ss;
+  ss << "CMD," << hw_commands_[0] << "," << hw_commands_[1];
+  send_string(ss.str());
 
   return hardware_interface::return_type::OK;
 }
 
+// ================= HELPERS =================
+
+void MensabotHardware::send_string(const std::string & msg)
+{
+  std::string m = msg + "\n";
+  ::write(serial_fd_, m.c_str(), m.size());
+}
+
+std::string MensabotHardware::read_line()
+{
+  char buffer[256];
+  int n = ::read(serial_fd_, buffer, sizeof(buffer));
+
+  if (n > 0) {
+    return std::string(buffer, n);
+  }
+  return "";
+}
+
+// ================= FLAGS =================
+
+void MensabotHardware::set_estop(bool value)
+{
+  estop_ = value;
+}
+
+bool MensabotHardware::is_connected() const
+{
+  return connected_;
+}
+
 }  // namespace mensabot_hardware
 
-#include "pluginlib/class_list_macros.hpp"
 PLUGINLIB_EXPORT_CLASS(
   mensabot_hardware::MensabotHardware,
   hardware_interface::SystemInterface)
