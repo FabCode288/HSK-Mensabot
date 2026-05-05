@@ -54,7 +54,8 @@ private:
 
   // Timing
   rclcpp::Time last_msg_time_;
-  double heartbeat_timeout_ = 0.5;
+  double heartbeat_timeout_ = 1.0;
+  double send_period_ = 0.05; // 20 Hz
 
   // Interfaces
   std::vector<double> hw_positions_;

@@ -12,6 +12,10 @@
 namespace mensabot_hardware
 {
 
+// 🔥 NEU: Rate Control Variablen
+rclcpp::Time last_send_time_;
+double send_period_ = 0.05; // 20 Hz
+
 hardware_interface::CallbackReturn MensabotHardware::on_init(
   const hardware_interface::HardwareInfo & info)
 {
@@ -53,6 +57,9 @@ hardware_interface::CallbackReturn MensabotHardware::on_init(
   active_ = false;
 
   last_msg_time_ = rclcpp::Clock().now();
+
+  // Initialisierung Sendetimer
+  last_send_time_ = rclcpp::Clock().now();
 
   return hardware_interface::CallbackReturn::SUCCESS;
 }
@@ -110,7 +117,7 @@ MensabotHardware::export_command_interfaces()
 hardware_interface::CallbackReturn MensabotHardware::on_activate(
   const rclcpp_lifecycle::State &)
 {
-  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Activated");
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Activated Fabian's Mensabot Hardware");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -126,29 +133,34 @@ hardware_interface::CallbackReturn MensabotHardware::on_deactivate(
 hardware_interface::return_type MensabotHardware::read(
   const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), connected_ ? "Connected" : "Not Connected");
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), active_ ? "Active" : "Not Active");
+
   std::string line = read_line();
 
   if (!line.empty()) {
-    last_msg_time_ = time;
+    RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), line.c_str());
 
-    if (line == "READY") {
+    if (line == "READY" || line == " READY" || line == " READY " || line == "READY "  || line == "READY\n") {
+      RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Read: line = READY");
       connected_ = true;
       ready_ = true;
+      last_msg_time_ = time;
     }
 
-    if (line == "HB") {
-      connected_ = true;
+    if (line == "HB" || line == " HB" || line == "HB\n") {
+      RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Read: line = HB");
+      last_msg_time_ = time;
     }
   }
 
-  // Timeout
   if ((time - last_msg_time_).seconds() > heartbeat_timeout_) {
+    RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Timeout Reset Heartbeat");
     connected_ = false;
     ready_ = false;
     active_ = false;
   }
 
-  // Fake odom nur wenn aktiv
   if (active_ && connected_) {
     hw_positions_[0] += hw_commands_[0] * period.seconds();
     hw_positions_[1] += hw_commands_[1] * period.seconds();
@@ -168,39 +180,42 @@ hardware_interface::return_type MensabotHardware::read(
 hardware_interface::return_type MensabotHardware::write(
   const rclcpp::Time &, const rclcpp::Duration &)
 {
-  // NICHT verbunden → nur PING
+  // Rate Limiting
+  rclcpp::Time now = rclcpp::Clock().now();
+  if ((now - last_send_time_).seconds() < send_period_) {
+    return hardware_interface::return_type::OK;
+  }
+  last_send_time_ = now;
+
   if (!connected_) {
     send_string("PING");
     return hardware_interface::return_type::OK;
   }
 
-  // ESTOP
   if (estop_) {
     send_string("ESTOP");
     estop_sent_ = true;
     active_ = false;
+    RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "ESTOP");
     return hardware_interface::return_type::OK;
   }
 
-  // RESET nach ESTOP
   if (estop_sent_ && !estop_) {
     send_string("RESET");
     estop_sent_ = false;
     ready_ = false;
+    RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "ESTOP - RESET");
     return hardware_interface::return_type::OK;
   }
 
-  // READY → ACTIVE
   if (ready_) {
     active_ = true;
   }
 
-  // wenn nicht aktiv → nichts senden
   if (!active_) {
     return hardware_interface::return_type::OK;
   }
 
-  // CMD senden
   std::stringstream ss;
   ss << "CMD," << hw_commands_[0] << "," << hw_commands_[1];
   send_string(ss.str());
@@ -214,6 +229,7 @@ void MensabotHardware::send_string(const std::string & msg)
 {
   std::string m = msg + "\n";
   ::write(serial_fd_, m.c_str(), m.size());
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Sent: %s", msg.c_str());
 }
 
 std::string MensabotHardware::read_line()
@@ -224,6 +240,7 @@ std::string MensabotHardware::read_line()
   if (n > 0) {
     return std::string(buffer, n);
   }
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "Failed to read line");
   return "";
 }
 

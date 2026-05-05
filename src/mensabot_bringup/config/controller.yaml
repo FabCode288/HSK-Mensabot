@@ -27,7 +27,7 @@ mensabot_base_controller:
     right_wheel_radius_multiplier: 1.0        # Scaling factor for right wheel radius
 
     odom_frame_id: odom             # Odometry reference frame (fixed world frame for local motion)
-    base_frame_id: base_footprint   # Robot base frame (moving frame attached to robot)
+    base_frame_id: base_link   # Robot base frame (moving frame attached to robot)
     
     pose_covariance_diagonal: [0.05, 0.05, 0.1, 0.1, 0.1, 0.2]            # Covariance values define how much the EKF trusts this odometry source.
     twist_covariance_diagonal: [0.05, 0.05, 0.1, 0.1, 0.1, 0.2]           # Smaller values = higher confidence ("this data is accurate")

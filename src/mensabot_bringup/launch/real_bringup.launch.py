@@ -81,7 +81,7 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        #remappings=[('/odometry/filtered', '/odom')],   # Remap the output of the EKF to /odom instead of /odometry/filtered like default
+        remappings=[('/odometry/filtered', '/odom')],   # Remap the output of the EKF to /odom instead of /odometry/filtered like default
         parameters=[
             os.path.join(pkg_mensabot_hardware, 'config', 'ekf.yaml'),
         ]
@@ -144,6 +144,6 @@ def generate_launch_description():
     launchDescriptionObject.add_action(cmd_vel_transform_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)
     launchDescriptionObject.add_action(imu_device_node)
-    #launchDescriptionObject.add_action(imu_filter_node)
+    launchDescriptionObject.add_action(imu_filter_node)
 
     return launchDescriptionObject

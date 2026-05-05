@@ -46,8 +46,10 @@ install(TARGETS mensabot_hardware
   DESTINATION lib
 )
 
-install(DIRECTORY include/
-  DESTINATION include/
+install(DIRECTORY 
+  config
+  include/
+  DESTINATION share/${PROJECT_NAME}
 )
 
 install(FILES plugin.xml
