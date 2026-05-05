@@ -466,8 +466,6 @@
   </link>
 
   <gazebo reference="imu_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
     <material>Gazebo/BROWN</material>
   </gazebo>
 
