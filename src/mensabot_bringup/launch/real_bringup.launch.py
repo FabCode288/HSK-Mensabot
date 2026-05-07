@@ -1,10 +1,11 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch_ros.actions import ComposableNodeContainer, Node
-from launch_ros.descriptions import ComposableNode
+from launch_ros.descriptions import ComposableNode 
+from launch.event_handlers import OnProcessStart, OnProcessExit
 from ament_index_python.packages import get_package_share_directory, get_package_share_path
 
 def generate_launch_description():
@@ -32,7 +33,7 @@ def generate_launch_description():
         LaunchConfiguration('model')  # Replace with your URDF or Xacro file
     ])
 
-    controller_manger_yaml_path = os.path.join(
+    controller_manager_yaml_path = os.path.join(
         pkg_mensabot_bringup,
         'config',
         'controller.yaml'
@@ -67,12 +68,12 @@ def generate_launch_description():
         output='screen',
     )
 
-    controller_manger_node = Node(
+    controller_manager_node = Node(
         package='controller_manager',
         executable='ros2_control_node',
-        parameters=[{'robot_description': Command(['xacro', ' ', urdf_file_path, ' use_sim:=true']),
+        parameters=[{'robot_description': Command(['xacro', ' ', urdf_file_path, ' use_sim:=false']),
             },
-            controller_manger_yaml_path],
+            controller_manager_yaml_path],
         output='screen',
     )   
 
@@ -133,13 +134,32 @@ def generate_launch_description():
         parameters=[imu_filter_config]
     )
 
+    delayed_joint_state_broadcaster = RegisterEventHandler(
+        OnProcessStart(
+            target_action=controller_manager_node,
+            on_start=[
+                TimerAction(
+                    period=3.0,
+                    actions=[joint_state_broadcaster_node]
+                )
+            ]
+        )
+    )
+
+    delayed_diff_drive_controller = RegisterEventHandler(
+        OnProcessExit(
+            target_action=joint_state_broadcaster_node,
+            on_exit=[diff_drive_controller_node]
+        )
+    )
+
     launchDescriptionObject = LaunchDescription()
 
     launchDescriptionObject.add_action(model_arg)
+    launchDescriptionObject.add_action(controller_manager_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
-    launchDescriptionObject.add_action(joint_state_broadcaster_node)
-    launchDescriptionObject.add_action(diff_drive_controller_node)
-    launchDescriptionObject.add_action(controller_manger_node)
+    launchDescriptionObject.add_action(delayed_joint_state_broadcaster)
+    launchDescriptionObject.add_action(delayed_diff_drive_controller)
     launchDescriptionObject.add_action(ekf_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)

@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 10                        # Controller update frequency in Hz (how often control loop runs)
+    update_rate: 30                        # Controller update frequency in Hz (how often control loop runs)
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster   # Publishes joint states (required for TF and visualization)
@@ -23,8 +23,8 @@ mensabot_base_controller:
     wheel_radius: 0.11              # Radius of the wheels (meters)
 
     wheel_separation_multiplier: 1.0          # Scaling factor for wheel separation (for calibration)
-    left_wheel_radius_multiplier: 1.0         # Scaling factor for left wheel radius
-    right_wheel_radius_multiplier: 1.0        # Scaling factor for right wheel radius
+    left_wheel_radius_multiplier: 1.0        # Scaling factor for left wheel radius
+    right_wheel_radius_multiplier: 1.0       # Scaling factor for right wheel radius
 
     odom_frame_id: odom             # Odometry reference frame (fixed world frame for local motion)
     base_frame_id: base_link   # Robot base frame (moving frame attached to robot)

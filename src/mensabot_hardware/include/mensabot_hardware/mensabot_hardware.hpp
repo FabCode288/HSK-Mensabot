@@ -54,6 +54,8 @@ private:
 
   // Timing
   rclcpp::Time last_msg_time_;
+  rclcpp::Time last_send_time_;
+  bool timing_initialized_ = false;
   double heartbeat_timeout_ = 1.0;
   double send_period_ = 0.05; // 20 Hz
 
