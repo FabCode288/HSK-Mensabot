@@ -1,12 +1,21 @@
-#pragma once
+#ifndef MENSABOT_HARDWARE__MENSABOT_HARDWARE_HPP_
+#define MENSABOT_HARDWARE__MENSABOT_HARDWARE_HPP_
 
 #include <vector>
 #include <string>
+#include <atomic>
 
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
+#include "hardware_interface/handle.hpp"
+#include "hardware_interface/hardware_info.hpp"
+#include "hardware_interface/base_interface.hpp"
+
 #include "rclcpp/macros.hpp"
+#include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/state.hpp"
+
+#include "std_msgs/msg/bool.hpp"
 
 namespace mensabot_hardware
 {
@@ -19,9 +28,11 @@ public:
   hardware_interface::CallbackReturn on_init(
     const hardware_interface::HardwareInfo & info) override;
 
-  std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+  std::vector<hardware_interface::StateInterface>
+  export_state_interfaces() override;
 
-  std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+  std::vector<hardware_interface::CommandInterface>
+  export_command_interfaces() override;
 
   hardware_interface::CallbackReturn on_activate(
     const rclcpp_lifecycle::State & previous_state) override;
@@ -30,43 +41,61 @@ public:
     const rclcpp_lifecycle::State & previous_state) override;
 
   hardware_interface::return_type read(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
+    const rclcpp::Time & time,
+    const rclcpp::Duration & period) override;
 
   hardware_interface::return_type write(
-    const rclcpp::Time & time, const rclcpp::Duration & period) override;
-
-  // externe Steuerung
-  void set_estop(bool value);
-  bool is_connected() const;
+    const rclcpp::Time & time,
+    const rclcpp::Duration & period) override;
 
 private:
 
-  // Serial
+  // ================= SERIAL =================
+
   int serial_fd_;
+
   std::string port_ = "/dev/ttyACM0";
 
-  // States
-  bool connected_ = false;
-  bool ready_ = false;
-  bool active_ = false;
-  bool estop_ = false;
-  bool estop_sent_ = false;
+  void send_string(const std::string & msg);
 
-  // Timing
-  rclcpp::Time last_msg_time_;
-  rclcpp::Time last_send_time_;
-  bool timing_initialized_ = false;
-  double heartbeat_timeout_ = 1.0;
-  double send_period_ = 0.05; // 20 Hz
+  std::string read_line();
 
-  // Interfaces
+  // ================= ROS NODE =================
+
+  rclcpp::Node::SharedPtr node_;
+
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr estop_sub_;
+
+  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr connected_pub_;
+
+  // ================= HARDWARE DATA =================
+
   std::vector<double> hw_positions_;
   std::vector<double> hw_velocities_;
   std::vector<double> hw_commands_;
 
-  // Helper
-  void send_string(const std::string & msg);
-  std::string read_line();
+  // ================= FLAGS =================
+
+  bool connected_ = false;
+  bool ready_ = false;
+  bool active_ = false;
+
+  std::atomic<bool> estop_{false};
+
+  bool estop_sent_ = false;
+
+  // ================= TIMING =================
+
+  bool timing_initialized_ = false;
+
+  rclcpp::Time last_msg_time_;
+  rclcpp::Time last_send_time_;
+
+  double heartbeat_timeout_ = 1.0;
+
+  double send_period_ = 0.02;
 };
 
 }  // namespace mensabot_hardware
+
+#endif  // MENSABOT_HARDWARE__MENSABOT_HARDWARE_HPP_
