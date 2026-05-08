@@ -43,7 +43,7 @@ private:
 
   // Serial
   int serial_fd_;
-  std::string port_ = "/dev/ttyACM0";
+  std::string port_ = "/dev/arduino";
 
   // States
   bool connected_ = false;
@@ -57,7 +57,7 @@ private:
   rclcpp::Time last_send_time_;
   bool timing_initialized_ = false;
   double heartbeat_timeout_ = 1.0;
-  double send_period_ = 0.05; // 20 Hz
+  double send_period_ = 0.2; // 5 Hz
 
   // Interfaces
   std::vector<double> hw_positions_;

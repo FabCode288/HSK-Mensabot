@@ -55,10 +55,10 @@ mensabot_base_controller:
     # ===== tuned for Nav2 =====
     linear.x.max_velocity: 0.5         # Maximum forward velocity (m/s)
     linear.x.min_velocity: -0.5        # Maximum backward velocity (m/s)
-    linear.x.max_acceleration: 0.5      # Maximum forward acceleration (m/s^2)
-    linear.x.max_deceleration: -0.5     # Maximum braking (negative acceleration)
+    linear.x.max_acceleration: 1.5      # Maximum forward acceleration (m/s^2)
+    linear.x.max_deceleration: -1.5     # Maximum braking (negative acceleration)
 
-    angular.z.max_velocity: 1.0         # Maximum rotational velocity (rad/s)
-    angular.z.min_velocity: -1.0        # Maximum rotational velocity in opposite direction
-    angular.z.max_acceleration: 1.0     # Maximum angular acceleration (rad/s^2)
-    angular.z.max_deceleration: -1.0    # Maximum angular deceleration
+    angular.z.max_velocity: 0.1         # Maximum rotational velocity (rad/s)
+    angular.z.min_velocity: -0.1        # Maximum rotational velocity in opposite direction
+    angular.z.max_acceleration: 0.3     # Maximum angular acceleration (rad/s^2)
+    angular.z.max_deceleration: -0.3    # Maximum angular deceleration

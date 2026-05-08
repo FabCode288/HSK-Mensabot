@@ -179,9 +179,7 @@ hardware_interface::return_type MensabotHardware::read(
 
       last_msg_time_ = time;
 
-      RCLCPP_INFO(
-        rclcpp::get_logger("MensabotHardware"),
-        "Heartbeat received");
+      //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"),"Heartbeat received");
     }
   }
 
