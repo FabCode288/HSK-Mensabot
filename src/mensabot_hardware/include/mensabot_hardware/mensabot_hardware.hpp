@@ -57,7 +57,7 @@ private:
   rclcpp::Time last_send_time_;
   bool timing_initialized_ = false;
   double heartbeat_timeout_ = 1.0;
-  double send_period_ = 0.2; // 5 Hz
+  double send_period_ = 0.02; // 50 Hz
 
   // Interfaces
   std::vector<double> hw_positions_;
