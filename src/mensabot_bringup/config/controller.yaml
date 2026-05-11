@@ -53,10 +53,16 @@ mensabot_base_controller:
     velocity_rolling_window_size: 10 # Window size for smoothing velocity estimates
 
     # ===== tuned for Nav2 =====
-    linear.x.max_velocity: 0.5         # Maximum forward velocity (m/s)
-    linear.x.min_velocity: -0.5        # Maximum backward velocity (m/s)
-    linear.x.max_acceleration: 1.5      # Maximum forward acceleration (m/s^2)
-    linear.x.max_deceleration: -1.5     # Maximum braking (negative acceleration)
+    # ===== tuned for Nav2 =====
+    linear.x.max_velocity: 0.2         # Maximum forward velocity (m/s)
+    linear.x.min_velocity: -0.2        # Maximum backward velocity (m/s)
+
+    linear.x.max_acceleration: 0.2      # Maximum forward acceleration (m/s^2)
+    linear.x.max_deceleration: -0.5     # Maximum braking (negative acceleration)
+
+    linear.x.max_acceleration_reverse: -0.20
+    linear.x.max_deceleration_reverse: 0.50
+
 
     angular.z.max_velocity: 0.1         # Maximum rotational velocity (rad/s)
     angular.z.min_velocity: -0.1        # Maximum rotational velocity in opposite direction

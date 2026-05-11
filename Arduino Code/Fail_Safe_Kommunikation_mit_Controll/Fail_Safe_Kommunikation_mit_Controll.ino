@@ -16,7 +16,7 @@ ContinuousStepper<StepperDriver> stepper_right;
 #define HEARTBEAT_TIMEOUT 500  // ms
 
 // ================= STEPPER =================
-const float steps_per_rev = 800.0 * 2;
+const float steps_per_rev = 200.0;
 const float gear_ratio = 39.878;
 const float motor_acc = 10000000.0;
 
