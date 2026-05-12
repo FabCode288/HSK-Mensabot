@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 30                        # Controller update frequency in Hz (how often control loop runs)
+    update_rate: 50                        # Controller update frequency in Hz (how often control loop runs)
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster   # Publishes joint states (required for TF and visualization)
