@@ -61,7 +61,9 @@ ros-jazzy-cv-bridge \
 ros-jazzy-nav2-bringup \
 ros-jazzy-navigation2 \
 ros-jazzy-slam-toolbox \
-ros-jazzy-imu-filter-madgwick
+ros-jazzy-imu-filter-madgwick \
+ros-jazzy-sick-safetyscanners2-interfaces \
+ros-jazzy-sick-safetyscanners-base
 
 echo ">>> 9. Gazebo Sim + ROS Integration"
 sudo apt-get install -y \
