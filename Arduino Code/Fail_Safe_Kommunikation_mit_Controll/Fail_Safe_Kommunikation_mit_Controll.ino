@@ -225,7 +225,7 @@ void loop() {
 
 /*
 ==========================================================
-🧠 WICHTIGE FUNKTIONEN (Kurzüberblick für deine Doku)
+WICHTIGE FUNKTIONEN (Kurzüberblick)
 
 STATE MACHINE:
 - WAITING  → wartet auf "PING"
@@ -250,7 +250,7 @@ SICHERHEIT:
 - kein Deadlock bei Verbindungsverlust
 
 MOTOR:
-- Rampensteuerung
+- Rampensteuerung intern deaktiviert, Rampen über ROS
 - rad/s → Steps/s Umrechnung
 
 ==========================================================
