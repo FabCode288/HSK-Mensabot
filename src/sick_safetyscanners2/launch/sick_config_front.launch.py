@@ -8,6 +8,7 @@ def generate_launch_description():
             executable="sick_safetyscanners2_node",
             name="sick_safetyscanners2_node",
             output="screen",
+            remappings=[('/scan', '/scan_front')],
             emulate_tty=True,
             parameters=[
                 {"frame_id": "scan_front",

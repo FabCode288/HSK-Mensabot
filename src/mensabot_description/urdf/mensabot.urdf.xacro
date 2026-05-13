@@ -472,7 +472,7 @@
   <!--FRONT LASER SCANNER  -->
 
   <joint type="fixed" name="scan_front_joint">
-    <origin xyz="0.4 0.33 0.1" rpy="0 0 0"/>     <!--origin xyz="0.3775 0.314 0.1" rpy="0 0 0"/-->
+    <origin xyz="0.4 0.33 0.1" rpy="0 0 0.7854"/>     <!--origin xyz="0.3775 0.314 0.1" rpy="0 0 0"/-->
     <child link="scan_front_link"/>
     <parent link="center_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -500,7 +500,7 @@
   <!--REAR LASER SCANNER  -->
 
   <joint type="fixed" name="scan_rear_joint">
-    <origin xyz="-0.4 -0.33 0.1" rpy="0 0 ${pi}"/>
+    <origin xyz="-0.4 -0.33 0.1" rpy="0 0 3.927"/>
     <child link="scan_rear_link"/>
     <parent link="center_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
