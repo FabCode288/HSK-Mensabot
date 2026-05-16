@@ -113,19 +113,25 @@ void processLine(String line) {
     }
 
     if (line.startsWith("CMD,")) {
+
       int comma1 = line.indexOf(',');
       int comma2 = line.indexOf(',', comma1 + 1);
 
       if (comma1 < 0 || comma2 < 0) return;
 
-      float v_left = line.substring(comma1 + 1, comma2).toFloat();
-      float v_right = line.substring(comma2 + 1).toFloat();
+      // Integer Werte lesen
+      int v_left_int = line.substring(comma1 + 1, comma2).toInt();
 
-      //Serial.print("Current CMD: ");
-      //Serial.println(v_left);
+      int v_right_int = line.substring(comma2 + 1).toInt();
+
+      // Fixed Point zurück zu Float
+      float v_left = v_left_int / 100.0f;
+
+      float v_right = v_right_int / 100.0f;
 
       target_speed_left = v_left * gear_ratio;
-      target_speed_right = -1* v_right * gear_ratio;
+
+      target_speed_right = -1.0f * v_right * gear_ratio;
     }
 
     return;
