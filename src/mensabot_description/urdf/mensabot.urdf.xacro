@@ -7,7 +7,7 @@
 
   <!-- nur wenn Simulation -->
   <xacro:if value="$(arg use_sim)">
-    <xacro:include filename="$(find mensabot_sim)/urdf/mensabot.gazebo" />
+    <xacro:include filename="$(find mensabot_description)/urdf/mensabot.gazebo" />
   </xacro:if>
   
   <xacro:unless value="$(arg use_sim)">
@@ -15,7 +15,7 @@
     <xacro:mensabot_ros2_control/>
   </xacro:unless>
 
-  <xacro:include filename="$(find mensabot_sim)/urdf/materials.xacro" />
+  <xacro:include filename="$(find mensabot_description)/urdf/materials.xacro" />
 
   <joint name="base_footprint_joint" type="fixed">
     <origin xyz="0 0 -0.11" rpy="0 0 0" />
