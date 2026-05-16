@@ -276,12 +276,15 @@ hardware_interface::return_type MensabotHardware::write(
   // ACTIVE -> CMD
   if (active_) {
 
+    int left_cmd = static_cast<int>(std::round(hw_commands_[0] * 100.0));
+    int right_cmd = static_cast<int>(std::round(hw_commands_[1] * 100.0));
+
     std::stringstream ss;
 
     ss << "CMD,"
-       << hw_commands_[0]
+       << left_cmd
        << ","
-       << hw_commands_[1];
+       << right_cmd;
 
     send_string(ss.str());
   }
