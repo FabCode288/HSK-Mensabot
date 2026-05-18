@@ -1,0 +1,6 @@
+*.swp
+.clang-tidy
+build/*
+installed/*
+vscode/
+.vscode/

@@ -53,8 +53,7 @@ private:
   // ================= SERIAL =================
 
   int serial_fd_;
-
-  std::string port_ = "/dev/ttyACM0";
+  std::string port_ = "/dev/arduino";
 
   void send_string(const std::string & msg);
 
@@ -90,6 +89,9 @@ private:
 
   rclcpp::Time last_msg_time_;
   rclcpp::Time last_send_time_;
+  bool timing_initialized_ = false;
+  double heartbeat_timeout_ = 1.0;
+  double send_period_ = 0.02; // 50  Hz
 
   double heartbeat_timeout_ = 1.0;
 
