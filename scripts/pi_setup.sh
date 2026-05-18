@@ -92,7 +92,17 @@ terminator \
 htop \
 net-tools \
 mesa-utils \
-v4l-utils
+v4l-utils \
+gpiod \
+libgpiod-dev \
+python3-pip
+
+pip3 install gpiod --break-system-packages
+
+sudo groupadd gpio
+sudo usermod -aG gpio $USER
+sudo chgrp gpio /dev/gpiochip4
+sudo chmod 660 /dev/gpiochip4
 
 echo ">>> 14. VS Code installieren (sauber & konfliktfrei)"
 
