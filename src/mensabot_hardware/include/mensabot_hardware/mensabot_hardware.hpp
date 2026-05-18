@@ -9,7 +9,6 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
-#include "hardware_interface/base_interface.hpp"
 
 #include "rclcpp/macros.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -85,17 +84,12 @@ private:
 
   // ================= TIMING =================
 
-  bool timing_initialized_ = false;
-
   rclcpp::Time last_msg_time_;
   rclcpp::Time last_send_time_;
   bool timing_initialized_ = false;
   double heartbeat_timeout_ = 1.0;
   double send_period_ = 0.02; // 50  Hz
 
-  double heartbeat_timeout_ = 1.0;
-
-  double send_period_ = 0.02;
 };
 
 }  // namespace mensabot_hardware

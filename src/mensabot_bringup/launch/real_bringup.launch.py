@@ -171,7 +171,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(safety_control_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)
-    launchDescriptionObject.add_action(imu_device_node)
-    launchDescriptionObject.add_action(imu_filter_node)
+    #launchDescriptionObject.add_action(imu_device_node)
+    #launchDescriptionObject.add_action(imu_filter_node)
 
     return launchDescriptionObject
