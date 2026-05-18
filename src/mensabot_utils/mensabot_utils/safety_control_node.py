@@ -5,9 +5,7 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
-
-from rclpy.action import ActionClient
-from nav2_msgs.action import NavigateToPose
+from std_msgs.msg import Float32
 
 import gpiod
 
@@ -17,8 +15,11 @@ class SafetyControlNode(Node):
     def __init__(self):
         super().__init__('safety_control_node')
 
-        # ================= GPIO =================
+        # ======================================================
+        # GPIO CONFIG
+        # ======================================================
 
+        # GPIO for external ESTOP relay / button
         self.gpio_chip_name = 'gpiochip4'
         self.gpio_line_number = 17
 
@@ -26,28 +27,42 @@ class SafetyControlNode(Node):
 
         self.estop_line = self.chip.get_line(self.gpio_line_number)
 
-        self.estop_line.request(
-            consumer='safety_control_node',
-            type=gpiod.LINE_REQ_DIR_IN
-        )
+        self.estop_line.request(consumer='safety_control_node',type=gpiod.LINE_REQ_DIR_IN)
 
-        # ================= FLAGS =================
+        # ======================================================
+        # PARAMETERS
+        # ======================================================
 
-        self.estop_active = False
+        self.normal_speed_limit = 100.0
+        self.warning_speed_limit = 30.0
+        self.estop_speed_limit = 0.0
 
-        self.connected = False
+        # ======================================================
+        # STATES
+        # ======================================================
 
-        self.nav2_goal_canceled = False
+        self.hardware_connected = False
 
-        # ================= SUBSCRIBER =================
+        self.estop_gpio_active = False
+        self.estop_scanner_active = False
+        self.warning_field_active = False
 
-        self.cmd_vel_sub = self.create_subscription(
-            Twist,
-            '/cmd_vel',
-            self.cmd_vel_callback,
+        self.current_speed_limit = -1.0
+
+        # ======================================================
+        # SUBSCRIBERS
+        # ======================================================
+
+        # Sick field output
+        # TRUE = field active
+        self.sick_field_sub = self.create_subscription(
+            Bool,
+            '/sick_field_output',
+            self.sick_field_callback,
             10
         )
 
+        # Hardware connected
         self.connected_sub = self.create_subscription(
             Bool,
             '/hardware/connected',
@@ -55,29 +70,42 @@ class SafetyControlNode(Node):
             10
         )
 
-        # ================= PUBLISHER =================
-
-        self.cmd_vel_pub = self.create_publisher(
+        # Original cmd_vel
+        self.cmd_vel_sub = self.create_subscription(
             Twist,
-            '/safety/cmd_vel',
+            '/cmd_vel',
+            self.cmd_vel_callback,
             10
         )
 
+        # ======================================================
+        # PUBLISHERS
+        # ======================================================
+
+        # Nav2 velocity smoother speed limit
+        self.speed_limit_pub = self.create_publisher(
+            Float32,
+            '/speed_limit',
+            10
+        )
+
+        # ESTOP output
         self.estop_pub = self.create_publisher(
             Bool,
             '/safety/estop',
             10
         )
 
-        # ================= NAV2 ACTION CLIENT =================
-
-        self.nav_to_pose_client = ActionClient(
-            self,
-            NavigateToPose,
-            '/navigate_to_pose'
+        # Safe cmd_vel
+        self.cmd_vel_pub = self.create_publisher(
+            Twist,
+            '/safety/cmd_vel',
+            10
         )
 
-        # ================= TIMER =================
+        # ======================================================
+        # TIMER
+        # ======================================================
 
         self.timer = self.create_timer(
             0.02,
@@ -87,28 +115,64 @@ class SafetyControlNode(Node):
         self.get_logger().info('Safety Control Node started')
 
     # ==========================================================
+    # SICK FIELD CALLBACK
+    # ==========================================================
+
+    def sick_field_callback(self, msg: Bool):
+
+        field_active = msg.data
+
+        # ------------------------------------------------------
+        # FIELD INTERPRETATION
+        #
+        # Example:
+        # FALSE = normal operation
+        # TRUE  = warning field active
+        #
+        # You can later expand this to multiple fields.
+        # ------------------------------------------------------
+
+        self.warning_field_active = field_active
+
+        if self.warning_field_active:
+            self.get_logger().warn('WARNING FIELD ACTIVE')
+
+    # ==========================================================
+    # HARDWARE CONNECTED CALLBACK
+    # ==========================================================
+
+    def connected_callback(self, msg: Bool):
+
+        self.hardware_connected = msg.data
+
+        if not self.hardware_connected:
+            self.get_logger().error('NO CONNECTION TO MOTOR DRIVER')
+
+    # ==========================================================
     # CMD VEL CALLBACK
     # ==========================================================
 
     def cmd_vel_callback(self, msg: Twist):
 
-        # BLOCK MOTION
-        if self.estop_active or not self.connected:
+        # ------------------------------------------------------
+        # BLOCK MOVEMENT
+        # ------------------------------------------------------
+
+        if self.is_estop_active():
 
             self.publish_zero_twist()
-
             return
 
-        # FORWARD CMD_VEL
+        if not self.hardware_connected:
+
+            self.publish_zero_twist()
+            return
+
+        # ------------------------------------------------------
+        # SAFE FORWARDING
+        # ------------------------------------------------------
+
         self.cmd_vel_pub.publish(msg)
-
-    # ==========================================================
-    # CONNECTED CALLBACK
-    # ==========================================================
-
-    def connected_callback(self, msg: Bool):
-
-        self.connected = msg.data
 
     # ==========================================================
     # TIMER CALLBACK
@@ -116,49 +180,79 @@ class SafetyControlNode(Node):
 
     def timer_callback(self):
 
+        # ======================================================
+        # GPIO ESTOP
+        # ======================================================
+
         gpio_state = self.estop_line.get_value()
 
+        # HIGH = ESTOP ACTIVE
+        self.estop_gpio_active = (gpio_state == 1)
+
+        if self.estop_gpio_active:
+            self.get_logger().error('GPIO ESTOP ACTIVE')
+
         # ======================================================
-        # ESTOP ACTIVE
+        # ESTOP LOGIC
         # ======================================================
 
-        if gpio_state == 1:
+        estop_active = self.is_estop_active()
 
-            self.estop_active = True
+        estop_msg = Bool()
+        estop_msg.data = estop_active
 
-            estop_msg = Bool()
-            estop_msg.data = True
+        self.estop_pub.publish(estop_msg)
 
-            self.estop_pub.publish(estop_msg)
+        # ======================================================
+        # SPEED LIMIT LOGIC
+        # ======================================================
+
+        speed_limit = self.normal_speed_limit
+
+        # ESTOP
+        if estop_active:
+
+            speed_limit = self.estop_speed_limit
 
             self.publish_zero_twist()
 
-            # Cancel Nav2 goal only once
-            if not self.nav2_goal_canceled:
+        # WARNING FIELD
+        elif self.warning_field_active:
 
-                self.cancel_nav2_goal()
+            speed_limit = self.warning_speed_limit
 
-                self.nav2_goal_canceled = True
-
-        # ======================================================
-        # ESTOP RELEASED
-        # ======================================================
-
+        # NORMAL
         else:
 
-            self.estop_active = False
+            speed_limit = self.normal_speed_limit
 
-            estop_msg = Bool()
-            estop_msg.data = False
+        # Publish only on changes
+        if speed_limit != self.current_speed_limit:
 
-            self.estop_pub.publish(estop_msg)
+            self.current_speed_limit = speed_limit
 
-            self.nav2_goal_canceled = False
+            speed_msg = Float32()
+            speed_msg.data = speed_limit
 
-            # Still block if not connected
-            if not self.connected:
+            self.speed_limit_pub.publish(speed_msg)
 
-                self.publish_zero_twist()
+            self.get_logger().info(f'SPEED LIMIT: {speed_limit}%')
+
+    # ==========================================================
+    # ESTOP CHECK
+    # ==========================================================
+
+    def is_estop_active(self):
+
+        # GPIO ESTOP
+        if self.estop_gpio_active:
+            return True
+
+        # Scanner ESTOP
+        if self.estop_scanner_active:
+            return True
+
+        return False
 
     # ==========================================================
     # ZERO TWIST
@@ -177,24 +271,6 @@ class SafetyControlNode(Node):
         zero_msg.angular.z = 0.0
 
         self.cmd_vel_pub.publish(zero_msg)
-
-    # ==========================================================
-    # CANCEL NAV2 GOAL
-    # ==========================================================
-
-    def cancel_nav2_goal(self):
-
-        self.get_logger().warn('ESTOP ACTIVE -> Cancel Nav2 Goal')
-
-        if not self.nav_to_pose_client.wait_for_server(timeout_sec=1.0):
-
-            self.get_logger().warn('NavigateToPose action server not available')
-
-            return
-
-        future = self.nav_to_pose_client._cancel_goal_async(None)
-
-        self.get_logger().warn('Nav2 cancel request sent')
 
     # ==========================================================
     # CLEANUP
@@ -224,7 +300,6 @@ def main(args=None):
         rclpy.spin(node)
 
     except KeyboardInterrupt:
-
         pass
 
     node.destroy_node()
