@@ -11,7 +11,7 @@ class TwistToStamped(Node):
 
         self.sub = self.create_subscription(
             Twist,
-            '/cmd_vel',
+            '/safety/cmd_vel',
             self.cb,
             10
         )

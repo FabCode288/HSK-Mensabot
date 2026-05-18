@@ -10,6 +10,8 @@
 #include "pluginlib/class_list_macros.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+#include "std_msgs/msg/bool.hpp"
+
 namespace mensabot_hardware
 {
 
@@ -25,6 +27,31 @@ hardware_interface::CallbackReturn MensabotHardware::on_init(
   hw_positions_ = {0.0, 0.0};
   hw_velocities_ = {0.0, 0.0};
   hw_commands_ = {0.0, 0.0};
+
+  // ================= ROS Communication NODE =================
+
+  node_ = std::make_shared<rclcpp::Node>("mensabot_hardware_node");
+
+  estop_sub_ =
+    node_->create_subscription<std_msgs::msg::Bool>(
+      "/safety/estop",
+      10,
+      [this](const std_msgs::msg::Bool::SharedPtr msg)
+      {
+        estop_ = msg->data;
+
+        RCLCPP_WARN(
+          rclcpp::get_logger("MensabotHardware"),
+          "ESTOP FLAG RECEIVED: %s",
+          estop_ ? "TRUE" : "FALSE");
+      });
+
+  connected_pub_ =
+    node_->create_publisher<std_msgs::msg::Bool>(
+      "/hardware/connected",
+      10);
+
+  // ================= SERIAL =================
 
   // Serial open NON BLOCKING
   serial_fd_ = open(port_.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -141,6 +168,14 @@ hardware_interface::return_type MensabotHardware::read(
   const rclcpp::Time & time,
   const rclcpp::Duration & period)
 {
+  // ROS CALLBACKS
+  rclcpp::spin_some(node_);
+
+  // Publish connected state
+  std_msgs::msg::Bool connected_msg;
+  connected_msg.data = connected_;
+  connected_pub_->publish(connected_msg);
+
   // Timing initialisieren mit derselben Clock
   if (!timing_initialized_) {
 
@@ -269,7 +304,7 @@ hardware_interface::return_type MensabotHardware::write(
   }
 
   // READY -> ACTIVE
-  if (ready_) {
+  if (ready_ && !active_) {
     active_ = true;
   }
 
@@ -340,18 +375,6 @@ std::string MensabotHardware::read_line()
   }
 
   return "";
-}
-
-// ================= FLAGS =================
-
-void MensabotHardware::set_estop(bool value)
-{
-  estop_ = value;
-}
-
-bool MensabotHardware::is_connected() const
-{
-  return connected_;
 }
 
 }  // namespace mensabot_hardware
