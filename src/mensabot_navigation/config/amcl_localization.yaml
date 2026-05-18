@@ -5,7 +5,7 @@ amcl:
     alpha3: 0.2
     alpha4: 0.2
     alpha5: 0.2
-    base_frame_id: "base_footprint" #changed from base_footprint
+    base_frame_id: "base_link" #changed from base_footprint
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9
     beam_skip_threshold: 0.3
@@ -13,8 +13,8 @@ amcl:
     global_frame_id: "map"
     lambda_short: 0.1
     laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
-    laser_min_range: -1.0
+    laser_max_range: 10.0
+    laser_min_range: 0.0
     laser_model_type: "likelihood_field"
     max_beams: 60
     max_particles: 2000
@@ -38,7 +38,7 @@ amcl:
     z_short: 0.05
     scan_topic: /merged_scan
     map_topic: map
-    set_initial_pose: true
+    set_initial_pose: false
     always_reset_initial_pose: false
     first_map_only: false
     initial_pose:

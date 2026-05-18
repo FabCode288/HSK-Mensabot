@@ -21,11 +21,6 @@ def generate_launch_description():
         description='RViz config file'
     )
 
-    sim_time_arg = DeclareLaunchArgument(
-        'use_sim_time', default_value='True',
-        description='Flag to enable use_sim_time'
-    )
-
     # Path to the Slam Toolbox launch file
     nav2_localization_launch_path = os.path.join(
         get_package_share_directory('nav2_bringup'),
@@ -76,15 +71,11 @@ def generate_launch_description():
         executable='rviz2',
         arguments=['-d', PathJoinSubstitution([pkg_mensabot_navigation, 'rviz', LaunchConfiguration('rviz_config')])],
         condition=IfCondition(LaunchConfiguration('rviz')),
-        parameters=[
-            {'use_sim_time': LaunchConfiguration('use_sim_time')},
-        ]
     )
 
     amcl_localization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(nav2_localization_launch_path),
         launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
                 'params_file': localization_params_path,
                 'map': map_file_path,
         }.items()
@@ -93,7 +84,6 @@ def generate_launch_description():
     slam_toolbox_localization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(slam_toolbox_launch_path),
         launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
                 'slam_params_file': slam_toolbox_params_path,
                 'map': map_file_path,
         }.items()
@@ -102,7 +92,6 @@ def generate_launch_description():
     navigation_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(nav2_navigation_launch_path),
         launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
                 'params_file': navigation_params_path,
         }.items()
     )
@@ -111,7 +100,6 @@ def generate_launch_description():
 
     launchDescriptionObject.add_action(rviz_launch_arg)
     launchDescriptionObject.add_action(rviz_config_arg)
-    launchDescriptionObject.add_action(sim_time_arg)
     launchDescriptionObject.add_action(rviz_node)
     launchDescriptionObject.add_action(amcl_localization_launch)
     #launchDescriptionObject.add_action(slam_toolbox_localization_launch)
