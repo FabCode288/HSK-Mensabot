@@ -22,13 +22,6 @@ class TwistToStamped(Node):
             10
         )
 
-        self.sub_merged_laser_scan = self.create_subscription( #only use is forcing the laser scan merger to start, since it is not used anywhere else
-            LaserScan,
-            '/merged_scan',
-            self.cb_laser_scan,
-            10
-        )
-
         self.get_logger().info("cmd_vel transform node has been started.")
 
     def cb(self, msg):

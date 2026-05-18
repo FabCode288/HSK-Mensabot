@@ -39,12 +39,7 @@ hardware_interface::CallbackReturn MensabotHardware::on_init(
       [this](const std_msgs::msg::Bool::SharedPtr msg)
       {
         estop_ = msg->data;
-
-        RCLCPP_WARN(
-          rclcpp::get_logger("MensabotHardware"),
-          "ESTOP FLAG RECEIVED: %s",
-          estop_ ? "TRUE" : "FALSE");
-      });
+    });
 
   connected_pub_ =
     node_->create_publisher<std_msgs::msg::Bool>(
@@ -191,10 +186,7 @@ hardware_interface::return_type MensabotHardware::read(
 
   if (!line.empty()) {
 
-    RCLCPP_INFO(
-      rclcpp::get_logger("MensabotHardware"),
-      "RX: %s",
-      line.c_str());
+    //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "RX: %s", line.c_str());
 
     // READY
     if (line == "READY") {
@@ -335,10 +327,7 @@ void MensabotHardware::send_string(const std::string & msg)
 
   ::write(serial_fd_, m.c_str(), m.size());
 
-  RCLCPP_INFO(
-    rclcpp::get_logger("MensabotHardware"),
-    "TX: %s",
-    msg.c_str());
+  //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX: %s", msg.c_str());
 }
 
 std::string MensabotHardware::read_line()

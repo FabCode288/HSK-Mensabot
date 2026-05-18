@@ -9,8 +9,6 @@ Inhalt:
 
 KERNEL=="ttyUSB*", KERNELS=="1-2:1.0", SYMLINK+="arduino", MODE:="0666"
 
-Das basiert auf deinem vorherigen udevadm info.
-
 Schritt 3
 
 Regeln neu laden:
@@ -22,8 +20,6 @@ Dann:
 
 Arduino kurz ausstecken
 wieder einstecken
-
-Natürlich. USB-Rituale müssen eingehalten werden, sonst beleidigt sich der Kernel.
 
 Schritt 4
 
