@@ -5,11 +5,7 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
-from std_msgs.msg import Float32
 from nav2_msgs.msg import SpeedLimit
-
-import gpiod
-from gpiod.line import Direction
 
 
 class SafetyControlNode(Node):
@@ -18,36 +14,67 @@ class SafetyControlNode(Node):
         super().__init__('safety_control_node')
 
         # ======================================================
+        # PARAMETERS
+        # ======================================================
+
+        self.declare_parameter(
+            'simulation',
+            False
+        )
+
+        self.simulation_mode = self.get_parameter(
+            'simulation'
+        ).get_parameter_value().bool_value
+
+        # ======================================================
         # GPIO CONFIG
         # ======================================================
 
-        self.gpio_chip_path = "/dev/gpiochip4"
-        self.gpio_line_number = 17
+        self.gpio_available = False
 
-        try:
+        if not self.simulation_mode:
 
-            self.gpio_request = gpiod.request_lines(
-                self.gpio_chip_path,
-                consumer="safety_control_node",
-                config={
-                    self.gpio_line_number: gpiod.LineSettings(
-                        direction=Direction.INPUT
-                    )
-                }
-            )
+            try:
+
+                import gpiod
+                from gpiod.line import Direction
+
+                self.gpiod = gpiod
+                self.Direction = Direction
+
+                self.gpio_chip_path = "/dev/gpiochip4"
+                self.gpio_line_number = 17
+
+                self.gpio_request = self.gpiod.request_lines(
+                    self.gpio_chip_path,
+                    consumer="safety_control_node",
+                    config={
+                        self.gpio_line_number:
+                        self.gpiod.LineSettings(
+                            direction=self.Direction.INPUT
+                        )
+                    }
+                )
+
+                self.gpio_available = True
+
+                self.get_logger().info(
+                    'REAL HARDWARE MODE'
+                )
+
+            except Exception as e:
+
+                self.get_logger().fatal(
+                    f'GPIO INIT FAILED: {e}'
+                )
+
+                raise
+
+        else:
 
             self.get_logger().info(
-                f'GPIO initialized: {self.gpio_chip_path} '
-                f'Line {self.gpio_line_number}'
+                'SIMULATION MODE'
             )
-
-        except Exception as e:
-
-            self.get_logger().fatal(
-                f'GPIO INIT FAILED: {e}'
-            )
-
-            raise
 
         # ======================================================
         # PARAMETERS
@@ -69,10 +96,8 @@ class SafetyControlNode(Node):
 
         self.current_speed_limit = -1.0
 
-        # Debug state tracking
-        self.last_gpio_estop_state = False
-        self.last_warning_state = False
         self.last_connection_state = False
+        self.last_safety_state = "INIT"
 
         # ======================================================
         # SUBSCRIBERS
@@ -130,14 +155,10 @@ class SafetyControlNode(Node):
             self.timer_callback
         )
 
-        # Publish initial state
-        self.publish_speed_limit(
-            self.normal_speed_limit
-        )
+        # Initial state
+        self.publish_speed_limit(self.normal_speed_limit)
 
-        self.get_logger().info(
-            'Safety Control Node started'
-        )
+        self.get_logger().info('Safety Control Node started')
 
     # ==========================================================
     # SICK FIELD CALLBACK
@@ -147,25 +168,6 @@ class SafetyControlNode(Node):
 
         self.warning_field_active = msg.data
 
-        # Debug only on state change
-        if self.warning_field_active != self.last_warning_state:
-
-            if self.warning_field_active:
-
-                self.get_logger().warn(
-                    'WARNING FIELD ACTIVE'
-                )
-
-            else:
-
-                self.get_logger().info(
-                    'WARNING FIELD CLEARED'
-                )
-
-            self.last_warning_state = (
-                self.warning_field_active
-            )
-
     # ==========================================================
     # HARDWARE CONNECTED CALLBACK
     # ==========================================================
@@ -174,7 +176,6 @@ class SafetyControlNode(Node):
 
         self.hardware_connected = msg.data
 
-        # Debug only on state change
         if self.hardware_connected != self.last_connection_state:
 
             if self.hardware_connected:
@@ -199,10 +200,6 @@ class SafetyControlNode(Node):
 
     def cmd_vel_callback(self, msg: Twist):
 
-        # ------------------------------------------------------
-        # BLOCK MOVEMENT
-        # ------------------------------------------------------
-
         if self.is_estop_active():
 
             self.publish_zero_twist()
@@ -212,10 +209,6 @@ class SafetyControlNode(Node):
 
             self.publish_zero_twist()
             return
-
-        # ------------------------------------------------------
-        # SAFE FORWARDING
-        # ------------------------------------------------------
 
         self.cmd_vel_pub.publish(msg)
 
@@ -229,38 +222,30 @@ class SafetyControlNode(Node):
         # GPIO ESTOP
         # ======================================================
 
-        try:
+        if not self.simulation_mode:
 
-            gpio_state = self.gpio_request.get_value(
-                self.gpio_line_number
-            )
+            try:
 
-            self.estop_gpio_active = bool(gpio_state)
+                gpio_state = self.gpio_request.get_value(
+                    self.gpio_line_number
+                )
 
-        except Exception as e:
+                self.estop_gpio_active = bool(
+                    gpio_state
+                )
 
-            self.get_logger().error(f'GPIO READ ERROR: {e}')
-
-            self.estop_gpio_active = True
-
-        # Debug only on state change
-        if self.estop_gpio_active != self.last_gpio_estop_state:
-
-            if self.estop_gpio_active:
+            except Exception as e:
 
                 self.get_logger().error(
-                    'GPIO ESTOP ACTIVE'
+                    f'GPIO READ ERROR: {e}'
                 )
 
-            else:
+                self.estop_gpio_active = True
 
-                self.get_logger().info(
-                    'GPIO ESTOP RELEASED'
-                )
+        else:
 
-            self.last_gpio_estop_state = (
-                self.estop_gpio_active
-            )
+            # No GPIO in simulation
+            self.estop_gpio_active = False
 
         # ======================================================
         # ESTOP LOGIC
@@ -296,6 +281,46 @@ class SafetyControlNode(Node):
 
             speed_limit = self.normal_speed_limit
 
+        # ======================================================
+        # SAFETY STATE LOGGING
+        # ======================================================
+
+        current_state = "NORMAL"
+
+        if estop_active:
+
+            current_state = "ESTOP"
+
+        elif self.warning_field_active:
+
+            current_state = "WARNING"
+
+        # Log only on state change
+        if current_state != self.last_safety_state:
+
+            if current_state == "ESTOP":
+
+                self.get_logger().error(
+                    f'ESTOP ACTIVE -> '
+                    f'Speed Limit {speed_limit}%'
+                )
+
+            elif current_state == "WARNING":
+
+                self.get_logger().warn(
+                    f'WARNING FIELD ACTIVE -> '
+                    f'Speed Limit {speed_limit}%'
+                )
+
+            elif current_state == "NORMAL":
+
+                self.get_logger().info(
+                    'NORMAL OPERATION -> '
+                    'Speed Limit 100%'
+                )
+
+            self.last_safety_state = current_state
+
         # Publish only on changes
         if speed_limit != self.current_speed_limit:
 
@@ -317,8 +342,6 @@ class SafetyControlNode(Node):
         speed_msg.percentage = True
 
         self.speed_limit_pub.publish(speed_msg)
-
-        #self.get_logger().info(f'SPEED LIMIT: {value}%')
 
     # ==========================================================
     # ESTOP CHECK
@@ -360,7 +383,9 @@ class SafetyControlNode(Node):
 
         try:
 
-            self.gpio_request.release()
+            if self.gpio_available:
+
+                self.gpio_request.release()
 
         except Exception:
             pass

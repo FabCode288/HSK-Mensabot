@@ -99,6 +99,7 @@ def generate_launch_description():
         package='mensabot_utils',
         executable='safety_control_node',
         name='safety_control_node',
+        parameters=[{'simulation': False}],
         output='screen'
     )
 

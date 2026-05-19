@@ -153,6 +153,21 @@ def generate_launch_description():
         output='screen'
     )
 
+    safety_control_node = Node(
+        package='mensabot_utils',
+        executable='safety_control_node',
+        name='safety_control_node',
+        parameters=[{'simulation': True}],
+        output='screen'
+    )
+
+    simulation_publisher_node = Node(
+        package='mensabot_utils',
+        executable='simulation_publisher_node',
+        name='simulation_publisher_node',
+        output='screen'
+    )
+
     laser_scan_merger_node = ComposableNodeContainer(
         package="rclcpp_components",
         executable="component_container",
@@ -188,6 +203,8 @@ def generate_launch_description():
     launchDescriptionObject.add_action(diff_drive_controller_node)
     launchDescriptionObject.add_action(ekf_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
+    launchDescriptionObject.add_action(safety_control_node)
+    launchDescriptionObject.add_action(simulation_publisher_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)
 
     return launchDescriptionObject
