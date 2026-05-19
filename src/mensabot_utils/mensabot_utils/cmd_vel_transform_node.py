@@ -11,7 +11,7 @@ class TwistToStamped(Node):
 
         self.sub = self.create_subscription(
             Twist,
-            '/cmd_vel',
+            '/safety/cmd_vel',
             self.cb,
             10
         )
@@ -19,13 +19,6 @@ class TwistToStamped(Node):
         self.pub = self.create_publisher(
             TwistStamped,
             '/mensabot_base_controller/cmd_vel',
-            10
-        )
-
-        self.sub_merged_laser_scan = self.create_subscription( #only use is forcing the laser scan merger to start, since it is not used anywhere else
-            LaserScan,
-            '/merged_scan',
-            self.cb_laser_scan,
             10
         )
 

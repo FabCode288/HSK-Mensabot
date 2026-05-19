@@ -95,6 +95,13 @@ def generate_launch_description():
         output='screen'
     )
 
+    safety_control_node = Node(
+        package='mensabot_utils',
+        executable='safety_control_node',
+        name='safety_control_node',
+        output='screen'
+    )
+
     laser_scan_merger_node = ComposableNodeContainer(
         package="rclcpp_components",
         executable="component_container",
@@ -139,7 +146,7 @@ def generate_launch_description():
             target_action=controller_manager_node,
             on_start=[
                 TimerAction(
-                    period=3.0,
+                    period=0.5,
                     actions=[joint_state_broadcaster_node]
                 )
             ]
@@ -161,6 +168,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(delayed_joint_state_broadcaster)
     launchDescriptionObject.add_action(delayed_diff_drive_controller)
     launchDescriptionObject.add_action(ekf_node)
+    launchDescriptionObject.add_action(safety_control_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)
     launchDescriptionObject.add_action(imu_device_node)
