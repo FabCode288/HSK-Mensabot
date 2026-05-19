@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'cmd_vel_transform = mensabot_utils.cmd_vel_transform_node:main',
+            'safety_control_node = mensabot_utils.safety_control_node:main',
         ],
     },
 )
