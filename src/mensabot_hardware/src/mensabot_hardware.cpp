@@ -348,7 +348,7 @@ void MensabotHardware::send_string(const std::string & msg)
 
   ::write(serial_fd_, m.c_str(), m.size());
 
-  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX: %s", msg.c_str());
+  //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX: %s", msg.c_str());
 }
 
 std::string MensabotHardware::read_line()

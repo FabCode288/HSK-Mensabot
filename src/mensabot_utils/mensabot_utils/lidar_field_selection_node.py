@@ -51,22 +51,40 @@ class LidarFieldSelector(Node):
 
         self.gpio_available = False
 
+        self.gpio_requests = {}
+
         # Import GPIO ONLY on Raspberry Pi / real robot
         if not self.simulation:
 
             try:
-                import RPi.GPIO as GPIO
 
-                self.GPIO = GPIO
+                import gpiod
+                from gpiod.line import Direction
 
-                self.GPIO.setmode(GPIO.BCM)
+                self.gpiod = gpiod
+                self.Direction = Direction
+
+                self.gpio_chip_path = "/dev/gpiochip4"
 
                 for pin in self.gpio_pins:
 
-                    self.GPIO.setup(
+                    gpio_request = self.gpiod.request_lines(
+                        self.gpio_chip_path,
+                        consumer="lidar_field_selector",
+                        config={
+                            pin:
+                            self.gpiod.LineSettings(
+                                direction=self.Direction.OUTPUT
+                            )
+                        }
+                    )
+
+                    self.gpio_requests[pin] = gpio_request
+
+                    # Initialize LOW
+                    gpio_request.set_value(
                         pin,
-                        self.GPIO.OUT,
-                        initial=self.GPIO.LOW
+                        0
                     )
 
                 self.gpio_available = True
@@ -224,7 +242,7 @@ class LidarFieldSelector(Node):
 
         for i, pin in enumerate(self.gpio_pins):
 
-            self.GPIO.output(
+            self.gpio_requests[pin].set_value(
                 pin,
                 bit_pattern[i]
             )
@@ -305,9 +323,13 @@ class LidarFieldSelector(Node):
         if self.gpio_available:
 
             for pin in self.gpio_pins:
-                self.GPIO.output(pin, self.GPIO.LOW)
 
-            self.GPIO.cleanup()
+                self.gpio_requests[pin].set_value(
+                    pin,
+                    0
+                )
+
+                self.gpio_requests[pin].release()
 
         super().destroy_node()
 
