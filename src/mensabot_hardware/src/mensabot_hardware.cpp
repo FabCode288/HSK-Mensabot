@@ -191,14 +191,17 @@ hardware_interface::return_type MensabotHardware::read(
     // READY
     if (line == "READY") {
 
-      connected_ = true;
-      ready_ = true;
-
       last_msg_time_ = time;
 
-      RCLCPP_INFO(
-        rclcpp::get_logger("MensabotHardware"),
-        "STATE -> READY");
+      if (!connected_) {
+
+        RCLCPP_INFO(
+          rclcpp::get_logger("MensabotHardware"),
+          "STATE -> READY");
+      }
+
+      connected_ = true;
+      ready_ = true;
     }
 
     // HEARTBEAT
@@ -306,7 +309,7 @@ hardware_interface::return_type MensabotHardware::write(
     int left_cmd = static_cast<int>(std::round(hw_commands_[0] * 100.0));
     int right_cmd = static_cast<int>(std::round(hw_commands_[1] * 100.0));
 
-        // ================= BUILD PAYLOAD =================
+    // ================= BUILD PAYLOAD =================
 
     std::stringstream ss;
 
