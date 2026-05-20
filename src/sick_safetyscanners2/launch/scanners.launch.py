@@ -8,6 +8,8 @@ from launch_ros.descriptions import ComposableNode
 from launch.event_handlers import OnProcessStart, OnProcessExit
 from ament_index_python.packages import get_package_share_directory, get_package_share_path
 
+#https://github.com/SICKAG/sick_safetyscanners2
+
 def generate_launch_description():
 
     scanner_front_node=Node(
