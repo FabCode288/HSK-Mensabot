@@ -85,19 +85,47 @@ void processLine(String line) {
     }
 
     if (line.startsWith("CMD,")) {
+
       int comma1 = line.indexOf(',');
       int comma2 = line.indexOf(',', comma1 + 1);
+      int comma3 = line.indexOf(',', comma2 + 1);
 
-      if (comma1 < 0 || comma2 < 0) return;
+      // Prüfen ob alle Kommas existieren
+      if (comma1 < 0 || comma2 < 0 || comma3 < 0) {
+          return;
+      }
 
-      float v_left = line.substring(comma1 + 1, comma2).toFloat();
-      float v_right = line.substring(comma2 + 1).toFloat();
+      // DATEN EXTRAHIEREN
+
+      int v_left_int = line.substring(comma1 + 1, comma2).toInt();
+      int v_right_int = line.substring(comma2 + 1, comma3).toInt();
+      int received_checksum = line.substring(comma3 + 1).toInt();
+
+      // XOR CHECKSUM BERECHNEN
+
+      String payload = line.substring(0, comma3);
+
+      uint8_t calculated_checksum = 0;
+
+      for (size_t i = 0; i < payload.length(); i++) {
+          calculated_checksum ^= (uint8_t)payload[i];
+      }
+
+      // CHECKSUM VERGLEICH
+
+      if (calculated_checksum != received_checksum) {
+          return;
+      }
+
+      // FIXED POINT -> FLOAT
+
+      float v_left = v_left_int / 100.0f;
+      float v_right = v_right_int / 100.0f;
+
+      // MOTOR COMMANDS
 
       target_speed_left = v_left * gear_ratio;
-      target_speed_right = -1* v_right * gear_ratio;
-
-      state = ACTIVE;
-      return;
+      target_speed_right = -1.0f * v_right * gear_ratio;
     }
 
     return;
@@ -116,21 +144,43 @@ void processLine(String line) {
 
       int comma1 = line.indexOf(',');
       int comma2 = line.indexOf(',', comma1 + 1);
+      int comma3 = line.indexOf(',', comma2 + 1);
 
-      if (comma1 < 0 || comma2 < 0) return;
+      // Prüfen ob alle Kommas existieren
+      if (comma1 < 0 || comma2 < 0 || comma3 < 0) {
+          return;
+      }
 
-      // Integer Werte lesen
+      // DATEN EXTRAHIEREN
+
       int v_left_int = line.substring(comma1 + 1, comma2).toInt();
+      int v_right_int = line.substring(comma2 + 1, comma3).toInt();
+      int received_checksum = line.substring(comma3 + 1).toInt();
 
-      int v_right_int = line.substring(comma2 + 1).toInt();
+      // XOR CHECKSUM BERECHNEN
 
-      // Fixed Point zurück zu Float
+      String payload = line.substring(0, comma3);
+
+      uint8_t calculated_checksum = 0;
+
+      for (size_t i = 0; i < payload.length(); i++) {
+          calculated_checksum ^= (uint8_t)payload[i];
+      }
+
+      // CHECKSUM VERGLEICH
+
+      if (calculated_checksum != received_checksum) {
+          return;
+      }
+
+      // FIXED POINT -> FLOAT
+
       float v_left = v_left_int / 100.0f;
-
       float v_right = v_right_int / 100.0f;
 
-      target_speed_left = v_left * gear_ratio;
+      // MOTOR COMMANDS
 
+      target_speed_left = v_left * gear_ratio;
       target_speed_right = -1.0f * v_right * gear_ratio;
     }
 
