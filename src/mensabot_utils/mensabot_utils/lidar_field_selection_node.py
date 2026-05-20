@@ -59,10 +59,11 @@ class LidarFieldSelector(Node):
             try:
 
                 import gpiod
-                from gpiod.line import Direction
+                from gpiod.line import Direction, Value
 
                 self.gpiod = gpiod
                 self.Direction = Direction
+                self.Value = Value
 
                 self.gpio_chip_path = "/dev/gpiochip4"
 
@@ -84,7 +85,7 @@ class LidarFieldSelector(Node):
                     # Initialize LOW
                     gpio_request.set_value(
                         pin,
-                        0
+                        self.Value.INACTIVE
                     )
 
                 self.gpio_available = True
@@ -242,9 +243,15 @@ class LidarFieldSelector(Node):
 
         for i, pin in enumerate(self.gpio_pins):
 
+            value = (
+                self.Value.ACTIVE
+                if bit_pattern[i]
+                else self.Value.INACTIVE
+            )
+
             self.gpio_requests[pin].set_value(
                 pin,
-                bit_pattern[i]
+                value
             )
 
     # ============================================================
@@ -326,7 +333,7 @@ class LidarFieldSelector(Node):
 
                 self.gpio_requests[pin].set_value(
                     pin,
-                    0
+                    self.Value.INACTIVE
                 )
 
                 self.gpio_requests[pin].release()
