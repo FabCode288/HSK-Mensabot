@@ -5,6 +5,8 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
+from std_msgs.msg import String
+
 from nav2_msgs.msg import SpeedLimit
 
 
@@ -90,9 +92,17 @@ class SafetyControlNode(Node):
 
         self.hardware_connected = False
 
+        # GPIO ESTOP
         self.estop_gpio_active = False
-        self.estop_scanner_active = False
-        self.warning_field_active = False
+
+        # Safety scanner state
+        #
+        # Possible states:
+        # NORMAL
+        # WARNING
+        # PROTECTIVE_STOP
+        #
+        self.safety_state = "NORMAL"
 
         self.current_speed_limit = -1.0
 
@@ -103,10 +113,21 @@ class SafetyControlNode(Node):
         # SUBSCRIBERS
         # ======================================================
 
-        self.sick_field_sub = self.create_subscription(
-            Bool,
-            '/sick_field_output',
-            self.sick_field_callback,
+        # ------------------------------------------------------
+        # Safety scanner field state
+        #
+        # Expected values:
+        #
+        # NORMAL
+        # WARNING
+        # PROTECTIVE_STOP
+        #
+        # ------------------------------------------------------
+
+        self.safety_field_sub = self.create_subscription(
+            String,
+            '/safety_field_state',
+            self.safety_field_callback,
             10
         )
 
@@ -155,18 +176,41 @@ class SafetyControlNode(Node):
             self.timer_callback
         )
 
-        # Initial state
-        self.publish_speed_limit(self.normal_speed_limit)
+        # ======================================================
+        # INITIAL STATE
+        # ======================================================
 
-        self.get_logger().info('Safety Control Node started')
+        self.publish_speed_limit(
+            self.normal_speed_limit
+        )
+
+        self.get_logger().info(
+            'Safety Control Node started'
+        )
 
     # ==========================================================
-    # SICK FIELD CALLBACK
+    # SAFETY FIELD CALLBACK
     # ==========================================================
 
-    def sick_field_callback(self, msg: Bool):
+    def safety_field_callback(self, msg: String):
 
-        self.warning_field_active = msg.data
+        state = msg.data.strip().upper()
+
+        valid_states = [
+            "NORMAL",
+            "WARNING",
+            "PROTECTIVE_STOP"
+        ]
+
+        if state not in valid_states:
+
+            self.get_logger().warn(
+                f'Invalid safety state received: {state}'
+            )
+
+            return
+
+        self.safety_state = state
 
     # ==========================================================
     # HARDWARE CONNECTED CALLBACK
@@ -200,15 +244,27 @@ class SafetyControlNode(Node):
 
     def cmd_vel_callback(self, msg: Twist):
 
+        # ------------------------------------------------------
+        # BLOCK MOVEMENT ON ESTOP
+        # ------------------------------------------------------
+
         if self.is_estop_active():
 
             self.publish_zero_twist()
             return
 
+        # ------------------------------------------------------
+        # BLOCK MOVEMENT ON LOST HARDWARE
+        # ------------------------------------------------------
+
         if not self.hardware_connected:
 
             self.publish_zero_twist()
             return
+
+        # ------------------------------------------------------
+        # SAFE FORWARDING
+        # ------------------------------------------------------
 
         self.cmd_vel_pub.publish(msg)
 
@@ -240,6 +296,7 @@ class SafetyControlNode(Node):
                     f'GPIO READ ERROR: {e}'
                 )
 
+                # Fail-safe behavior
                 self.estop_gpio_active = True
 
         else:
@@ -264,19 +321,28 @@ class SafetyControlNode(Node):
 
         speed_limit = self.normal_speed_limit
 
+        # ------------------------------------------------------
         # ESTOP
+        # ------------------------------------------------------
+
         if estop_active:
 
             speed_limit = self.estop_speed_limit
 
             self.publish_zero_twist()
 
+        # ------------------------------------------------------
         # WARNING FIELD
-        elif self.warning_field_active:
+        # ------------------------------------------------------
+
+        elif self.safety_state == "WARNING":
 
             speed_limit = self.warning_speed_limit
 
+        # ------------------------------------------------------
         # NORMAL
+        # ------------------------------------------------------
+
         else:
 
             speed_limit = self.normal_speed_limit
@@ -291,7 +357,7 @@ class SafetyControlNode(Node):
 
             current_state = "ESTOP"
 
-        elif self.warning_field_active:
+        elif self.safety_state == "WARNING":
 
             current_state = "WARNING"
 
@@ -301,7 +367,7 @@ class SafetyControlNode(Node):
             if current_state == "ESTOP":
 
                 self.get_logger().error(
-                    f'ESTOP ACTIVE -> '
+                    f'PROTECTIVE STOP ACTIVE -> '
                     f'Speed Limit {speed_limit}%'
                 )
 
@@ -321,7 +387,10 @@ class SafetyControlNode(Node):
 
             self.last_safety_state = current_state
 
-        # Publish only on changes
+        # ======================================================
+        # PUBLISH SPEED LIMIT
+        # ======================================================
+
         if speed_limit != self.current_speed_limit:
 
             self.publish_speed_limit(
@@ -349,10 +418,12 @@ class SafetyControlNode(Node):
 
     def is_estop_active(self):
 
+        # External ESTOP relay/button
         if self.estop_gpio_active:
             return True
 
-        if self.estop_scanner_active:
+        # Scanner protective field
+        if self.safety_state == "PROTECTIVE_STOP":
             return True
 
         return False
@@ -373,7 +444,9 @@ class SafetyControlNode(Node):
         zero_msg.angular.y = 0.0
         zero_msg.angular.z = 0.0
 
-        self.cmd_vel_pub.publish(zero_msg)
+        self.cmd_vel_pub.publish(
+            zero_msg
+        )
 
     # ==========================================================
     # CLEANUP
