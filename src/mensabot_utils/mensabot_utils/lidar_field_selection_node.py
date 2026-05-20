@@ -47,8 +47,7 @@ class LidarFieldSelector(Node):
         # ============================================================
 
         # 4 Bit output lines
-        self.gpio_pins = [17, 27, 22, 23]
-
+        self.gpio_pins = [27, 22, 23, 24]
         self.gpio_available = False
 
         self.gpio_requests = {}
