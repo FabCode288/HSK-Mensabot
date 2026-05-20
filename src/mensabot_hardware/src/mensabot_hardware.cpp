@@ -306,14 +306,35 @@ hardware_interface::return_type MensabotHardware::write(
     int left_cmd = static_cast<int>(std::round(hw_commands_[0] * 100.0));
     int right_cmd = static_cast<int>(std::round(hw_commands_[1] * 100.0));
 
+        // ================= BUILD PAYLOAD =================
+
     std::stringstream ss;
 
     ss << "CMD,"
-       << left_cmd
-       << ","
-       << right_cmd;
+      << left_cmd
+      << ","
+      << right_cmd;
 
-    send_string(ss.str());
+    std::string payload = ss.str();
+
+    // ================= XOR CHECKSUM =================
+
+    uint8_t checksum = 0;
+
+    for (char c : payload) {
+
+        checksum ^= static_cast<uint8_t>(c);
+    }
+
+    // ================= FINAL MESSAGE =================
+
+    std::stringstream final_msg;
+
+    final_msg << payload
+              << ","
+              << static_cast<int>(checksum);
+
+    send_string(final_msg.str());
   }
 
   return hardware_interface::return_type::OK;
@@ -327,7 +348,7 @@ void MensabotHardware::send_string(const std::string & msg)
 
   ::write(serial_fd_, m.c_str(), m.size());
 
-  //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX: %s", msg.c_str());
+  RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX: %s", msg.c_str());
 }
 
 std::string MensabotHardware::read_line()
