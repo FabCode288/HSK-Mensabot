@@ -273,12 +273,16 @@ hardware_interface::return_type MensabotHardware::write(
 
     send_string("ESTOP");
 
+    // Nur einmal loggen solange ESTOP aktiv bleibt
+    if (!estop_sent_) {
+
+      RCLCPP_WARN(
+        rclcpp::get_logger("MensabotHardware"),
+        "ESTOP ACTIVE");
+    }
+
     estop_sent_ = true;
     active_ = false;
-
-    RCLCPP_WARN(
-      rclcpp::get_logger("MensabotHardware"),
-      "ESTOP ACTIVE");
 
     return hardware_interface::return_type::OK;
   }
