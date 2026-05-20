@@ -161,6 +161,14 @@ def generate_launch_description():
         )
     )
 
+    lidar_field_selection_node = Node(
+        package='mensabot_utils',
+        executable='lidar_field_selection_node',
+        name='lidar_field_selection_node',
+        parameters=[{'simulation': False}],
+        output='screen'
+    )
+
     launchDescriptionObject = LaunchDescription()
 
     launchDescriptionObject.add_action(model_arg)
@@ -174,5 +182,6 @@ def generate_launch_description():
     launchDescriptionObject.add_action(laser_scan_merger_node)
     launchDescriptionObject.add_action(imu_device_node)
     launchDescriptionObject.add_action(imu_filter_node)
+    launchDescriptionObject.add_action(lidar_field_selection_node)
 
     return launchDescriptionObject
