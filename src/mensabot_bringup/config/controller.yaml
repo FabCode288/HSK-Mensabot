@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 50                        # Controller update frequency in Hz (how often control loop runs)
+    update_rate: 30                        # Controller update frequency in Hz (how often control loop runs)
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster   # Publishes joint states (required for TF and visualization)
@@ -14,7 +14,7 @@ mensabot_base_controller:
     command_interfaces:
       - velocity                    # Controller receives velocity commands (cmd_vel)
 
-    publish_rate: 50.0              # Frequency (Hz) at which odometry and controller state are published
+    publish_rate: 30.0              # Frequency (Hz) at which odometry and controller state are published
 
     left_wheel_names: ["left_wheel_joint"]     # Name of the left wheel joint in URDF
     right_wheel_names: ["right_wheel_joint"]   # Name of the right wheel joint in URDF
