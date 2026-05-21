@@ -4,19 +4,19 @@
   gz_type_name: "gz.msgs.Clock"
   direction: "GZ_TO_ROS"
 
-- ros_topic_name: "scan_front"
+- ros_topic_name: "/lidars/front/scan"
   gz_topic_name: "scan_front"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: "GZ_TO_ROS"
 
-- ros_topic_name: "scan_rear"
+- ros_topic_name: "/lidars/rear/scan"
   gz_topic_name: "scan_rear"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: "GZ_TO_ROS"
 
-- ros_topic_name: "scan/points"
+- ros_topic_name: "/lidars/scan/points"
   gz_topic_name: "scan/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
