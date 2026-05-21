@@ -85,6 +85,7 @@ void processLine(String line) {
     }
 
     if (line.startsWith("CMD,")) {
+      state = ACTIVE;
 
       int comma1 = line.indexOf(',');
       int comma2 = line.indexOf(',', comma1 + 1);
@@ -114,7 +115,8 @@ void processLine(String line) {
       // CHECKSUM VERGLEICH
 
       if (calculated_checksum != received_checksum) {
-          return;
+        Serial.println("Checksum wrong!");
+        return;
       }
 
       // FIXED POINT -> FLOAT
@@ -170,7 +172,8 @@ void processLine(String line) {
       // CHECKSUM VERGLEICH
 
       if (calculated_checksum != received_checksum) {
-          return;
+        Serial.println("Checksum wrong!");
+        return;
       }
 
       // FIXED POINT -> FLOAT
