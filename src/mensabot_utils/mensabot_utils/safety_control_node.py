@@ -5,9 +5,11 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
-from std_msgs.msg import String
 
 from nav2_msgs.msg import SpeedLimit
+
+# SICK Safety Scanner Message
+from sick_safetyscanners2_interfaces.msg import OutputPaths
 
 
 class SafetyControlNode(Node):
@@ -95,9 +97,7 @@ class SafetyControlNode(Node):
         # GPIO ESTOP
         self.estop_gpio_active = False
 
-        # Safety scanner state
-        #
-        # Possible states:
+        # Global scanner state:
         # NORMAL
         # WARNING
         # PROTECTIVE_STOP
@@ -114,20 +114,34 @@ class SafetyControlNode(Node):
         # ======================================================
 
         # ------------------------------------------------------
-        # Safety scanner field state
+        # SICK SAFETY SCANNER OUTPUTS
         #
-        # Expected values:
+        # status[0] -> Protective Stop
+        # status[1] -> Warning Field
         #
-        # NORMAL
-        # WARNING
-        # PROTECTIVE_STOP
+        # If ANY lidar reports:
+        #
+        # Protective Stop:
+        #     -> GLOBAL ESTOP
+        #
+        # Warning Field:
+        #     -> GLOBAL WARNING
+        #
+        # Protective Stop always has higher priority.
         #
         # ------------------------------------------------------
 
-        self.safety_field_sub = self.create_subscription(
-            String,
-            '/safety_field_state',
-            self.safety_field_callback,
+        self.front_scanner_sub = self.create_subscription(
+            OutputPaths,
+            '/lidars/front/output_paths',
+            self.front_scanner_callback,
+            10
+        )
+
+        self.rear_scanner_sub = self.create_subscription(
+            OutputPaths,
+            '/lidars/rear/output_paths',
+            self.rear_scanner_callback,
             10
         )
 
@@ -168,6 +182,16 @@ class SafetyControlNode(Node):
         )
 
         # ======================================================
+        # SCANNER STATES
+        # ======================================================
+
+        self.front_protective_stop = False
+        self.front_warning = False
+
+        self.rear_protective_stop = False
+        self.rear_warning = False
+
+        # ======================================================
         # TIMER
         # ======================================================
 
@@ -189,28 +213,75 @@ class SafetyControlNode(Node):
         )
 
     # ==========================================================
-    # SAFETY FIELD CALLBACK
+    # FRONT SCANNER CALLBACK
     # ==========================================================
 
-    def safety_field_callback(self, msg: String):
+    def front_scanner_callback(self, msg: OutputPaths):
 
-        state = msg.data.strip().upper()
+        self.front_protective_stop = False
+        self.front_warning = False
 
-        valid_states = [
-            "NORMAL",
-            "WARNING",
-            "PROTECTIVE_STOP"
-        ]
+        # status[0] = protective stop
+        if len(msg.status) > 0:
 
-        if state not in valid_states:
+            self.front_protective_stop = not msg.status[0]
 
-            self.get_logger().warn(
-                f'Invalid safety state received: {state}'
-            )
+        # status[1] = warning field
+        if len(msg.status) > 1:
 
-            return
+            self.front_warning = not msg.status[1]
 
-        self.safety_state = state
+        self.update_safety_state()
+
+    # ==========================================================
+    # REAR SCANNER CALLBACK
+    # ==========================================================
+
+    def rear_scanner_callback(self, msg: OutputPaths):
+
+        self.rear_protective_stop = False
+        self.rear_warning = False
+
+        # status[0] = protective stop
+        if len(msg.status) > 0:
+
+            self.rear_protective_stop = not msg.status[0]
+
+        # status[1] = warning field
+        if len(msg.status) > 1:
+
+            self.rear_warning = not msg.status[1]
+
+        self.update_safety_state()
+
+    # ==========================================================
+    # UPDATE GLOBAL SAFETY STATE
+    # ==========================================================
+
+    def update_safety_state(self):
+
+        protective_stop_active = (
+            self.front_protective_stop or
+            self.rear_protective_stop
+        )
+
+        warning_active = (
+            self.front_warning or
+            self.rear_warning
+        )
+
+        # Protective stop has highest priority
+        if protective_stop_active:
+
+            self.safety_state = "PROTECTIVE_STOP"
+
+        elif warning_active:
+
+            self.safety_state = "WARNING"
+
+        else:
+
+            self.safety_state = "NORMAL"
 
     # ==========================================================
     # HARDWARE CONNECTED CALLBACK
@@ -244,28 +315,19 @@ class SafetyControlNode(Node):
 
     def cmd_vel_callback(self, msg: Twist):
 
-        # ------------------------------------------------------
         # BLOCK MOVEMENT ON ESTOP
-        # ------------------------------------------------------
-
         if self.is_estop_active():
 
             self.publish_zero_twist()
             return
 
-        # ------------------------------------------------------
         # BLOCK MOVEMENT ON LOST HARDWARE
-        # ------------------------------------------------------
-
         if not self.hardware_connected:
 
             self.publish_zero_twist()
             return
 
-        # ------------------------------------------------------
         # SAFE FORWARDING
-        # ------------------------------------------------------
-
         self.cmd_vel_pub.publish(msg)
 
     # ==========================================================
@@ -321,28 +383,19 @@ class SafetyControlNode(Node):
 
         speed_limit = self.normal_speed_limit
 
-        # ------------------------------------------------------
-        # ESTOP
-        # ------------------------------------------------------
-
+        # PROTECTIVE STOP
         if estop_active:
 
             speed_limit = self.estop_speed_limit
 
             self.publish_zero_twist()
 
-        # ------------------------------------------------------
         # WARNING FIELD
-        # ------------------------------------------------------
-
         elif self.safety_state == "WARNING":
 
             speed_limit = self.warning_speed_limit
 
-        # ------------------------------------------------------
         # NORMAL
-        # ------------------------------------------------------
-
         else:
 
             speed_limit = self.normal_speed_limit
@@ -351,20 +404,16 @@ class SafetyControlNode(Node):
         # SAFETY STATE LOGGING
         # ======================================================
 
-        current_state = "NORMAL"
+        current_state = self.safety_state
 
-        if estop_active:
+        if self.estop_gpio_active:
 
-            current_state = "ESTOP"
-
-        elif self.safety_state == "WARNING":
-
-            current_state = "WARNING"
+            current_state = "GPIO_ESTOP"
 
         # Log only on state change
         if current_state != self.last_safety_state:
 
-            if current_state == "ESTOP":
+            if current_state == "PROTECTIVE_STOP":
 
                 self.get_logger().error(
                     f'PROTECTIVE STOP ACTIVE -> '
@@ -376,6 +425,13 @@ class SafetyControlNode(Node):
                 self.get_logger().warn(
                     f'WARNING FIELD ACTIVE -> '
                     f'Speed Limit {speed_limit}%'
+                )
+
+            elif current_state == "GPIO_ESTOP":
+
+                self.get_logger().error(
+                    'GPIO ESTOP ACTIVE -> '
+                    'Speed Limit 0%'
                 )
 
             elif current_state == "NORMAL":
@@ -418,11 +474,11 @@ class SafetyControlNode(Node):
 
     def is_estop_active(self):
 
-        # External ESTOP relay/button
+        # External GPIO ESTOP
         if self.estop_gpio_active:
             return True
 
-        # Scanner protective field
+        # Scanner protective stop
         if self.safety_state == "PROTECTIVE_STOP":
             return True
 

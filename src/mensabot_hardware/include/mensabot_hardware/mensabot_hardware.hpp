@@ -52,7 +52,7 @@ private:
   // ================= SERIAL =================
 
   int serial_fd_;
-  std::string port_ = "/dev/ttyACM0";//"/dev/arduino";
+  std::string port_ = "/dev/arduino"; //"/dev/ttyACM0";
 
   void send_string(const std::string & msg);
 
