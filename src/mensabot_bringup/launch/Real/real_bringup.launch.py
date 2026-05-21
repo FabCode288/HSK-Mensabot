@@ -161,6 +161,64 @@ def generate_launch_description():
         )
     )
 
+    scanner_front_node=Node(
+        package="sick_safetyscanners2",
+        executable="sick_safetyscanners2_node",
+        name="sick_safetyscanners2_node_front",
+        output="screen",
+        emulate_tty=True,
+        remappings=[('/scan', '/lidars/front/scan'), ('/extended_scan', '/lidars/front/extended_scan'), ('/output_paths', '/lidars/front/output_paths'), ('/raw_data', '/lidars/front/raw_data')], 
+        parameters=[
+            {"frame_id": "scan_front_link",
+                "sensor_ip": "192.168.0.11",
+                "host_ip": "192.168.0.100",
+                "interface_ip": "0.0.0.0",
+                "host_udp_port": 6060,
+                "channel": 0,
+                "channel_enabled": True,
+                "skip": 0,
+                "angle_start": 0.0,
+                "angle_end": 0.0,
+                "time_offset": 0.0,
+                "general_system_state": True,
+                "derived_settings": True,
+                "measurement_data": True,
+                "intrusion_data": True,
+                "application_io_data": True,
+                "use_persistent_config": False,
+                "min_intensities": 0.0}
+        ]
+    )
+
+    scanner_rear_node=Node(
+        package="sick_safetyscanners2",
+        executable="sick_safetyscanners2_node",
+        name="sick_safetyscanners2_node_rear",
+        output="screen",
+        emulate_tty=True,
+        remappings=[('/scan', '/lidars/rear/scan'), ('/extended_scan', '/lidars/rear/extended_scan'), ('/output_paths', '/lidars/rear/output_paths'), ('/raw_data', '/lidars/rear/raw_data')], 
+        parameters=[
+            {"frame_id": "scan_rear_link",
+                "sensor_ip": "192.168.0.10",
+                "host_ip": "192.168.0.100",
+                "interface_ip": "0.0.0.0",
+                "host_udp_port": 6061,
+                "channel": 0,
+                "channel_enabled": True,
+                "skip": 0,
+                "angle_start": 0.0,
+                "angle_end": 0.0,
+                "time_offset": 0.0,
+                "general_system_state": True,
+                "derived_settings": True,
+                "measurement_data": True,
+                "intrusion_data": True,
+                "application_io_data": True,
+                "use_persistent_config": False,
+                "min_intensities": 0.0}
+        ]
+    )
+
     lidar_field_selection_node = Node(
         package='mensabot_utils',
         executable='lidar_field_selection_node',
@@ -182,6 +240,8 @@ def generate_launch_description():
     launchDescriptionObject.add_action(laser_scan_merger_node)
     launchDescriptionObject.add_action(imu_device_node)
     launchDescriptionObject.add_action(imu_filter_node)
+    launchDescriptionObject.add_action(scanner_front_node)
+    launchDescriptionObject.add_action(scanner_rear_node)
     launchDescriptionObject.add_action(lidar_field_selection_node)
 
     return launchDescriptionObject
