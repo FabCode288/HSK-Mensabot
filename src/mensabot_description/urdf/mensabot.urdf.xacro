@@ -35,21 +35,21 @@
 
   <link name='base_link'>
     <collision name="base_collision">
-      <origin xyz="-0.2 0 0.15" rpy="0 0 0"/>       <!-- Collision geometry -->
+      <origin xyz="-0.1775 0 0.15" rpy="0 0 0"/>       <!-- Collision geometry -->
       <geometry>
         <box size="0.7 0.55 0.01"/>
       </geometry>
     </collision>
 
     <collision name='left_caster_collision'>
-      <origin xyz="-0.4 0.2 -0.0475" rpy=" 0 0 0"/>
+      <origin xyz="-0.445 0.2 -0.0475" rpy=" 0 0 0"/>
       <geometry>
         <sphere radius="0.0625"/>
       </geometry>
     </collision>
 
     <visual name='left_caster_visual'>
-      <origin xyz="-0.4 0.2 -0.0475 " rpy=" 0 0 0"/>
+      <origin xyz="-0.445 0.2 -0.0475 " rpy=" 0 0 0"/>
       <geometry>
         <sphere radius="0.0625"/>
       </geometry>
@@ -57,14 +57,14 @@
     </visual>
 
     <collision name='right_caster_collision'>
-      <origin xyz="-0.4 -0.2 -0.0475" rpy=" 0 0 0"/>
+      <origin xyz="-0.445 -0.2 -0.0475" rpy=" 0 0 0"/>
       <geometry>
         <sphere radius="0.0625"/>
       </geometry>
     </collision>
 
     <visual name='right_caster_visual'>
-      <origin xyz="-0.4 -0.2 -0.0475" rpy=" 0 0 0"/>
+      <origin xyz="-0.445 -0.2 -0.0475" rpy=" 0 0 0"/>
       <geometry>
         <sphere radius="0.0625"/>
       </geometry>
@@ -79,7 +79,7 @@
   <!--CENTER LINK-->
 
   <joint name="center_joint" type="fixed">
-    <origin xyz="-0.15 0 0" rpy="0 0 0" />
+    <origin xyz="-0.1775 0 0" rpy="0 0 0" />
     <parent link="base_link"/>
     <child link="center_link" />
   </joint>
@@ -96,7 +96,7 @@
 <!-- Bottom Layer -->
 
   <joint name="bottom_front_rod_joint" type="fixed">
-    <origin xyz="0.355 0 0" rpy="0 0 ${pi/2}" />
+    <origin xyz="0.4 0 0" rpy="0 0 ${pi/2}" />
     <parent link="center_link"/>
     <child link="bottom_front_rod_link" />
   </joint>
@@ -104,7 +104,7 @@
   <link name="bottom_front_rod_link">
     <visual name='bottom_front_rod_visual'>
        <geometry>
-         <box size="0.538 0.045 0.045"/>
+         <box size="0.520 0.045 0.045"/>
        </geometry>
        <material name="grey"/>
     </visual>
@@ -112,7 +112,7 @@
   </link>
 
   <joint name="bottom_rear_rod_joint" type="fixed">
-    <origin xyz="-0.355 0 0" rpy="0 0 ${pi/2}" />
+    <origin xyz="-0.4 0 0" rpy="0 0 ${pi/2}" />
     <parent link="center_link"/>
     <child link="bottom_rear_rod_link" />
   </joint>
@@ -120,7 +120,7 @@
   <link name="bottom_rear_rod_link">
     <visual name='bottom_rear_rod_visual'>
        <geometry>
-         <box size="0.538 0.045 0.045"/>
+         <box size="0.520 0.045 0.045"/>
        </geometry>
        <material name="grey"/>
     </visual>
@@ -128,7 +128,7 @@
   </link>
 
   <joint name="bottom_left_rod_joint" type="fixed">
-    <origin xyz="0.0 0.2915 0" rpy="0 0 0" />
+    <origin xyz="0.0 0.2825 0" rpy="0 0 0" />
     <parent link="center_link"/>
     <child link="bottom_left_rod_link" />
   </joint>
@@ -144,7 +144,7 @@
   </link>
 
   <joint name="bottom_right_rod_joint" type="fixed">
-    <origin xyz="0.0 -0.2915 0" rpy="0 0 0" />
+    <origin xyz="0.0 -0.2825 0" rpy="0 0 0" />
     <parent link="center_link"/>
     <child link="bottom_right_rod_link" />
   </joint>
@@ -170,7 +170,7 @@
   <link name="top_front_rod_link">
     <visual name='top_front_rod_visual'>
        <geometry>
-         <box size="0.538 0.045 0.045"/>
+         <box size="0.446 0.045 0.045"/>
        </geometry>
        <material name="grey"/>
     </visual>
@@ -186,7 +186,7 @@
   <link name="top_rear_rod_link">
     <visual name='top_rear_rod_visual'>
        <geometry>
-         <box size="0.538 0.045 0.045"/>
+         <box size="0.446 0.045 0.045"/>
        </geometry>
        <material name="grey"/>
     </visual>
@@ -194,7 +194,7 @@
   </link>
 
   <joint name="top_left_rod_joint" type="fixed">
-    <origin xyz="0.0 0.2915 0.295" rpy="0 0 0" />
+    <origin xyz="0.0 0.2375 0.295" rpy="0 0 0" />
     <parent link="center_link"/>
     <child link="top_left_rod_link" />
   </joint>
@@ -210,7 +210,7 @@
   </link>
 
   <joint name="top_right_rod_joint" type="fixed">
-    <origin xyz="0.0 -0.2915 0.295" rpy="0 0 0" />
+    <origin xyz="0.0 -0.2375 0.295" rpy="0 0 0" />
     <parent link="center_link"/>
     <child link="top_right_rod_link" />
   </joint>
@@ -228,7 +228,7 @@
   <!-- Vertical Rods -->
 
   <joint name="front_right1_joint" type="fixed">
-    <origin xyz="0.31 0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <origin xyz="0.355 0.2015 0.1475" rpy="0 ${pi/2} 0" />
     <parent link="center_link"/>
     <child link="front_right1_link" />
   </joint>
@@ -244,7 +244,7 @@
   </link>
 
   <joint name="front_left1_joint" type="fixed">
-    <origin xyz="0.31 -0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <origin xyz="0.355 -0.2015 0.1475" rpy="0 ${pi/2} 0" />
     <parent link="center_link"/>
     <child link="front_left1_link" />
   </joint>
@@ -260,7 +260,7 @@
   </link>
 
   <joint name="right_joint" type="fixed">
-    <origin xyz="0 0.2465 0.1475" rpy="0 ${pi/2} 0" />
+    <origin xyz="0 0.2375 0.1475" rpy="0 ${pi/2} 0" />
     <parent link="center_link"/>
     <child link="right_link" />
   </joint>
@@ -275,8 +275,8 @@
     
   </link>
 
-  <joint name="_left_joint" type="fixed">
-    <origin xyz="0 -0.2465 0.1475" rpy="0 ${pi/2} 0" />
+  <joint name="left_joint" type="fixed">
+    <origin xyz="0 -0.2375 0.1475" rpy="0 ${pi/2} 0" />
     <parent link="center_link"/>
     <child link="left_link" />
   </joint>
@@ -292,7 +292,7 @@
   </link>
 
   <joint name="back_left_joint" type="fixed">
-    <origin xyz="-0.315 -0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <origin xyz="-0.355 -0.2015 0.1475" rpy="0 ${pi/2} 0" />
     <parent link="center_link"/>
     <child link="back_left_link" />
   </joint>
@@ -308,7 +308,7 @@
   </link>
 
   <joint name="back_right_joint" type="fixed">
-    <origin xyz="-0.315 0.2015 0.1475" rpy="0 ${pi/2} 0" />
+    <origin xyz="-0.355 0.2015 0.1475" rpy="0 ${pi/2} 0" />
     <parent link="center_link"/>
     <child link="back_right_link" />
   </joint>
@@ -417,7 +417,7 @@
   </gazebo>
 
   <joint name="imu_joint" type="fixed">
-    <origin xyz="0.0 0 0.05" rpy="0 0 0" />
+    <origin xyz="0.0 0.2375 0.05" rpy="0 0 0" />
     <parent link="base_link"/>
     <child link="imu_link" />
   </joint>
@@ -438,15 +438,13 @@
   <!--FRONT LASER SCANNER  -->
 
   <joint type="fixed" name="scan_front_joint">
-    <origin xyz="0.3875 0.28 0.1" rpy="0 0 0.8054"/>     <!--origin xyz="0.3775 0.314 0.1" rpy="0 0 0"/-->
+    <origin xyz="0.3875 -0.28 0.08" rpy="0 3.1415 2.3562"/>     <!--Lidar height is 19cm above ground-->
     <child link="scan_front_link"/>
     <parent link="center_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
   </joint>
 
   <link name='scan_front_link'>
-    
-
     <visual name='scan_front_link_visual'>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -466,15 +464,13 @@
   <!--REAR LASER SCANNER  -->
 
   <joint type="fixed" name="scan_rear_joint">
-    <origin xyz="-0.3875 -0.28 0.1" rpy="0 0 3.927"/>
+    <origin xyz="-0.3875 0.28 0.08" rpy="0 3.1415 -0.7654"/>    <!--Lidar height is 19cm above ground-->
     <child link="scan_rear_link"/>
     <parent link="center_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
   </joint>
 
   <link name='scan_rear_link'>
-    
-
     <visual name='scan_rear_link_visual'>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
