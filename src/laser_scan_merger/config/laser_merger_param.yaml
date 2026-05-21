@@ -2,7 +2,7 @@
 #   ros__parameters:
     # Declare laser scan topics to be subscribed here.
     # Max 9 laser scan topics
-    scan_topics: ["/scan_front", "/scan_rear"]
+    scan_topics: ["/lidars/front/scan", "/lidars/rear/scan"]
 
     # reliability policy ros2 topic: 0=reliable, 1=best effort
     scan_policies: [0, 0, 0, 0, 0, 0, 0, 0, 0]
