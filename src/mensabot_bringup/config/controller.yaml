@@ -56,10 +56,10 @@ mensabot_base_controller:
     linear.x.max_velocity: 0.5         # Maximum forward velocity (m/s)
     linear.x.min_velocity: -0.5        # Maximum backward velocity (m/s)
 
-    linear.x.max_acceleration: 0.05      # Maximum forward acceleration (m/s^2)
+    linear.x.max_acceleration: 0.15      # Maximum forward acceleration (m/s^2)
     linear.x.max_deceleration: -0.30     # Maximum braking (negative acceleration)
 
-    linear.x.max_acceleration_reverse: -0.05
+    linear.x.max_acceleration_reverse: -0.15
     linear.x.max_deceleration_reverse: 0.30
 
     angular.z.max_velocity: 0.5         # Maximum rotational velocity (rad/s)
