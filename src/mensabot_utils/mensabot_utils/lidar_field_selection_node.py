@@ -5,6 +5,7 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
+from std_msgs.msg import Bool
 
 from enum import Enum
 
@@ -24,6 +25,8 @@ class FieldState(Enum):
 
     BACKWARD_LEFT = 7
     BACKWARD_RIGHT = 8
+
+    MANUAL_OVERRIDE = 9
 
 
 class LidarFieldSelector(Node):
@@ -115,6 +118,8 @@ class LidarFieldSelector(Node):
 
         self.timeout_sec = 0.5
 
+        self.manual_override_timeout_sec = 0.5
+
         # ============================================================
         # STATE
         # ============================================================
@@ -122,6 +127,10 @@ class LidarFieldSelector(Node):
         self.current_state = FieldState.STOP
 
         self.last_cmd_time = self.get_clock().now()
+
+        self.manual_override_active = False
+
+        self.last_manual_override_msg_time = self.get_clock().now()
 
         # ============================================================
         # ROS INTERFACES
@@ -131,6 +140,13 @@ class LidarFieldSelector(Node):
             Twist,
             '/safety/cmd_vel',
             self.cmd_vel_callback,
+            10
+        )
+
+        self.manual_override_sub = self.create_subscription(
+            Bool,
+            '/safety/manual_override',
+            self.manual_override_callback,
             10
         )
 
@@ -150,12 +166,43 @@ class LidarFieldSelector(Node):
         )
 
     # ============================================================
+    # MANUAL OVERRIDE CALLBACK
+    # ============================================================
+
+    def manual_override_callback(self, msg: Bool):
+
+        self.last_manual_override_msg_time = self.get_clock().now()
+
+        previous_state = self.manual_override_active
+
+        self.manual_override_active = msg.data
+
+        if self.manual_override_active and not previous_state:
+
+            self.get_logger().warn(
+                'MANUAL OVERRIDE ACTIVE'
+            )
+
+        if self.manual_override_active:
+
+            if self.current_state != FieldState.MANUAL_OVERRIDE:
+
+                self.current_state = FieldState.MANUAL_OVERRIDE
+
+                self.publish_state()
+
+                self.set_gpio_state()
+
+    # ============================================================
     # CMD VEL CALLBACK
     # ============================================================
 
     def cmd_vel_callback(self, msg: Twist):
 
         self.last_cmd_time = self.get_clock().now()
+
+        if self.manual_override_active:
+            return
 
         linear_x = msg.linear.x
         angular_z = msg.angular.z
@@ -265,20 +312,22 @@ class LidarFieldSelector(Node):
 
         mapping = {
 
-            FieldState.STOP:            [0, 0, 0, 0],
+            FieldState.STOP:            [1, 1, 1, 1],
 
             FieldState.FORWARD:         [0, 0, 0, 1],
             FieldState.BACKWARD:        [0, 0, 1, 0],
 
             FieldState.ROTATE_LEFT:     [0, 0, 1, 1],
-            FieldState.ROTATE_RIGHT:    [0, 1, 0, 0],
+            FieldState.ROTATE_RIGHT:    [0, 0, 1, 1],
 
             # prepared for future use
-            FieldState.FORWARD_LEFT:    [0, 1, 0, 1],
-            FieldState.FORWARD_RIGHT:   [0, 1, 1, 0],
+            FieldState.FORWARD_LEFT:    [0, 0, 1, 1],
+            FieldState.FORWARD_RIGHT:   [0, 0, 1, 1],
 
-            FieldState.BACKWARD_LEFT:   [0, 1, 1, 1],
-            FieldState.BACKWARD_RIGHT:  [1, 0, 0, 0],
+            FieldState.BACKWARD_LEFT:   [0, 0, 1, 1],
+            FieldState.BACKWARD_RIGHT:  [0, 0, 1, 1],
+
+            FieldState.MANUAL_OVERRIDE: [0, 0, 0, 0],
         }
 
         return mapping[state]
@@ -303,6 +352,26 @@ class LidarFieldSelector(Node):
 
         now = self.get_clock().now()
 
+        manual_override_delta = (
+            now - self.last_manual_override_msg_time
+        ).nanoseconds / 1e9
+
+        if self.manual_override_active:
+
+            if manual_override_delta > self.manual_override_timeout_sec:
+
+                self.manual_override_active = False
+
+                self.get_logger().warn(
+                    'MANUAL OVERRIDE TIMEOUT -> returning to normal field selection'
+                )
+
+                self.current_state = FieldState.STOP
+
+                self.publish_state()
+
+                self.set_gpio_state()
+
         delta = (
             now - self.last_cmd_time
         ).nanoseconds / 1e9
@@ -311,15 +380,17 @@ class LidarFieldSelector(Node):
 
             if self.current_state != FieldState.STOP:
 
-                self.current_state = FieldState.STOP
+                if not self.manual_override_active:
 
-                self.publish_state()
+                    self.current_state = FieldState.STOP
 
-                self.set_gpio_state()
+                    self.publish_state()
 
-                self.get_logger().warn(
-                    'cmd_vel timeout -> STOP field activated'
-                )
+                    self.set_gpio_state()
+
+                    self.get_logger().warn(
+                        'cmd_vel timeout -> STOP field activated'
+                    )
 
     # ============================================================
     # CLEANUP
