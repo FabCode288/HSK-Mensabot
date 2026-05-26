@@ -62,7 +62,7 @@ class SafetyControlNode(Node):
                 # Relay reset pulse output
                 # --------------------------------------------------
 
-                self.relay_reset_output_line = 27
+                self.relay_reset_output_line = 25
 
                 self.gpio_chip_path = "/dev/gpiochip4"
 
