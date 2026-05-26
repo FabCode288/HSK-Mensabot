@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import time
+
 import rclpy
 from rclpy.node import Node
 
@@ -41,21 +43,45 @@ class SafetyControlNode(Node):
             try:
 
                 import gpiod
-                from gpiod.line import Direction
+                from gpiod.line import Direction, Value
 
                 self.gpiod = gpiod
                 self.Direction = Direction
+                self.Value = Value
+
+                # --------------------------------------------------
+                # GPIO INPUT
+                # HIGH -> Safety relays NOT released
+                # LOW  -> Safety relays released
+                # --------------------------------------------------
+
+                self.relay_status_input_line = 17
+
+                # --------------------------------------------------
+                # GPIO OUTPUT
+                # Relay reset pulse output
+                # --------------------------------------------------
+
+                self.relay_reset_output_line = 27
 
                 self.gpio_chip_path = "/dev/gpiochip4"
-                self.gpio_line_number = 17
 
                 self.gpio_request = self.gpiod.request_lines(
                     self.gpio_chip_path,
                     consumer="safety_control_node",
                     config={
-                        self.gpio_line_number:
+
+                        # INPUT
+                        self.relay_status_input_line:
                         self.gpiod.LineSettings(
                             direction=self.Direction.INPUT
+                        ),
+
+                        # OUTPUT
+                        self.relay_reset_output_line:
+                        self.gpiod.LineSettings(
+                            direction=self.Direction.OUTPUT,
+                            output_value=self.Value.INACTIVE
                         )
                     }
                 )
@@ -89,12 +115,23 @@ class SafetyControlNode(Node):
         self.estop_speed_limit = 0.0
 
         # ======================================================
+        # RESET CONFIG
+        # ======================================================
+
+        self.reset_interval = 0.5
+        self.reset_pulse_duration = 0.1
+
+        self.last_reset_attempt_time = 0.0
+        self.reset_pulse_active = False
+        self.reset_pulse_start_time = 0.0
+
+        # ======================================================
         # STATES
         # ======================================================
 
         self.hardware_connected = False
 
-        # GPIO ESTOP
+        # HIGH -> relays not released
         self.estop_gpio_active = False
 
         # Global scanner state:
@@ -112,24 +149,6 @@ class SafetyControlNode(Node):
         # ======================================================
         # SUBSCRIBERS
         # ======================================================
-
-        # ------------------------------------------------------
-        # SICK SAFETY SCANNER OUTPUTS
-        #
-        # status[0] -> Protective Stop
-        # status[1] -> Warning Field
-        #
-        # If ANY lidar reports:
-        #
-        # Protective Stop:
-        #     -> GLOBAL ESTOP
-        #
-        # Warning Field:
-        #     -> GLOBAL WARNING
-        #
-        # Protective Stop always has higher priority.
-        #
-        # ------------------------------------------------------
 
         self.front_scanner_sub = self.create_subscription(
             OutputPaths,
@@ -215,21 +234,20 @@ class SafetyControlNode(Node):
     # ==========================================================
     # FRONT SCANNER CALLBACK
     # ==========================================================
+    # 0 and 2 are protective stop fields
+    # 1 and 3 are warning fields
 
     def front_scanner_callback(self, msg: OutputPaths):
 
-        self.front_protective_stop = False
-        self.front_warning = False
+        self.front_protective_stop = any(
+            len(msg.status) > i and not msg.status[i]
+            for i in [0, 2]
+        )
 
-        # status[0] = protective stop
-        if len(msg.status) > 0:
-
-            self.front_protective_stop = not msg.status[0]
-
-        # status[1] = warning field
-        if len(msg.status) > 1:
-
-            self.front_warning = not msg.status[1]
+        self.front_warning = any(
+            len(msg.status) > i and not msg.status[i]
+            for i in [1, 3]
+        )
 
         self.update_safety_state()
 
@@ -239,18 +257,15 @@ class SafetyControlNode(Node):
 
     def rear_scanner_callback(self, msg: OutputPaths):
 
-        self.rear_protective_stop = False
-        self.rear_warning = False
+        self.rear_protective_stop = any(
+            len(msg.status) > i and not msg.status[i]
+            for i in [0, 2]
+        )
 
-        # status[0] = protective stop
-        if len(msg.status) > 0:
-
-            self.rear_protective_stop = not msg.status[0]
-
-        # status[1] = warning field
-        if len(msg.status) > 1:
-
-            self.rear_warning = not msg.status[1]
+        self.rear_warning = any(
+            len(msg.status) > i and not msg.status[i]
+            for i in [1, 3]
+        )
 
         self.update_safety_state()
 
@@ -337,7 +352,7 @@ class SafetyControlNode(Node):
     def timer_callback(self):
 
         # ======================================================
-        # GPIO ESTOP
+        # GPIO RELAY STATUS INPUT
         # ======================================================
 
         if not self.simulation_mode:
@@ -345,9 +360,10 @@ class SafetyControlNode(Node):
             try:
 
                 gpio_state = self.gpio_request.get_value(
-                    self.gpio_line_number
+                    self.relay_status_input_line
                 )
 
+                # HIGH -> relays open
                 self.estop_gpio_active = bool(
                     gpio_state
                 )
@@ -363,8 +379,83 @@ class SafetyControlNode(Node):
 
         else:
 
-            # No GPIO in simulation
             self.estop_gpio_active = False
+
+        # ======================================================
+        # AUTOMATIC RELAY RESET
+        # ======================================================
+
+        current_time = time.time()
+
+        # ------------------------------------------------------
+        # START RESET PULSE
+        # ------------------------------------------------------
+
+        should_attempt_reset = (
+            not self.simulation_mode and
+            self.safety_state == "NORMAL" and
+            self.estop_gpio_active and
+            not self.reset_pulse_active and
+            (current_time - self.last_reset_attempt_time)
+            >= self.reset_interval
+        )
+
+        if should_attempt_reset:
+
+            self.get_logger().warn(
+                'ATTEMPTING SAFETY RELAY RESET'
+            )
+
+            try:
+
+                # Set reset output HIGH
+                self.gpio_request.set_value(
+                    self.relay_reset_output_line,
+                    self.Value.ACTIVE
+                )
+
+                self.reset_pulse_active = True
+
+                self.reset_pulse_start_time = (
+                    current_time
+                )
+
+                self.last_reset_attempt_time = (
+                    current_time
+                )
+
+            except Exception as e:
+
+                self.get_logger().error(
+                    f'RELAY RESET FAILED: {e}'
+                )
+
+        # ------------------------------------------------------
+        # END RESET PULSE
+        # ------------------------------------------------------
+
+        if self.reset_pulse_active:
+
+            pulse_finished = (
+                current_time -
+                self.reset_pulse_start_time
+            ) >= self.reset_pulse_duration
+
+            if pulse_finished:
+
+                try:
+                    self.gpio_request.set_value(           # Set reset output LOW
+                        self.relay_reset_output_line,
+                        self.Value.INACTIVE
+                    )
+
+                    self.reset_pulse_active = False
+
+                except Exception as e:
+
+                    self.get_logger().error(
+                        f'RESET PULSE END FAILED: {e}'
+                    )
 
         # ======================================================
         # ESTOP LOGIC
@@ -430,7 +521,7 @@ class SafetyControlNode(Node):
             elif current_state == "GPIO_ESTOP":
 
                 self.get_logger().error(
-                    'GPIO ESTOP ACTIVE -> '
+                    'SAFETY RELAYS OPEN -> '
                     'Speed Limit 0%'
                 )
 
@@ -474,7 +565,7 @@ class SafetyControlNode(Node):
 
     def is_estop_active(self):
 
-        # External GPIO ESTOP
+        # Safety relays open
         if self.estop_gpio_active:
             return True
 
