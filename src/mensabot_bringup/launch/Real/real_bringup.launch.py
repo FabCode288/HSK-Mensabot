@@ -161,6 +161,8 @@ def generate_launch_description():
         )
     )
 
+
+
     scanner_front_node=Node(
         package="sick_safetyscanners2",
         executable="sick_safetyscanners2_node",
@@ -227,6 +229,18 @@ def generate_launch_description():
         output='screen'
     )
 
+    delayed_safety_control_node = RegisterEventHandler(
+        OnProcessStart(
+            target_action=lidar_field_selection_node,
+            on_start=[
+                TimerAction(
+                    period=1.0,
+                    actions=[safety_control_node]
+                )
+            ]
+        )
+    )
+
     launchDescriptionObject = LaunchDescription()
 
     launchDescriptionObject.add_action(model_arg)
@@ -235,7 +249,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(delayed_joint_state_broadcaster)
     launchDescriptionObject.add_action(delayed_diff_drive_controller)
     launchDescriptionObject.add_action(ekf_node)
-    launchDescriptionObject.add_action(safety_control_node)
+    #launchDescriptionObject.add_action(safety_control_node)
     launchDescriptionObject.add_action(cmd_vel_transform_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)
     launchDescriptionObject.add_action(imu_device_node)
@@ -243,5 +257,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(scanner_front_node)
     launchDescriptionObject.add_action(scanner_rear_node)
     launchDescriptionObject.add_action(lidar_field_selection_node)
+    launchDescriptionObject.add_action(delayed_safety_control_node)
+
 
     return launchDescriptionObject

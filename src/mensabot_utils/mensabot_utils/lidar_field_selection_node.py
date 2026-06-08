@@ -20,13 +20,7 @@ class FieldState(Enum):
     ROTATE_LEFT = 3
     ROTATE_RIGHT = 4
 
-    FORWARD_LEFT = 5
-    FORWARD_RIGHT = 6
-
-    BACKWARD_LEFT = 7
-    BACKWARD_RIGHT = 8
-
-    MANUAL_OVERRIDE = 9
+    MANUAL_OVERRIDE = 5
 
 
 class LidarFieldSelector(Node):
@@ -50,8 +44,7 @@ class LidarFieldSelector(Node):
         # ============================================================
 
         # 4 Bit output lines
-        self.gpio_pins = [27, 22, 23, 24]
-
+        self.gpio_pins = [22, 23, 24, 25, 26, 27]
         self.gpio_available = False
 
         self.gpio_requests = {}
@@ -85,10 +78,10 @@ class LidarFieldSelector(Node):
 
                     self.gpio_requests[pin] = gpio_request
 
-                    # Initialize LOW
+                    # Initialize High
                     gpio_request.set_value(
                         pin,
-                        self.Value.INACTIVE
+                        self.Value.ACTIVE
                     )
 
                 self.gpio_available = True
@@ -118,13 +111,13 @@ class LidarFieldSelector(Node):
 
         self.timeout_sec = 0.5
 
-        self.manual_override_timeout_sec = 0.5
+        self.manual_override_timeout_sec = 2.0
 
         # ============================================================
         # STATE
         # ============================================================
 
-        self.current_state = FieldState.STOP
+        self.current_state = FieldState.FORWARD
 
         self.last_cmd_time = self.get_clock().now()
 
@@ -164,6 +157,10 @@ class LidarFieldSelector(Node):
         self.get_logger().info(
             'Lidar field selector started'
         )
+
+        self.publish_state()
+
+        self.set_gpio_state()
 
     # ============================================================
     # MANUAL OVERRIDE CALLBACK
@@ -256,17 +253,13 @@ class LidarFieldSelector(Node):
             return FieldState.ROTATE_RIGHT
 
         # COMBINED MOVEMENT
-        if linear_x > 0.0 and angular_z > 0.0:
-            return FieldState.FORWARD_LEFT
+        # Forward / Backward has priority
 
-        if linear_x > 0.0 and angular_z < 0.0:
-            return FieldState.FORWARD_RIGHT
+        if linear_x > 0.0:
+            return FieldState.FORWARD
 
-        if linear_x < 0.0 and angular_z > 0.0:
-            return FieldState.BACKWARD_LEFT
-
-        if linear_x < 0.0 and angular_z < 0.0:
-            return FieldState.BACKWARD_RIGHT
+        if linear_x < 0.0:
+            return FieldState.BACKWARD
 
         return FieldState.STOP
 
@@ -276,61 +269,47 @@ class LidarFieldSelector(Node):
 
     def set_gpio_state(self):
 
-        # 4 Bit encoding
-        bit_pattern = self.get_bit_pattern(
-            self.current_state
-        )
-
         self.get_logger().info(
-            f'Field state: {self.current_state.name} -> {bit_pattern}'
+            f'Field state: {self.current_state.name}'
         )
 
         if not self.gpio_available:
             return
 
-        for i, pin in enumerate(self.gpio_pins):
-
-            value = (
-                self.Value.ACTIVE
-                if bit_pattern[i]
-                else self.Value.INACTIVE
-            )
+        # All outputs LOW
+        for pin in self.gpio_pins:
 
             self.gpio_requests[pin].set_value(
                 pin,
-                value
+                self.Value.ACTIVE
             )
 
-    # ============================================================
-    # BIT ENCODING
-    # ============================================================
+        active_pin = None
 
-    def get_bit_pattern(
-        self,
-        state: FieldState
-    ):
+        if self.current_state == FieldState.FORWARD:
+            active_pin = 22
 
-        mapping = {
+        elif self.current_state == FieldState.BACKWARD:
+            active_pin = 23
 
-            FieldState.STOP:            [1, 1, 1, 1],
+        elif self.current_state == FieldState.ROTATE_LEFT:
+            active_pin = 24
 
-            FieldState.FORWARD:         [0, 0, 0, 1],
-            FieldState.BACKWARD:        [0, 0, 1, 0],
+        elif self.current_state == FieldState.ROTATE_RIGHT:
+            active_pin = 25
 
-            FieldState.ROTATE_LEFT:     [0, 0, 1, 1],
-            FieldState.ROTATE_RIGHT:    [0, 0, 1, 1],
+        elif self.current_state == FieldState.MANUAL_OVERRIDE:
+            active_pin = 26
 
-            # prepared for future use
-            FieldState.FORWARD_LEFT:    [0, 0, 1, 1],
-            FieldState.FORWARD_RIGHT:   [0, 0, 1, 1],
+        elif self.current_state == FieldState.STOP:
+            active_pin = 27
 
-            FieldState.BACKWARD_LEFT:   [0, 0, 1, 1],
-            FieldState.BACKWARD_RIGHT:  [0, 0, 1, 1],
+        if active_pin is not None:
 
-            FieldState.MANUAL_OVERRIDE: [0, 0, 0, 0],
-        }
-
-        return mapping[state]
+            self.gpio_requests[active_pin].set_value(
+                active_pin,
+                self.Value.ACTIVE
+            )
 
     # ============================================================
     # STATE PUBLISHER
@@ -404,7 +383,7 @@ class LidarFieldSelector(Node):
 
                 self.gpio_requests[pin].set_value(
                     pin,
-                    self.Value.INACTIVE
+                    self.Value.ACTIVE
                 )
 
                 self.gpio_requests[pin].release()

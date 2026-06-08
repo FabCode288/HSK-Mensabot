@@ -51,18 +51,18 @@ class SafetyControlNode(Node):
 
                 # --------------------------------------------------
                 # GPIO INPUT
-                # HIGH -> Safety relays NOT released
-                # LOW  -> Safety relays released
+                # HIGH -> relays released / safe
+                # LOW  -> relays open / ESTOP
                 # --------------------------------------------------
 
-                self.relay_status_input_line = 17
+                self.relay_status_input_line = 13
 
                 # --------------------------------------------------
                 # GPIO OUTPUT
                 # Relay reset pulse output
                 # --------------------------------------------------
 
-                self.relay_reset_output_line = 25
+                self.relay_reset_output_line = 17
 
                 self.gpio_chip_path = "/dev/gpiochip4"
 
@@ -241,12 +241,12 @@ class SafetyControlNode(Node):
 
         self.front_protective_stop = any(
             len(msg.status) > i and not msg.status[i]
-            for i in [0, 2]
+            for i in [0]#x, 2]
         )
 
         self.front_warning = any(
             len(msg.status) > i and not msg.status[i]
-            for i in [1, 3]
+            for i in [1]#, 3]
         )
 
         self.update_safety_state()
@@ -259,12 +259,12 @@ class SafetyControlNode(Node):
 
         self.rear_protective_stop = any(
             len(msg.status) > i and not msg.status[i]
-            for i in [0, 2]
+            for i in [0]#, 2]
         )
 
         self.rear_warning = any(
             len(msg.status) > i and not msg.status[i]
-            for i in [1, 3]
+            for i in [1]#, 3]
         )
 
         self.update_safety_state()
@@ -364,7 +364,7 @@ class SafetyControlNode(Node):
                 )
 
                 # HIGH -> relays open
-                self.estop_gpio_active = bool(
+                self.estop_gpio_active = not bool(
                     gpio_state
                 )
 
@@ -506,7 +506,7 @@ class SafetyControlNode(Node):
 
             if current_state == "PROTECTIVE_STOP":
 
-                self.get_logger().error(
+                self.get_logger().warn(
                     f'PROTECTIVE STOP ACTIVE -> '
                     f'Speed Limit {speed_limit}%'
                 )
