@@ -183,7 +183,12 @@ hardware_interface::return_type MensabotHardware::read(
   Packet packet;
   if (read_packet(packet)) {
 
-    //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "RX: %s", line.c_str());
+    RCLCPP_INFO(
+      rclcpp::get_logger("MensabotHardware"),
+      "RX Type=%d V1=%d V2=%d",
+      packet.type,
+      packet.value1,
+      packet.value2);
 
     // READY
     if (packet.type == PKT_READY) {
@@ -349,6 +354,13 @@ void MensabotHardware::send_packet(
     serial_fd_,
     tx.bytes,
     sizeof(tx.bytes));
+
+  RCLCPP_INFO(
+    rclcpp::get_logger("MensabotHardware"),
+    "TX Type=%d V1=%d V2=%d",
+    type,
+    value1,
+    value2);
 }
 
 bool MensabotHardware::read_packet(

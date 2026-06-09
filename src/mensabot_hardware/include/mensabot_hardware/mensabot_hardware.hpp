@@ -101,7 +101,7 @@ private:
 
   int serial_fd_;
 
-  std::string port_ = "/dev/arduino";
+  std::string port_ = "/dev/ttyACM0";
 
   PacketBuffer rx_buffer_;
 

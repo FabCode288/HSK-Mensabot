@@ -51,10 +51,6 @@ struct Packet
     uint16_t checksum;
 };
 
-static_assert(
-    sizeof(Packet) == 9,
-    "Packet size invalid");
-
 #pragma pack(pop)
 
 union PacketBuffer
@@ -74,6 +70,15 @@ enum PacketType : uint8_t
     PKT_ESTOP = 20,
     PKT_RESET = 21
 };
+
+uint16_t calculateChecksum(
+    const Packet& packet);
+
+void processPacket(const Packet & packet);
+
+static_assert(
+    sizeof(Packet) == 9,
+    "Packet size invalid");
 
 // ================= VARIABLES =================
 
@@ -138,7 +143,7 @@ void sendReady() {
 }
 
 // ================= PARSER =================
-void processPacket(const Packet& packet)
+void processPacket(const Packet & packet)
 {
   last_msg_time = millis();
 
