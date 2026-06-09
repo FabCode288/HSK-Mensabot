@@ -54,8 +54,8 @@ class LidarFieldSelector(Node):
 
             try:
 
-                import gpiod
-                from gpiod.line import Direction, Value
+                import gpiod # type: ignore #Not available in simulation environment
+                from gpiod.line import Direction, Value # type: ignore
 
                 self.gpiod = gpiod
                 self.Direction = Direction
@@ -308,7 +308,7 @@ class LidarFieldSelector(Node):
 
             self.gpio_requests[active_pin].set_value(
                 active_pin,
-                self.Value.ACTIVE
+                self.Value.INACTIVE
             )
 
     # ============================================================

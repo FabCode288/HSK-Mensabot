@@ -42,8 +42,8 @@ class SafetyControlNode(Node):
 
             try:
 
-                import gpiod
-                from gpiod.line import Direction, Value
+                import gpiod # type: ignore #Not available in simulation environment
+                from gpiod.line import Direction, Value # type: ignore
 
                 self.gpiod = gpiod
                 self.Direction = Direction
@@ -139,7 +139,7 @@ class SafetyControlNode(Node):
         # WARNING
         # PROTECTIVE_STOP
         #
-        self.safety_state = "NORMAL"
+        self.safety_state = "PROTECTIVE_STOP"
 
         self.current_speed_limit = -1.0
 
