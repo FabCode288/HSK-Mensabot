@@ -117,7 +117,7 @@ class LidarFieldSelector(Node):
         # STATE
         # ============================================================
 
-        self.current_state = FieldState.FORWARD
+        self.current_state = FieldState.STOP
 
         self.last_cmd_time = self.get_clock().now()
 
