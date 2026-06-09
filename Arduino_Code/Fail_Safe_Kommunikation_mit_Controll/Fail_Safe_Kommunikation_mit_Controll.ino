@@ -1,4 +1,5 @@
 #include <ContinuousStepper.h>
+#include <stdint.h>
 
 ContinuousStepper<StepperDriver> stepper_left;
 ContinuousStepper<StepperDriver> stepper_right;
@@ -35,6 +36,45 @@ enum State {
 
 State state = WAITING;
 
+#pragma pack(push,1)
+
+struct Packet
+{
+    uint8_t header1;
+    uint8_t header2;
+
+    uint8_t type;
+
+    int16_t value1;
+    int16_t value2;
+
+    uint16_t checksum;
+};
+
+static_assert(
+    sizeof(Packet) == 9,
+    "Packet size invalid");
+
+#pragma pack(pop)
+
+union PacketBuffer
+{
+    Packet packet;
+    uint8_t bytes[sizeof(Packet)];
+};
+
+enum PacketType : uint8_t
+{
+    PKT_PING  = 1,
+    PKT_READY = 2,
+    PKT_HB    = 3,
+
+    PKT_CMD   = 10,
+
+    PKT_ESTOP = 20,
+    PKT_RESET = 21
+};
+
 // ================= VARIABLES =================
 
 float target_speed_left = 0.0;
@@ -44,9 +84,11 @@ unsigned long last_msg_time = 0;
 unsigned long last_heartbeat_sent = 0;
 unsigned long last_debug_sent = 0;
 
-String input_line = "";
-
 bool debug_print = false;
+
+PacketBuffer rx_buffer;
+
+size_t rx_index = 0;
 
 // ================= HELPERS =================
 void stopMotors() {
@@ -54,78 +96,75 @@ void stopMotors() {
   target_speed_right = 0.0;
 }
 
-void sendHeartbeat() {
-  Serial.println("HB");
+uint16_t calculateChecksum(
+    const Packet& packet)
+{
+    return static_cast<uint16_t>(
+        packet.type ^
+        packet.value1 ^
+        packet.value2);
 }
 
+void sendPacket(
+    uint8_t type,
+    int16_t value1 = 0,
+    int16_t value2 = 0)
+{
+    PacketBuffer tx;
+
+    tx.packet.header1 = 0xAA;
+    tx.packet.header2 = 0x55;
+
+    tx.packet.type = type;
+
+    tx.packet.value1 = value1;
+    tx.packet.value2 = value2;
+
+    tx.packet.checksum =
+        calculateChecksum(
+            tx.packet);
+
+    Serial.write(
+        tx.bytes,
+        sizeof(tx.bytes));
+}
+
+void sendHeartbeat() {
+  sendPacket(PKT_HB);
+  }
+
 void sendReady() {
-  Serial.println("READY");
+  sendPacket(PKT_READY);
 }
 
 // ================= PARSER =================
-void processLine(String line) {
-  line.trim();
-
+void processPacket(const Packet& packet)
+{
   last_msg_time = millis();
 
   // ---------- WAITING ----------
-  if (line == "PING") {
-    Serial.println("READY");
+  if (packet.type == PKT_PING) {
+    sendReady();
     state = READY;
+    return;
   }
-
 
   // ---------- READY ----------
   if (state == READY) {
-
-    if (line == "ESTOP") {
+    if (packet.type == PKT_ESTOP) {
       state = ESTOP;
       stopMotors();
       return;
     }
 
-    if (line.startsWith("CMD,")) {
+    if (packet.type == PKT_CMD) {
       state = ACTIVE;
 
-      int comma1 = line.indexOf(',');
-      int comma2 = line.indexOf(',', comma1 + 1);
-      int comma3 = line.indexOf(',', comma2 + 1);
-
-      // Prüfen ob alle Kommas existieren
-      if (comma1 < 0 || comma2 < 0 || comma3 < 0) {
-          return;
-      }
-
-      // DATEN EXTRAHIEREN
-
-      int v_left_int = line.substring(comma1 + 1, comma2).toInt();
-      int v_right_int = line.substring(comma2 + 1, comma3).toInt();
-      int received_checksum = line.substring(comma3 + 1).toInt();
-
-      // XOR CHECKSUM BERECHNEN
-
-      String payload = line.substring(0, comma3);
-
-      uint8_t calculated_checksum = 0;
-
-      for (size_t i = 0; i < payload.length(); i++) {
-          calculated_checksum ^= (uint8_t)payload[i];
-      }
-
-      // CHECKSUM VERGLEICH
-
-      if (calculated_checksum != received_checksum) {
-        Serial.println("Checksum wrong!");
-        return;
-      }
-
       // FIXED POINT -> FLOAT
-
-      float v_left = v_left_int / 100.0f;
-      float v_right = v_right_int / 100.0f;
+      float v_left = packet.value1 / 100.0f;
+      float v_right = packet.value2 / 100.0f;
 
       // MOTOR COMMANDS
-
       target_speed_left = v_left * gear_ratio;
       target_speed_right = -1.0f * v_right * gear_ratio;
     }
@@ -135,54 +174,19 @@ void processLine(String line) {
 
   // ---------- ACTIVE ----------
   if (state == ACTIVE) {
-
-    if (line == "ESTOP") {
+    if (packet.type == PKT_ESTOP) {
       state = ESTOP;
       stopMotors();
       return;
     }
 
-    if (line.startsWith("CMD,")) {
-
-      int comma1 = line.indexOf(',');
-      int comma2 = line.indexOf(',', comma1 + 1);
-      int comma3 = line.indexOf(',', comma2 + 1);
-
-      // Prüfen ob alle Kommas existieren
-      if (comma1 < 0 || comma2 < 0 || comma3 < 0) {
-          return;
-      }
-
-      // DATEN EXTRAHIEREN
-
-      int v_left_int = line.substring(comma1 + 1, comma2).toInt();
-      int v_right_int = line.substring(comma2 + 1, comma3).toInt();
-      int received_checksum = line.substring(comma3 + 1).toInt();
-
-      // XOR CHECKSUM BERECHNEN
-
-      String payload = line.substring(0, comma3);
-
-      uint8_t calculated_checksum = 0;
-
-      for (size_t i = 0; i < payload.length(); i++) {
-          calculated_checksum ^= (uint8_t)payload[i];
-      }
-
-      // CHECKSUM VERGLEICH
-
-      if (calculated_checksum != received_checksum) {
-        Serial.println("Checksum wrong!");
-        return;
-      }
+    if (packet.type == PKT_CMD) {
 
       // FIXED POINT -> FLOAT
-
-      float v_left = v_left_int / 100.0f;
-      float v_right = v_right_int / 100.0f;
+      float v_left = packet.value1 / 100.0f;
+      float v_right = packet.value2 / 100.0f;
 
       // MOTOR COMMANDS
-
       target_speed_left = v_left * gear_ratio;
       target_speed_right = -1.0f * v_right * gear_ratio;
     }
@@ -192,13 +196,12 @@ void processLine(String line) {
 
   // ---------- ESTOP ----------
   if (state == ESTOP) {
-
-    if (line == "RESET") {
+    if (packet.type == PKT_RESET) {
       state = WAITING;
       return;
     }
 
-    // ESTOP bleibt sonst aktiv
+    // ESTOP bleibt aktiv
     return;
   }
 }
@@ -224,14 +227,53 @@ void loop() {
   //Serial.println(state);
   // ---------- SERIAL READ ----------
   while (Serial.available()) {
-    char c = Serial.read();
+      uint8_t byte = Serial.read();
 
-    if (c == '\n') {
-      processLine(input_line);
-      input_line = "";
-    } else {
-      input_line += c;
-    }
+      switch(rx_index)
+      {
+          case 0:
+
+              if(byte != 0xAA)
+                  continue;
+
+              rx_buffer.bytes[rx_index++] = byte;
+
+              break;
+
+          case 1:
+
+              if(byte != 0x55)
+              {
+                  rx_index = 0;
+                  continue;
+              }
+
+              rx_buffer.bytes[rx_index++] = byte;
+
+              break;
+
+          default:
+
+              rx_buffer.bytes[rx_index++] = byte;
+
+              if(rx_index >= sizeof(Packet))
+              {
+                  rx_index = 0;
+
+                  uint16_t checksum =
+                      calculateChecksum(
+                          rx_buffer.packet);
+
+                  if(checksum ==
+                    rx_buffer.packet.checksum)
+                  {
+                      processPacket(
+                          rx_buffer.packet);
+                  }
+              }
+
+              break;
+      }
   }
 
   unsigned long now = millis();
@@ -284,33 +326,56 @@ void loop() {
 
 /*
 ==========================================================
-WICHTIGE FUNKTIONEN (Kurzüberblick)
+IMPORTANT FUNCTIONS (Overview)
 
 STATE MACHINE:
-- WAITING  → wartet auf "PING"
-- READY    → Verbindung steht, wartet auf erstes CMD
-- ACTIVE   → verarbeitet CMD kontinuierlich
-- ESTOP    → blockiert alles, wartet auf RESET
+- WAITING  -> waits for a PING packet
+- READY    -> connection established, waits for first CMD packet
+- ACTIVE   -> continuously processes CMD packets
+- ESTOP    -> blocks all motion, waits for RESET packet
 
-KOMMUNIKATION:
-- ROS → Arduino:
-    "PING"
-    "CMD,x,y"
-    "ESTOP"
-    "RESET"
+COMMUNICATION PROTOCOL:
 
-- Arduino → ROS:
-    "READY"
-    "HB" (Heartbeat)
+Packet Structure:
+- Header 1  : 0xAA
+- Header 2  : 0x55
+- Type      : Packet type identifier
+- Value 1   : Data field (e.g. left wheel velocity)
+- Value 2   : Data field (e.g. right wheel velocity)
+- Checksum  : XOR checksum over type, value1 and value2
 
-SICHERHEIT:
-- Timeout → zurück zu WAITING
-- ESTOP → sofort Motor Stop
-- kein Deadlock bei Verbindungsverlust
+Packet Types:
 
-MOTOR:
-- Rampensteuerung intern deaktiviert, Rampen über ROS
-- rad/s → Steps/s Umrechnung
+ROS -> Arduino:
+- PKT_PING   (1)
+- PKT_CMD    (10)
+- PKT_ESTOP  (20)
+- PKT_RESET  (21)
+
+Arduino -> ROS:
+- PKT_READY  (2)
+- PKT_HB     (3)
+
+CONNECTION SEQUENCE:
+- ROS sends PKT_PING
+- Arduino responds with PKT_READY
+- First PKT_CMD switches Arduino to ACTIVE state
+- Arduino periodically sends PKT_HB while connected
+
+SAFETY:
+- Heartbeat timeout -> return to WAITING state
+- ESTOP -> immediate motor stop
+- Invalid checksum -> packet discarded
+- Automatic re-synchronization using packet headers
+- No deadlock on communication loss
+
+MOTOR CONTROL:
+- Motion commands transmitted as fixed-point int16 values
+  (value = velocity * 100)
+- Fixed-point values converted back to float on Arduino
+- rad/s -> steps/s conversion via radToSteps()
+- Motion ramping handled by ROS
+- Stepper acceleration handled by ContinuousStepper
 
 ==========================================================
 */
