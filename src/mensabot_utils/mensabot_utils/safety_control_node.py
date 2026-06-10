@@ -119,7 +119,7 @@ class SafetyControlNode(Node):
         # ======================================================
 
         self.reset_interval = 1.0
-        self.reset_pulse_duration = 0.1
+        self.reset_pulse_duration = 0.5
 
         self.last_reset_attempt_time = 0.0
         self.reset_pulse_active = False
@@ -406,12 +406,9 @@ class SafetyControlNode(Node):
 
         if should_attempt_reset:
 
-            self.get_logger().warn(
-                'ATTEMPTING SAFETY RELAY RESET'
-            )
-            self.get_logger().warn(
-                f'Safety relay Input: {self.estop_gpio_active}'
-            )
+            self.get_logger().info('ATTEMPTING SAFETY RELAY RESET')
+            
+            #self.get_logger().info(f'Safety relay Input: {self.estop_gpio_active}')
 
             try:
 
@@ -513,14 +510,14 @@ class SafetyControlNode(Node):
 
             if current_state == "PROTECTIVE_STOP":
 
-                self.get_logger().warn(
+                self.get_logger().info(
                     f'PROTECTIVE STOP ACTIVE -> '
                     f'Speed Limit {speed_limit}%'
                 )
 
             elif current_state == "WARNING":
 
-                self.get_logger().warn(
+                self.get_logger().info(
                     f'WARNING FIELD ACTIVE -> '
                     f'Speed Limit {speed_limit}%'
                 )
