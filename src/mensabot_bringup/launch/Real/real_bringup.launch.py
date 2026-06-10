@@ -1,12 +1,13 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction, ExecuteProcess
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction, ExecuteProcess, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode 
 from launch.event_handlers import OnProcessStart, OnProcessExit
 from ament_index_python.packages import get_package_share_directory, get_package_share_path
+from launch.conditions import IfCondition, UnlessCondition
 
 def generate_launch_description():
 
@@ -25,6 +26,12 @@ def generate_launch_description():
     model_arg = DeclareLaunchArgument(
         'model',
         default_value='mensabot.urdf.xacro',
+    )
+
+    lidar_reset_arg = DeclareLaunchArgument(
+        'lidar_reset',
+        default_value='false',
+        description='Perform lidar reset before startup'
     )
 
     # Define the path to your URDF or Xacro file
@@ -162,8 +169,6 @@ def generate_launch_description():
         )
     )
 
-
-
     scanner_front_node=Node(
         package="sick_safetyscanners2",
         executable="sick_safetyscanners2_node",
@@ -224,6 +229,7 @@ def generate_launch_description():
 
     lidar_reset = ExecuteProcess(
         cmd=['python3',
+        '-u',
         '/home/student/ros2_mensabot_ws/src/mensabot_utils/mensabot_utils/lidar_reset.py'],
         output='screen'
     )
@@ -248,24 +254,68 @@ def generate_launch_description():
         )
     )
 
+    normal_startup = GroupAction(
+        actions=[
+            controller_manager_node,
+            robot_state_publisher_node,
+            delayed_joint_state_broadcaster,
+            delayed_diff_drive_controller,
+            ekf_node,
+            cmd_vel_transform_node,
+            laser_scan_merger_node,
+            imu_device_node,
+            imu_filter_node,
+            scanner_front_node,
+            scanner_rear_node,
+            lidar_field_selection_node,
+            delayed_safety_control_node
+        ]
+    )
+
+    delayed_startup_after_reset = RegisterEventHandler(
+        OnProcessExit(
+            target_action=lidar_reset,
+            on_exit=[
+                normal_startup
+            ]
+        )
+    )
+
     launchDescriptionObject = LaunchDescription()
 
-    #launchDescriptionObject.add_action(lidar_reset)
     launchDescriptionObject.add_action(model_arg)
-    launchDescriptionObject.add_action(controller_manager_node)
-    launchDescriptionObject.add_action(robot_state_publisher_node)
-    launchDescriptionObject.add_action(delayed_joint_state_broadcaster)
-    launchDescriptionObject.add_action(delayed_diff_drive_controller)
-    launchDescriptionObject.add_action(ekf_node)
-    #launchDescriptionObject.add_action(safety_control_node)
-    launchDescriptionObject.add_action(cmd_vel_transform_node)
-    launchDescriptionObject.add_action(laser_scan_merger_node)
-    launchDescriptionObject.add_action(imu_device_node)
-    launchDescriptionObject.add_action(imu_filter_node)
-    launchDescriptionObject.add_action(scanner_front_node)
-    launchDescriptionObject.add_action(scanner_rear_node)
-    launchDescriptionObject.add_action(lidar_field_selection_node)
-    launchDescriptionObject.add_action(delayed_safety_control_node)
+    launchDescriptionObject.add_action(lidar_reset_arg)
+
+    # ---------------------------------------
+    # Start with reset
+    # ---------------------------------------
+
+    launchDescriptionObject.add_action(
+        GroupAction(
+            condition=IfCondition(
+                LaunchConfiguration('lidar_reset')
+            ),
+            actions=[
+                lidar_reset,
+                delayed_startup_after_reset
+            ]
+        )
+    )
+
+    # ---------------------------------------
+    # Start without reset
+    # ---------------------------------------
+
+    launchDescriptionObject.add_action(
+        GroupAction(
+            condition=UnlessCondition(
+                LaunchConfiguration('lidar_reset')
+            ),
+            actions=[
+                normal_startup
+            ]
+        )
+    )
 
 
     return launchDescriptionObject

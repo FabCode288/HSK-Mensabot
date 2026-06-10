@@ -19,10 +19,13 @@ request = gpiod.request_lines(
 )
 
 request.set_value(PIN, Value.INACTIVE)
-time.sleep(0.2)
+time.sleep(0.6)
 request.set_value(PIN, Value.ACTIVE)
 
 time.sleep(0.5)
 
 request.release()
+
+print("[INFO] [lidar_reset] Rebooting Lidars...")
+time.sleep(12.0)
 print("[INFO] [lidar_reset] Lidar reset complete.")
