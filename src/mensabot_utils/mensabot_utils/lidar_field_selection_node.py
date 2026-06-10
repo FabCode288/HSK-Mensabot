@@ -296,7 +296,7 @@ class LidarFieldSelector(Node):
             active_pin = 24
 
         elif self.current_state == FieldState.ROTATE_RIGHT:
-            active_pin = 25
+            active_pin = 24
 
         elif self.current_state == FieldState.MANUAL_OVERRIDE:
             active_pin = 26

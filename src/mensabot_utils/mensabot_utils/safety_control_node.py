@@ -118,7 +118,7 @@ class SafetyControlNode(Node):
         # RESET CONFIG
         # ======================================================
 
-        self.reset_interval = 0.5
+        self.reset_interval = 1.0
         self.reset_pulse_duration = 0.1
 
         self.last_reset_attempt_time = 0.0
@@ -367,6 +367,10 @@ class SafetyControlNode(Node):
                 self.estop_gpio_active = not bool(
                     gpio_state
                 )
+                self.get_logger().debug(
+                    f'GPIO State: {gpio_state} -> '
+                    f'Estop Active: {self.estop_gpio_active}'
+                )
 
             except Exception as e:
 
@@ -404,6 +408,9 @@ class SafetyControlNode(Node):
 
             self.get_logger().warn(
                 'ATTEMPTING SAFETY RELAY RESET'
+            )
+            self.get_logger().warn(
+                f'Safety relay Input: {self.estop_gpio_active}'
             )
 
             try:
