@@ -1,6 +1,6 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch_ros.actions import ComposableNodeContainer, Node
@@ -15,6 +15,7 @@ def generate_launch_description():
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')    
     pkg_laser_scan_merger = get_package_share_directory('laser_scan_merger')
     pkg_mensabot_hardware = get_package_share_directory('mensabot_hardware')
+    pkg_mensabot_utils = get_package_share_directory('mensabot_utils')
 
     package_path = get_package_share_path('imu_ros2_device')
     default_rviz_config_path = package_path / 'rviz/ybimu.rviz'
@@ -221,6 +222,12 @@ def generate_launch_description():
         ]
     )
 
+    lidar_reset = ExecuteProcess(
+        cmd=['python3',
+        '/home/student/ros2_mensabot_ws/src/mensabot_utils/mensabot_utils/lidar_reset.py'],
+        output='screen'
+    )
+
     lidar_field_selection_node = Node(
         package='mensabot_utils',
         executable='lidar_field_selection_node',
@@ -243,6 +250,7 @@ def generate_launch_description():
 
     launchDescriptionObject = LaunchDescription()
 
+    #launchDescriptionObject.add_action(lidar_reset)
     launchDescriptionObject.add_action(model_arg)
     launchDescriptionObject.add_action(controller_manager_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)

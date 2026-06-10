@@ -4,9 +4,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <cstring>
-#include <sstream>
-#include <algorithm>
-
+#include <cmath>
 #include "pluginlib/class_list_macros.hpp"
 #include "rclcpp/rclcpp.hpp"
 
@@ -182,15 +180,13 @@ hardware_interface::return_type MensabotHardware::read(
     return hardware_interface::return_type::OK;
   }
 
-  std::string line = read_line();
+  Packet packet;
+  if (read_packet(packet)) {
 
-  if (!line.empty()) {
-
-    //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "RX: %s", line.c_str());
+    //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "RX Type=%d V1=%d V2=%d", packet.type, packet.value1, packet.value2);
 
     // READY
-    if (line == "READY") {
-
+    if (packet.type == PKT_READY) {
       last_msg_time_ = time;
 
       if (!connected_) {
@@ -205,7 +201,7 @@ hardware_interface::return_type MensabotHardware::read(
     }
 
     // HEARTBEAT
-    else if (line == "HB") {
+    else if (packet.type == PKT_HB) {
 
       last_msg_time_ = time;
 
@@ -263,7 +259,7 @@ hardware_interface::return_type MensabotHardware::write(
   // WAITING -> PING
   if (!connected_) {
 
-    send_string("PING");
+    send_packet(PKT_PING);
 
     return hardware_interface::return_type::OK;
   }
@@ -271,7 +267,7 @@ hardware_interface::return_type MensabotHardware::write(
   // ESTOP
   if (estop_) {
 
-    send_string("ESTOP");
+    send_packet(PKT_ESTOP);
 
     // Nur einmal loggen solange ESTOP aktiv bleibt
     if (!estop_sent_) {
@@ -290,7 +286,7 @@ hardware_interface::return_type MensabotHardware::write(
   // RESET
   if (estop_sent_ && !estop_) {
 
-    send_string("RESET");
+    send_packet(PKT_RESET);
 
     estop_sent_ = false;
     ready_ = false;
@@ -310,88 +306,111 @@ hardware_interface::return_type MensabotHardware::write(
   // ACTIVE -> CMD
   if (active_) {
 
-    int left_cmd = static_cast<int>(std::round(hw_commands_[0] * 100.0));
-    int right_cmd = static_cast<int>(std::round(hw_commands_[1] * 100.0));
+    int16_t left_cmd = static_cast<int16_t>(std::round(hw_commands_[0] * 100.0));
+    int16_t right_cmd = static_cast<int16_t>(std::round(hw_commands_[1] * 100.0));
 
     // ================= BUILD PAYLOAD =================
 
-    std::stringstream ss;
-
-    ss << "CMD,"
-      << left_cmd
-      << ","
-      << right_cmd;
-
-    std::string payload = ss.str();
-
-    // ================= XOR CHECKSUM =================
-
-    uint8_t checksum = 0;
-
-    for (char c : payload) {
-
-        checksum ^= static_cast<uint8_t>(c);
-    }
-
-    // ================= FINAL MESSAGE =================
-
-    std::stringstream final_msg;
-
-    final_msg << payload
-              << ","
-              << static_cast<int>(checksum);
-
-    send_string(final_msg.str());
+    send_packet(PKT_CMD, left_cmd, right_cmd);
   }
 
   return hardware_interface::return_type::OK;
 }
 
 // ================= HELPERS =================
-
-void MensabotHardware::send_string(const std::string & msg)
+uint16_t MensabotHardware::calculate_checksum(
+  const Packet& packet)
 {
-  std::string m = msg + "\n";
-
-  ::write(serial_fd_, m.c_str(), m.size());
-
-  //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX: %s", msg.c_str());
+  return static_cast<uint16_t>(
+    packet.type ^
+    packet.value1 ^
+    packet.value2);
 }
 
-std::string MensabotHardware::read_line()
+void MensabotHardware::send_packet(
+  uint8_t type,
+  int16_t value1,
+  int16_t value2)
 {
-  static std::string rx_buffer;
+  PacketBuffer tx;
 
-  char buffer[256];
+  tx.packet.header1 = 0xAA;
+  tx.packet.header2 = 0x55;
 
-  int n = ::read(serial_fd_, buffer, sizeof(buffer));
+  tx.packet.type = type;
 
-  if (n > 0) {
+  tx.packet.value1 = value1;
+  tx.packet.value2 = value2;
 
-    // Neue Daten anhängen
-    rx_buffer.append(buffer, n);
+  tx.packet.checksum =
+    calculate_checksum(tx.packet);
 
-    // Nach kompletter Zeile suchen
-    size_t pos = rx_buffer.find('\n');
+  ::write(
+    serial_fd_,
+    tx.bytes,
+    sizeof(tx.bytes));
 
-    if (pos != std::string::npos) {
+  //RCLCPP_INFO(rclcpp::get_logger("MensabotHardware"), "TX Type=%d V1=%d V2=%d", type, value1, value2);
+}
 
-      // Zeile extrahieren
-      std::string line = rx_buffer.substr(0, pos);
+bool MensabotHardware::read_packet(
+  Packet& packet)
+{
+  uint8_t byte;
 
-      // Aus Buffer entfernen
-      rx_buffer.erase(0, pos + 1);
+  while (::read(serial_fd_, &byte, 1) > 0)
+  {
+    switch (rx_index_)
+    {
+      case 0:
 
-      // \r entfernen
-      line.erase(
-        std::remove(line.begin(), line.end(), '\r'),
-        line.end());
+        if (byte != 0xAA)
+        {
+          continue;
+        }
 
-      return line;
+        rx_buffer_.bytes[rx_index_++] = byte;
+        break;
+
+      case 1:
+
+        if (byte != 0x55)
+        {
+          rx_index_ = 0;
+          continue;
+        }
+
+        rx_buffer_.bytes[rx_index_++] = byte;
+        break;
+
+      default:
+
+        rx_buffer_.bytes[rx_index_++] = byte;
+
+        if (rx_index_ >= sizeof(Packet))
+        {
+          rx_index_ = 0;
+
+          uint16_t checksum =
+            calculate_checksum(
+              rx_buffer_.packet);
+
+          if (checksum !=
+              rx_buffer_.packet.checksum)
+          {
+            return false;
+          }
+
+          packet = rx_buffer_.packet;
+
+          return true;
+        }
+
+        break;
     }
   }
 
-  return "";
+  return false;
 }
 
 }  // namespace mensabot_hardware

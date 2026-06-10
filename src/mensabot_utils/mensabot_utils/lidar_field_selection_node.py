@@ -302,9 +302,14 @@ class LidarFieldSelector(Node):
             active_pin = 26
 
         elif self.current_state == FieldState.STOP:
-            active_pin = 27
+            return
 
         if active_pin is not None:
+
+            self.gpio_requests[27].set_value(
+                    27,
+                    self.Value.INACTIVE
+                )
 
             self.gpio_requests[active_pin].set_value(
                 active_pin,
