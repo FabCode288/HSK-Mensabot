@@ -438,7 +438,7 @@
   <!--FRONT LASER SCANNER  -->
 
   <joint type="fixed" name="scan_front_joint">
-    <origin xyz="0.3875 -0.28 0.08" rpy="0 3.1415 2.3562"/>     <!--Lidar height is 19cm above ground-->
+    <origin xyz="0.3875 -0.28 0.08" rpy="0 3.1415 2.3562"/>     <!-- <origin xyz="0.3875 -0.28 0.08" rpy="0 3.1415 2.3562"/> Lidar height is 18cm above ground -->
     <child link="scan_front_link"/>
     <parent link="center_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -464,7 +464,7 @@
   <!--REAR LASER SCANNER  -->
 
   <joint type="fixed" name="scan_rear_joint">
-    <origin xyz="-0.3875 0.28 0.08" rpy="0 3.1415 -0.7654"/>    <!--Lidar height is 19cm above ground-->
+    <origin xyz="-0.3875 0.28 0.08" rpy="0 3.1415 -0.7854"/>    <!-- <origin xyz="-0.3875 0.28 0.08" rpy="0 3.1415 -0.7654"/> Lidar height is 18cm above ground-->
     <child link="scan_rear_link"/>
     <parent link="center_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
