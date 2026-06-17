@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#ros2 topic pub /safety/manual_override std_msgs/msg/Bool "{data: true}" -r 10
 
 import time
 
