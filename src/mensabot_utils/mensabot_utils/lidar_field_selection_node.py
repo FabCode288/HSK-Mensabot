@@ -3,7 +3,7 @@
 import rclpy
 from rclpy.node import Node
 
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, TwistStamped
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 
@@ -130,8 +130,8 @@ class LidarFieldSelector(Node):
         # ============================================================
 
         self.cmd_vel_sub = self.create_subscription(
-            Twist,
-            '/safety/cmd_vel',
+            TwistStamped,
+            '/mensabot_base_controller/cmd_vel_out',
             self.cmd_vel_callback,
             10
         )
@@ -201,8 +201,8 @@ class LidarFieldSelector(Node):
         if self.manual_override_active:
             return
 
-        linear_x = msg.linear.x
-        angular_z = msg.angular.z
+        linear_x = msg.twist.linear.x
+        angular_z = msg.twist.angular.z
 
         # Deadband
         if abs(linear_x) < self.linear_threshold:
@@ -302,9 +302,14 @@ class LidarFieldSelector(Node):
             active_pin = 26
 
         elif self.current_state == FieldState.STOP:
-            active_pin = 27
+            return
 
         if active_pin is not None:
+
+            self.gpio_requests[27].set_value(
+                    27,
+                    self.Value.INACTIVE
+                )
 
             self.gpio_requests[active_pin].set_value(
                 active_pin,
