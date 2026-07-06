@@ -92,7 +92,7 @@ def generate_launch_description():
         output='screen',
         remappings=[('/odometry/filtered', '/odom')],   # Remap the output of the EKF to /odom instead of /odometry/filtered like default
         parameters=[
-            os.path.join(pkg_mensabot_hardware, 'config', 'ekf.yaml'),
+            os.path.join(pkg_mensabot_bringup, 'config', 'ekf.yaml'),
         ]
     )
 
