@@ -47,7 +47,6 @@ install(TARGETS mensabot_hardware
 )
 
 install(DIRECTORY 
-  config
   include/
   DESTINATION share/${PROJECT_NAME}
 )
