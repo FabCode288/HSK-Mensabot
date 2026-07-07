@@ -88,7 +88,7 @@ controller_server:
       plugin: "nav2_mppi_controller::MPPIController"
       time_steps: 40 #56
       model_dt: 0.05
-      batch_size: 800 #2000 @ 30 Hz or 1000 @ 50 Hz are good values
+      batch_size: 1000 #800 #2000 @ 30 Hz or 1000 @ 50 Hz are good values
       ax_max: 3.0 #m/s^2
       ax_min: -3.0 #m/s^2
       ay_max: 0.0 #No moting in y direction
@@ -124,9 +124,9 @@ controller_server:
         cost_weight: 4.0
       GoalCritic:
         enabled: true
-        cost_power: 1 #####
+        cost_power: 2 #1
         cost_weight: 5.0
-        threshold_to_consider: 1.4
+        threshold_to_consider: 2.0
       GoalAngleCritic:
         enabled: true
         cost_power: 1
@@ -134,7 +134,7 @@ controller_server:
         threshold_to_consider: 0.5 #0.8
       PreferForwardCritic:
         enabled: true
-        cost_power: 1
+        cost_power: 2 #1
         cost_weight: 5.0
         threshold_to_consider: 0.5
       CostCritic:
@@ -159,8 +159,8 @@ controller_server:
         enabled: true
         cost_power: 1
         cost_weight: 5.0
-        offset_from_furthest: 5
-        threshold_to_consider: 1.4
+        offset_from_furthest: 6
+        threshold_to_consider: 2.0
       PathAngleCritic:
         enabled: true
         cost_power: 1
@@ -195,7 +195,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.8
+        inflation_radius: 1.2
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -252,7 +252,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.8
+        inflation_radius: 1.2
       always_send_full_costmap: True
 
 
