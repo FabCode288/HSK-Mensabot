@@ -92,7 +92,7 @@ controller_server:
       ax_max: 3.0 #m/s^2
       ax_min: -3.0 #m/s^2
       ay_max: 0.0 #No moting in y direction
-      az_max: 0.0 #No moting in z direction
+      az_max: 3.0 #No moting in z direction
       vx_std: 0.2
       vy_std: 0.2
       wz_std: 0.4 

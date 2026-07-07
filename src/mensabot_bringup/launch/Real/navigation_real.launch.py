@@ -101,8 +101,8 @@ def generate_launch_description():
     launchDescriptionObject.add_action(rviz_launch_arg)
     launchDescriptionObject.add_action(rviz_config_arg)
     launchDescriptionObject.add_action(rviz_node)
-    launchDescriptionObject.add_action(amcl_localization_launch)
-    #launchDescriptionObject.add_action(slam_toolbox_localization_launch)
+    #launchDescriptionObject.add_action(amcl_localization_launch)
+    launchDescriptionObject.add_action(slam_toolbox_localization_launch)
     launchDescriptionObject.add_action(navigation_launch)
 
     return launchDescriptionObject

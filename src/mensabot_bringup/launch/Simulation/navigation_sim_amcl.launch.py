@@ -54,7 +54,7 @@ def generate_launch_description():
     map_file_path = os.path.join(
         get_package_share_directory('mensabot_navigation'),
         'maps',
-        'map3.yaml'
+        'map_room.yaml'
     )
 
     # Launch rviz

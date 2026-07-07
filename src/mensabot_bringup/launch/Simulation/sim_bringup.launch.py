@@ -20,7 +20,7 @@ def generate_launch_description():
         default_value=os.path.join(
             pkg_mensabot_simulation,
             'worlds',
-            'world3.sdf'
+            'world_room.sdf'
         ),
         description='Full path to the Gazebo world file'
     )

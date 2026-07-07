@@ -21,8 +21,8 @@ slam_toolbox:
     # if you'd like to immediately start continuing a map at a given pose
     # or at the dock, but they are mutually exclusive, if pose is given
     # will use pose
-    map_file_name: "/home/fabko/ros2_mensabot_ws/src/mensabot_navigation/maps/map3.yaml"
-    map_start_pose: [2.0, -2.0, 0.0]
+    map_file_name: "/home/fabko/ros2_mensabot_ws/src/mensabot_navigation/maps/posegraph/map_room"
+    map_start_pose: [0.0, 0.0, 0.0]
     #map_start_at_dock: true
 
     debug_logging: true
@@ -74,3 +74,6 @@ slam_toolbox:
     minimum_angle_penalty: 0.9
     minimum_distance_penalty: 0.5
     use_response_expansion: true
+
+    #to safe the map to a file
+    #ros2 service call /slam_toolbox/serialize_map \slam_toolbox/srv/SerializePoseGraph \"{filename: '/home/fabko/ros2_mensabot_ws/src/mensabot_navigation/maps/map_room'}"
