@@ -35,7 +35,7 @@ install(TARGETS ${COMPONENT_NAME}
   RUNTIME DESTINATION bin
 )
 
-install(DIRECTORY launch config rviz test
+install(DIRECTORY launch config rviz test include/laser_scan_merger
   DESTINATION share/${PROJECT_NAME}
 )
 
