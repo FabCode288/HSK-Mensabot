@@ -37,7 +37,7 @@ def generate_launch_description():
             os.path.join(
                 pkg_mensabot_bringup,
                 'launch/Real',
-                'navigation_real.launch.py'
+                'navigation_real_slim.launch.py'
             )
         )
     )
