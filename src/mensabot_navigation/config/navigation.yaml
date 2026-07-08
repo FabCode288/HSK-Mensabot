@@ -40,8 +40,8 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.15 #changed from 0.15
-      yaw_goal_tolerance: 0.15 #changed from 0.15
+      xy_goal_tolerance: 0.10 #changed from 0.15
+      yaw_goal_tolerance: 0.10 #changed from 0.15
     # DWB parameters
     FollowPathDWB:
       plugin: "dwb_core::DWBLocalPlanner"
@@ -86,13 +86,13 @@ controller_server:
     # MPPI parameters, default controller is DWB above
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 40 #56
+      time_steps: 56 #40
       model_dt: 0.05
       batch_size: 1000 #800 #2000 @ 30 Hz or 1000 @ 50 Hz are good values
-      ax_max: 3.0 #m/s^2
-      ax_min: -3.0 #m/s^2
+      ax_max: 1.5 #m/s^2
+      ax_min: -1.5 #m/s^2
       ay_max: 0.0 #No moting in y direction
-      az_max: 3.0 #No moting in z direction
+      az_max: 2.0 #No moting in z direction
       vx_std: 0.2
       vy_std: 0.2
       wz_std: 0.4 
@@ -323,8 +323,8 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.5, 0.0, 2.0]
-    min_velocity: [-0.5, 0.0, -2.0]
+    max_velocity: [0.5, 0.0, 0.5]
+    min_velocity: [-0.5, 0.0, -0.5]
     max_accel: [2.5, 0.0, 3.2]
     max_decel: [-2.5, 0.0, -3.2]
     odom_topic: "odom"
