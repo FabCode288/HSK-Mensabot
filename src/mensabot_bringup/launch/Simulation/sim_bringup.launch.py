@@ -195,6 +195,21 @@ def generate_launch_description():
         output='screen'
     )
 
+    laser_scan_matcher_node = Node(
+                package='rf2o_laser_odometry',
+                executable='rf2o_laser_odometry_node',
+                name='rf2o_laser_odometry',
+                output='screen',
+                parameters=[{
+                    'laser_scan_topic' : '/merged_scan',
+                    'odom_topic' : '/odom_rf2o',
+                    'publish_tf' : False,
+                    'base_frame_id' : 'base_link',
+                    'odom_frame_id' : 'odom',
+                    'init_pose_from_topic' : '',
+                    'freq' : 5.0}],
+    )
+
     launchDescriptionObject = LaunchDescription()
 
     launchDescriptionObject.add_action(world_arg)
@@ -215,5 +230,6 @@ def generate_launch_description():
     launchDescriptionObject.add_action(simulation_publisher_node)
     launchDescriptionObject.add_action(laser_scan_merger_node)
     launchDescriptionObject.add_action(lidar_field_selection_node)
+    launchDescriptionObject.add_action(laser_scan_matcher_node)
     
     return launchDescriptionObject
