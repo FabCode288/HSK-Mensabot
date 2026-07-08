@@ -242,6 +242,21 @@ def generate_launch_description():
         output='screen'
     )
 
+    laser_scan_matcher_node = Node(
+                package='rf2o_laser_odometry',
+                executable='rf2o_laser_odometry_node',
+                name='rf2o_laser_odometry',
+                output='screen',
+                parameters=[{
+                    'laser_scan_topic' : '/merged_scan',
+                    'odom_topic' : '/odom_rf2o',
+                    'publish_tf' : False,
+                    'base_frame_id' : 'base_link',
+                    'odom_frame_id' : 'odom',
+                    'init_pose_from_topic' : '',
+                    'freq' : 5.0}],
+    )
+
     delayed_safety_control_node = RegisterEventHandler(
         OnProcessStart(
             target_action=lidar_field_selection_node,
@@ -268,6 +283,7 @@ def generate_launch_description():
             scanner_front_node,
             scanner_rear_node,
             lidar_field_selection_node,
+            laser_scan_matcher_node,
             delayed_safety_control_node
         ]
     )
