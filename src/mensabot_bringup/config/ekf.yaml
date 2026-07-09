@@ -44,8 +44,8 @@ ekf_filter_node:
         odom1: /odom_rf2o
         odom1_config: [true, true,  false, # x, y, z
                        false, false, true, # roll, pitch, yaw
-                       false, false,  false, # vx, vy, vz
-                       false, false, false, # vroll, vpitch, vyaw
+                       true, false,  false, # vx, vy, vz
+                       false, false, true, # vroll, vpitch, vyaw
                        false, false, false] # ax, ay, az
 
         imu0: /imu/data
