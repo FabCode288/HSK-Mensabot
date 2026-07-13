@@ -329,10 +329,15 @@ class OdomLogger(Node):
             dy * dy
         )
 
-        delta_yaw = math.degrees(
-            end_pose.yaw -
-            start_pose.yaw
-        )
+        delta_yaw = end_pose.yaw - start_pose.yaw
+
+        while delta_yaw > math.pi:
+            delta_yaw -= 2.0 * math.pi
+
+        while delta_yaw < -math.pi:
+            delta_yaw += 2.0 * math.pi
+
+        delta_yaw = math.degrees(delta_yaw)
 
         return (
             dx,
