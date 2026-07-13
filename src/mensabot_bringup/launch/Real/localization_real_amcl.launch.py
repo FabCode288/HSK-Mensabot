@@ -27,7 +27,7 @@ def generate_launch_description():
     map_file_path = os.path.join(
         pkg_mensabot_navigation,
         'maps',
-        'labor2.yaml'
+        'labor1307.yaml'
     )
 
     amcl_localization_launch = IncludeLaunchDescription(
