@@ -28,6 +28,7 @@ setup(
             'safety_control_node = mensabot_utils.safety_control_node:main',
             'simulation_publisher_node = mensabot_utils.simulation_publisher_node:main',
             'lidar_field_selection_node = mensabot_utils.lidar_field_selection_node:main',
+            'odom_logger = mensabot_utils.odom_logger:main',
         ],
     },
 )
