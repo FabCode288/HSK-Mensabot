@@ -48,17 +48,22 @@ ekf_filter_node:
                        false, false, true, # vroll, vpitch, vyaw
                        false, false, false] # ax, ay, az
 
+        odom1_queue_size: 6
+
         imu0: /imu/data
         imu0_config: [false, false,  false,
                       false,  false,  true,
                       true,  false,  false,
                       false,  false,  true,
-                      false,  false,  true]
+                      true,  false,  false]
                       
+        imu0_queue_size: 3
         imu0_differential: false
         imu0_remove_gravitational_acceleration: true
         imu0_relative: true
         transform_timeout: 0.1
+
+        use_control: true
 
         # [ADVANCED] The process noise covariance matrix can be difficult to tune, and can vary for each application, so it is
         # exposed as a configuration parameter. This matrix represents the noise we add to the total error after each
