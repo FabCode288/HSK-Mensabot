@@ -15,11 +15,11 @@ def generate_launch_description():
     )
 
     # Get package directories
-    pkg_mensabot_sim = get_package_share_directory('mensabot_sim')
+    pkg_mensabot_simulation = get_package_share_directory('mensabot_simulation')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
 
     # Update GZ_SIM_RESOURCE_PATH with the path to worlds folder
-    gazebo_models_path = os.path.join(pkg_mensabot_sim, 'worlds')
+    gazebo_models_path = os.path.join(pkg_mensabot_simulation, 'worlds')
     os.environ["GZ_SIM_RESOURCE_PATH"] += os.pathsep + gazebo_models_path
 
     # Include Gazebo launch file
@@ -29,7 +29,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'gz_args': [PathJoinSubstitution([
-                pkg_mensabot_sim,
+                pkg_mensabot_simulation,
                 'worlds',
                 LaunchConfiguration('world')
             ]),

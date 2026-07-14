@@ -2,7 +2,7 @@
 <robot>
   <gazebo>
       <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-          <parameters>$(find mensabot_sim)/config/controller.yaml</parameters> 
+          <parameters>$(find mensabot_bringup)/config/controller.yaml</parameters> 
       </plugin>
   </gazebo>
 

@@ -417,7 +417,7 @@
   </gazebo>
 
   <joint name="imu_joint" type="fixed">
-  <origin xyz="0.0 -0.01 0.25" rpy="0 0 0" /> <!-- Real Rotation centre of the IMU is not in the centre of the Hardware -->
+  <origin xyz="0.0 0.0 0.25" rpy="0 0 0" /> 
     <parent link="base_link"/>
     <child link="imu_link" />
   </joint>
