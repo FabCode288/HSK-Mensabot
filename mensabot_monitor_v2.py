@@ -22,7 +22,7 @@ from PyQt6.QtCore import QObject, QThread, QTimer, Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QApplication, QFrame, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-    QMainWindow, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
+    QMainWindow, QScrollArea, QSizePolicy, QVBoxLayout, QWidget, QCheckBox, QPushButton, QComboBox,
 )
 
 import pyqtgraph as pg
@@ -146,7 +146,7 @@ class MonitorNode(Node):
         self.last_seen = {}
 
         self.create_subscription(Odometry, "/odom", self.odom_cb, 10)
-        self.create_subscription(Twist, "/cmd_vel", lambda m: self.twist_cb("cmd_vel", m), 10)
+        self.create_subscription(Twist, "/cmd_vel_smoothed", lambda m: self.twist_cb("cmd_vel", m), 10)
         self.create_subscription(Twist, "/safety/cmd_vel", lambda m: self.twist_cb("safety_cmd", m), 10)
         self.create_subscription(
             TwistStamped,
@@ -276,6 +276,10 @@ class MensabotMonitor(QMainWindow):
         self.history_w_ctrl = deque(maxlen=600)
         self.history_w_odom = deque(maxlen=600)
 
+        # Plotsteuerung
+        self.auto_follow = True
+        self.time_window = 20.0
+
         self.build_ui()
         self.apply_style()
         self.start_ros()
@@ -334,10 +338,10 @@ class MensabotMonitor(QMainWindow):
         # Velocity chain
         chain_group = QGroupBox("GESCHWINDIGKEITSKETTE")
         chain_layout = QGridLayout(chain_group)
-        self.cmd_card = ValueCard("NAV2 /cmd_vel")
-        self.safety_cmd_card = ValueCard("SAFETY OUTPUT")
-        self.controller_cmd_card = ValueCard("CONTROLLER OUT")
-        self.odom_card = ValueCard("ODOM")
+        self.cmd_card = ValueCard("NAV2 MPPI_OUT: /cmd_vel_nav")
+        self.safety_cmd_card = ValueCard("SAFETY OUTPUT: /safety/cmd_vel")
+        self.controller_cmd_card = ValueCard("CONTROLLER OUT: /.../cmd_vel_out")
+        self.odom_card = ValueCard("EKF Geschwindigkeit")
         for i, c in enumerate([
             self.cmd_card, self.safety_cmd_card,
             self.controller_cmd_card, self.odom_card
@@ -369,23 +373,88 @@ class MensabotMonitor(QMainWindow):
         plot_group = QGroupBox("LIVE-VERLÄUFE")
         plot_layout = QVBoxLayout(plot_group)
 
+        # ---------------------------------------------------------
+        # Werkzeugleiste für die Diagramme
+        # ---------------------------------------------------------
+
+        toolbar = QHBoxLayout()
+
+        self.auto_follow_checkbox = QCheckBox("Auto Follow")
+        self.auto_follow_checkbox.setChecked(True)
+        self.auto_follow_checkbox.toggled.connect(self.toggle_auto_follow)
+
+        toolbar.addWidget(self.auto_follow_checkbox)
+
+        self.center_button = QPushButton("Zentrieren")
+        self.center_button.clicked.connect(self.center_plots)
+
+        toolbar.addWidget(self.center_button)
+
+        toolbar.addSpacing(20)
+
+        toolbar.addWidget(QLabel("Zeitfenster"))
+
+        self.time_window_box = QComboBox()
+        self.time_window_box.addItems(["10", "20", "30", "60", "120"])
+        self.time_window_box.setCurrentText("20")
+        self.time_window_box.currentTextChanged.connect(self.change_time_window)
+
+        toolbar.addWidget(self.time_window_box)
+
+        toolbar.addStretch()
+
+        plot_layout.addLayout(toolbar)
+
         self.linear_plot = pg.PlotWidget(title="Lineargeschwindigkeit")
         self.linear_plot.setLabel("left", "v", units="m/s")
         self.linear_plot.setLabel("bottom", "Zeit", units="s")
         self.linear_plot.showGrid(x=True, y=True, alpha=0.25)
-        self.lin_cmd_curve = self.linear_plot.plot(name="cmd_vel", pen=pg.mkPen(width=2))
-        self.lin_ctrl_curve = self.linear_plot.plot(name="controller_out", pen=pg.mkPen(width=2, style=Qt.PenStyle.DashLine))
-        self.lin_odom_curve = self.linear_plot.plot(name="odom", pen=pg.mkPen(width=2, style=Qt.PenStyle.DotLine))
-        self.linear_plot.addLegend()
+        self.linear_plot.addLegend(
+            offset=(10, 10),
+            brush=pg.mkBrush(40, 40, 40, 220)
+        )
+        self.lin_cmd_curve = self.linear_plot.plot(
+            name="Nav2 /cmd_vel",
+            pen=pg.mkPen("#3498db", width=3)
+        )
+        self.lin_ctrl_curve = self.linear_plot.plot(
+            name="Controller Output",
+            pen=pg.mkPen("#f39c12", width=3, style=Qt.PenStyle.DashLine)
+        )
+        self.lin_odom_curve = self.linear_plot.plot(
+            name="EKF Geschwindigkeit",
+            pen=pg.mkPen("#2ecc71", width=3, style=Qt.PenStyle.DotLine)
+        )
 
         self.angular_plot = pg.PlotWidget(title="Winkelgeschwindigkeit")
         self.angular_plot.setLabel("left", "ω", units="rad/s")
         self.angular_plot.setLabel("bottom", "Zeit", units="s")
         self.angular_plot.showGrid(x=True, y=True, alpha=0.25)
-        self.ang_cmd_curve = self.angular_plot.plot(name="cmd_vel", pen=pg.mkPen(width=2))
-        self.ang_ctrl_curve = self.angular_plot.plot(name="controller_out", pen=pg.mkPen(width=2, style=Qt.PenStyle.DashLine))
-        self.ang_odom_curve = self.angular_plot.plot(name="odom", pen=pg.mkPen(width=2, style=Qt.PenStyle.DotLine))
-        self.angular_plot.addLegend()
+        self.angular_plot.addLegend(
+            offset=(10, 10),
+            brush=pg.mkBrush(40, 40, 40, 220)
+        )
+        self.ang_cmd_curve = self.angular_plot.plot(
+            name="Nav2 /cmd_vel",
+            pen=pg.mkPen("#3498db", width=3)
+        )
+        self.ang_ctrl_curve = self.angular_plot.plot(
+            name="Controller Output",
+            pen=pg.mkPen("#f39c12", width=3, style=Qt.PenStyle.DashLine)
+        )
+        self.ang_odom_curve = self.angular_plot.plot(
+            name="EKF Winkelgeschwindigkeit",
+            pen=pg.mkPen("#2ecc71", width=3, style=Qt.PenStyle.DotLine)
+        )
+        
+        # Benutzer hat den Plot verändert
+        self.linear_plot.getViewBox().sigRangeChangedManually.connect(
+            self.user_changed_plot
+        )
+
+        self.angular_plot.getViewBox().sigRangeChangedManually.connect(
+            self.user_changed_plot
+        )
 
         plot_layout.addWidget(self.linear_plot)
         plot_layout.addWidget(self.angular_plot)
@@ -467,6 +536,59 @@ class MensabotMonitor(QMainWindow):
                 border-radius: 6px;
                 padding: 8px;
                 font-family: monospace;
+            }}
+            QScrollBar:vertical {{
+                background: #303841;
+                width: 18px;
+                margin: 0px;
+                border-radius: 8px;
+            }}
+
+            QScrollBar::handle:vertical {{
+                background: #4fa3ff;
+                min-height: 40px;
+                border-radius: 8px;
+            }}
+
+            QScrollBar::handle:vertical:hover {{
+                background: #6bb8ff;
+            }}
+
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {{
+                height: 0px;
+            }}
+
+            QScrollBar::add-page:vertical,
+            QScrollBar::sub-page:vertical {{
+                background: transparent;
+            }}
+
+            QScrollBar:horizontal {{
+                background: #303841;
+                height: 18px;
+                margin: 0px;
+                border-radius: 8px;
+            }}
+
+            QScrollBar::handle:horizontal {{
+                background: #4fa3ff;
+                min-width: 40px;
+                border-radius: 8px;
+            }}
+
+            QScrollBar::handle:horizontal:hover {{
+                background: #6bb8ff;
+            }}
+
+            QScrollBar::add-line:horizontal,
+            QScrollBar::sub-line:horizontal {{
+                width: 0px;
+            }}
+
+            QScrollBar::add-page:horizontal,
+            QScrollBar::sub-page:horizontal {{
+                background: transparent;
             }}
         """)
 
@@ -668,6 +790,88 @@ class MensabotMonitor(QMainWindow):
         self.ang_cmd_curve.setData(x, list(self.history_w_cmd))
         self.ang_ctrl_curve.setData(x, list(self.history_w_ctrl))
         self.ang_odom_curve.setData(x, list(self.history_w_odom))
+
+        # ---------------------------------------------------------
+        # Auto Follow
+        # ---------------------------------------------------------
+
+        if self.auto_follow and len(x) > 2:
+
+            xmax = x[-1]
+            xmin = max(0.0, xmax - self.time_window)
+
+            self.linear_plot.setXRange(xmin, xmax, padding=0)
+            self.angular_plot.setXRange(xmin, xmax, padding=0)
+
+            # Nur Werte innerhalb des sichtbaren Fensters betrachten
+            visible = [i for i, t in enumerate(x) if t >= xmin]
+
+            if visible:
+
+                lin_values = (
+                    [self.history_cmd[i] for i in visible] +
+                    [self.history_ctrl[i] for i in visible] +
+                    [self.history_odom[i] for i in visible]
+                )
+
+                ang_values = (
+                    [self.history_w_cmd[i] for i in visible] +
+                    [self.history_w_ctrl[i] for i in visible] +
+                    [self.history_w_odom[i] for i in visible]
+                )
+
+                if lin_values:
+                    ymin = min(lin_values)
+                    ymax = max(lin_values)
+
+                    if abs(ymax - ymin) < 0.05:
+                        ymin -= 0.05
+                        ymax += 0.05
+
+                    margin = (ymax - ymin) * 0.10
+
+                    self.linear_plot.setYRange(
+                        ymin - margin,
+                        ymax + margin,
+                        padding=0
+                    )
+
+                if ang_values:
+                    ymin = min(ang_values)
+                    ymax = max(ang_values)
+
+                    if abs(ymax - ymin) < 0.05:
+                        ymin -= 0.05
+                        ymax += 0.05
+
+                    margin = (ymax - ymin) * 0.10
+
+                    self.angular_plot.setYRange(
+                        ymin - margin,
+                        ymax + margin,
+                        padding=0
+                    )
+
+    def toggle_auto_follow(self, checked):
+        self.auto_follow = checked
+
+    def change_time_window(self, text):
+        self.time_window = float(text)
+
+    def center_plots(self):
+        self.auto_follow = True
+        self.auto_follow_checkbox.setChecked(True)
+
+        self.linear_plot.enableAutoRange(axis="y")
+        self.angular_plot.enableAutoRange(axis="y")
+    
+    def user_changed_plot(self):
+        if self.auto_follow:
+            self.auto_follow = False
+
+            self.auto_follow_checkbox.blockSignals(True)
+            self.auto_follow_checkbox.setChecked(False)
+            self.auto_follow_checkbox.blockSignals(False)
 
     def closeEvent(self, event):
         self.plot_timer.stop()
