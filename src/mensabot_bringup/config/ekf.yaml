@@ -35,8 +35,8 @@ ekf_filter_node:
         world_frame: odom           # Defaults to the value of odom_frame if unspecified
 
         odom0: /mensabot_base_controller/odom
-        odom0_config: [false, false,  false, # x, y, z
-                       false, false, false, # roll, pitch, yaw
+        odom0_config: [true, true,  false, # x, y, z
+                       false, false, true, # roll, pitch, yaw
                        true, false,  false, # vx, vy, vz
                        false, false, true, # vroll, vpitch, vyaw
                        false, false, false] # ax, ay, az
@@ -46,8 +46,8 @@ ekf_filter_node:
         odom1: /odom_rf2o
         odom1_config: [true, true,  false, # x, y, z
                        false, false, true, # roll, pitch, yaw
-                       false, false,  false, # vx, vy, vz
-                       false, false, false, # vroll, vpitch, vyaw
+                       true, false,  false, # vx, vy, vz
+                       false, false, true, # vroll, vpitch, vyaw
                        false, false, false] # ax, ay, az
 
         odom1_queue_size: 3
