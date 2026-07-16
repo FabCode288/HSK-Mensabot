@@ -159,11 +159,11 @@ void CLaserOdometry2DNode::publish()
 
   // Pose covariance (estimated)
   // x
-  odom.pose.covariance[0] = cov(0,0);
+  odom.pose.covariance[0] = 0.05;
   // y
-  odom.pose.covariance[7] = cov(1,1);
+  odom.pose.covariance[7] = 0.05;
   // yaw
-  odom.pose.covariance[35] = cov(2,2);
+  odom.pose.covariance[35] = 0.10;
 
   // Twist covariance
   // vx
@@ -188,13 +188,13 @@ void CLaserOdometry2DNode::publish()
   odom.twist.covariance[35] = cov(2,2);
 
   // Large uncertainty for unused DOFs
-  odom.pose.covariance[14] = 1e6;
-  odom.pose.covariance[21] = 1e6;
-  odom.pose.covariance[28] = 1e6;
+  odom.pose.covariance[14] = 99999.1;
+  odom.pose.covariance[21] = 99999.1;
+  odom.pose.covariance[28] = 99999.1;
 
-  odom.twist.covariance[14] = 1e6;
-  odom.twist.covariance[21] = 1e6;
-  odom.twist.covariance[28] = 1e6;
+  odom.twist.covariance[14] = 99999.1;
+  odom.twist.covariance[21] = 99999.1;
+  odom.twist.covariance[28] = 99999.1;
   //publish the message
   odom_pub->publish(odom);
 
