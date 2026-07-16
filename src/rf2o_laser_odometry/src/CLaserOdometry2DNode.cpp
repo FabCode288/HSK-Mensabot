@@ -145,6 +145,56 @@ void CLaserOdometry2DNode::publish()
   odom.twist.twist.linear.x = rf2o_ref.lin_speed;    //linear speed
   odom.twist.twist.linear.y = 0.0;
   odom.twist.twist.angular.z = rf2o_ref.ang_speed;   //angular speed
+
+  // ------------------------------------------------------------
+  // Covariance
+  // RF2O computes the covariance of the incremental motion
+  // (vx, vy, wz). Publish it in the ROS Odometry message.
+  // ------------------------------------------------------------
+
+  const auto& cov = rf2o_ref.getIncrementCovariance();
+
+  odom.pose.covariance.fill(0.0);
+  odom.twist.covariance.fill(0.0);
+
+  // Pose covariance (estimated)
+  // x
+  odom.pose.covariance[0] = cov(0,0);
+  // y
+  odom.pose.covariance[7] = cov(1,1);
+  // yaw
+  odom.pose.covariance[35] = cov(2,2);
+
+  // Twist covariance
+  // vx
+  odom.twist.covariance[0] = cov(0,0);
+  // vx <-> vy
+  odom.twist.covariance[1] = cov(0,1);
+  // vx <-> wz
+  odom.twist.covariance[5] = cov(0,2);
+
+  // vy <-> vx
+  odom.twist.covariance[6] = cov(1,0);
+  // vy
+  odom.twist.covariance[7] = cov(1,1);
+  // vy <-> wz
+  odom.twist.covariance[11] = cov(1,2);
+
+  // wz <-> vx
+  odom.twist.covariance[30] = cov(2,0);
+  // wz <-> vy
+  odom.twist.covariance[31] = cov(2,1);
+  // wz
+  odom.twist.covariance[35] = cov(2,2);
+
+  // Large uncertainty for unused DOFs
+  odom.pose.covariance[14] = 1e6;
+  odom.pose.covariance[21] = 1e6;
+  odom.pose.covariance[28] = 1e6;
+
+  odom.twist.covariance[14] = 1e6;
+  odom.twist.covariance[21] = 1e6;
+  odom.twist.covariance[28] = 1e6;
   //publish the message
   odom_pub->publish(odom);
 
