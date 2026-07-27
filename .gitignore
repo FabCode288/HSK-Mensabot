@@ -5,6 +5,4 @@ frames_*
 *.pyc
 __pycache__/
 .vscode/
-*.png
-*.jpg
-*.jpeg
+
