@@ -19,7 +19,7 @@ This guide describes how to install and configure the **HSK MensaBot** software 
 | Feature                   | Desktop PC | Raspberry Pi 5 |
 | :------------------------ | :--------: | :------------: |
 | Workspace Build           |      ✓     |        ✓       |
-| Gazebo Simulation         |      ✓     |        ✓       |
+| Gazebo Simulation         |      ✓     |        ✗       |
 | Real Robot Operation      |      ✗     |        ✓       |
 | Raspberry Pi Setup Script |      ✗     |        ✓       |
 
@@ -33,12 +33,10 @@ This guide describes how to install and configure the **HSK MensaBot** software 
 Create a new ROS2 workspace and clone the repository:
 
 ```bash
-mkdir -p ~/ros2_mensabot_ws/src
-cd ~/ros2_mensabot_ws/src
+mkdir -p ~/ros2_mensabot_ws/
+cd ~/ros2_mensabot_ws/
 
 git clone https://github.com/FabCode288/HSK-Mensabot.git
-
-cd ..
 
 colcon build --symlink-install
 
@@ -75,13 +73,7 @@ chmod +x raspberry_pi_setup.sh
 ./raspberry_pi_setup.sh
 ```
 
-The script is available in:
-
-```text
-scripts/raspberry_pi_setup.sh
-```
-
-For a detailed description of the setup process, see the **[Raspberry Pi Setup Guide](raspberry_pi_setup.md)**.
+The script is available in: **[scripts/raspberry_pi_setup.sh](scripts/raspberry_pi_setup.sh)**.
 
 ---
 

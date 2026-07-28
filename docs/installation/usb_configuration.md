@@ -31,9 +31,9 @@ Step 1 - Connect Devices
 Connect all USB serial devices to the system.
 
 Check connected USB devices:
-
+```bash
 lsusb
-
+```
 Typical output for CH340-based devices:
 
 1a86:7523 QinHeng Electronics CH340 serial converter
