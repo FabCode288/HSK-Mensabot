@@ -114,8 +114,9 @@ sudo nano /etc/udev/rules.d/myimu.rules
 ```
 
 Content:
-
+```bash
 SUBSYSTEM=="tty", ENV{ID_PATH}=="platform-xhci-hcd.0-usb-0:1:1.0", SYMLINK+="myimu", MODE:="0666"
+```
 
 Arduino Rule:
 ```bash
@@ -123,8 +124,9 @@ sudo nano /etc/udev/rules.d/arduino.rules
 ```
 
 Content:
-
+```bash
 SUBSYSTEM=="tty", ENV{ID_PATH}=="platform-xhci-hcd.1-usb-0:2:1.0", SYMLINK+="arduino", MODE:="0666"
+```
 
 ------------------------------------------------------------
 Step 6 - Reload udev Rules
