@@ -174,7 +174,7 @@ Further information: **[docs/simulation](docs/simulation)**.
 
 ## Real Robot
 
-Start the complete robot:
+Start the complete robot on the Raspberry Pi:
 
 ```bash
 ros2 launch mensabot_bringup real_complete_bringup.launch.py
@@ -188,6 +188,11 @@ ros2 launch mensabot_bringup real_bringup.launch.py
 Start the robot without navigation and localization while performing a LiDAR reset:
 ```bash
 ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
+```
+
+Start RViz on your computer:
+```bash
+ros2 launch mensabot_bringup real_rviz.launch.py
 ```
 
 Detailed launch descriptions are available in: **[docs/launch](docs/launch)**.
