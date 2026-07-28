@@ -14,8 +14,6 @@ The communication architecture connects the ROS2 control framework with the Ardu
   <img src="../images/communication_pi_uno.png" width="900">
 </p>
 
-*(Recommended: Raspberry Pi ↔ UART ↔ Arduino communication diagram.)*
-
 The communication process consists of the following steps:
 
 - The Hardware Interface receives wheel velocity commands from `ros2_control`.
@@ -49,14 +47,16 @@ This deterministic communication pipeline ensures predictable robot behavior and
 
 The communication protocol uses compact binary packets to exchange commands and status information.
 
-| Field | Description |
-|--------|-------------|
-| Header 1 | Packet synchronization |
-| Header 2 | Packet synchronization |
-| Packet Type | Command identifier |
-| Value 1 | First payload value |
-| Value 2 | Second payload value |
-| Checksum | Packet validation |
+| Field | Size | Description |
+|--------|:----:|-------------|
+| Header 1 | 1 Byte | Packet synchronization |
+| Header 2 | 1 Byte | Packet synchronization |
+| Packet Type | 1 Byte | Command identifier |
+| Value 1 | 2 Bytes | First payload value |
+| Value 2 | 2 Bytes | Second payload value |
+| Checksum | 2 Bytes | Packet validation |
+
+**Total Packet Size:** **9 Bytes**
 
 The packet structure enables reliable communication while minimizing transmission overhead. Packet headers simplify synchronization after transmission errors, while the checksum detects corrupted packets before command execution.
 
