@@ -11,7 +11,7 @@
 
 Developed at **Kempten University of Applied Sciences (Hochschule Kempten)**.
 
-The **HSK MensaBot** project is a ROS2-based mobile robot platform designed for autonomous indoor navigation. It combines modern navigation algorithms, hardware abstraction, integrated safety monitoring, and simulation into a unified software architecture. The system supports both simulation and real-world operation while maintaining a nearly identical software stack for both environments.
+The **HSK-Mensabot** project is a ROS2-based mobile robot platform designed for autonomous indoor navigation. It combines modern navigation algorithms, hardware abstraction, integrated safety monitoring, and simulation into a unified software architecture. The system supports both simulation and real-world operation while maintaining a nearly identical software stack for both environments.
 
 ---
 
@@ -233,14 +233,14 @@ Additional documentation can be found in the **[docs/](docs/)** directory.
 | Monitoring | Mensabot Monitor |
 | USB Configuration | USB mapping and udev rules |
 | Launch Files | Launch file documentation |
-| Third-Party Software | External open-source software and licenses ([THIRD_PARTY.md](THIRD_PARTY.md)) |
+| Third-Party Software | External open-source software and licenses ([Third_Party.md](Third_Party.md)) |
 ---
 
 # Third-Party Software
 
 This project integrates several third-party open-source components from the ROS ecosystem.
 
-A complete overview of all external dependencies, their purpose, repository links, and applicable licenses is available in the **[Third-Party Software Overview](THIRD_PARTY.md)**.
+A complete overview of all external dependencies, their purpose, repository links, and applicable licenses is available in the **[Third-Party Software Overview](Third_Party.md)**.
 
 Please refer to the respective repositories for licensing information.
 
@@ -248,7 +248,7 @@ Please refer to the respective repositories for licensing information.
 
 # License
 
-This repository contains software developed as part of the **HSK MensaBot** project at **Kempten University of Applied Sciences**.
+This repository contains software developed as part of the **HSK-Mensabot** project at **Kempten University of Applied Sciences**.
 
 Third-party software remains subject to its respective license.
 
