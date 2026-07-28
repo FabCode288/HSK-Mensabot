@@ -8,7 +8,7 @@ Depending on the desired operating mode, individual launch files can be used to 
 
 # 1. Launch Directory Structure
 
-The launch files are located in the `mensabot_bringup` package and are separated into two groups.
+The launch files are located in the **[mensabot_bringup](../src/mensabot_bringup/launch/)** package and are separated into two groups.
 
 ```text
 launch/
@@ -61,7 +61,7 @@ The following launch files are available for operating the physical HSK-Mensabot
 | `mapping_real.launch.py`           | Starts SLAM Toolbox for creating a new map of the environment.                                                                                        |
 | `navigation_real.launch.py`        | Starts autonomous navigation using an existing map.                                                                                                   |
 | `localization_real_amcl.launch.py` | Starts AMCL localization using a previously generated map.                                                                                            |
-| `real_rviz.launch.py`              | Starts RViz using the predefined project visualization configuration.                                                                                 |
+| `real_rviz.launch.py`              | Starts RViz using the predefined project visualization configuration on the computer of the user.                                                                                 |
 
 ---
 
@@ -99,19 +99,7 @@ ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
 
 ---
 
-# 5. Startup Sequence
-
-The following diagram illustrates the general startup sequence of the HSK-Mensabot software.
-
-> **Insert startup sequence diagram here**
-
-*(Recommended: Launch File → Robot Description → Controllers → Sensors → Localization → Navigation)*
-
-The launch files initialize the required software components in a predefined order. Depending on the selected operating mode, additional modules such as localization, mapping or autonomous navigation are started automatically.
-
----
-
-# 6. Related Documentation
+# 5. Related Documentation
 
 Further information about individual software components can be found in the following documentation.
 
