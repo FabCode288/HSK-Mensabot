@@ -43,8 +43,9 @@ Step 2 - Identify Serial Devices
 ------------------------------------------------------------
 
 List available serial devices:
-
+```bash
 ls /dev/ttyUSB*
+```
 
 Example:
 
@@ -56,8 +57,9 @@ Step 3 - Determine Which Device is Which
 ------------------------------------------------------------
 
 Use:
-
+```bash
 dmesg | tail -30
+```
 
 immediately after plugging in a device.
 
@@ -76,13 +78,14 @@ Step 4 - Find Unique USB Paths
 Use udevadm to inspect each device.
 
 Example for IMU:
-
+```bash
 udevadm info -a -n /dev/ttyUSB0
+```
 
 Example for Arduino:
-
+```bash
 udevadm info -a -n /dev/ttyUSB1
-
+```
 Search the output for:
 
 ID_PATH
@@ -106,16 +109,18 @@ Step 5 - Create udev Rules
 ------------------------------------------------------------
 
 IMU Rule:
-
+```bash
 sudo nano /etc/udev/rules.d/myimu.rules
+```
 
 Content:
 
 SUBSYSTEM=="tty", ENV{ID_PATH}=="platform-xhci-hcd.0-usb-0:1:1.0", SYMLINK+="myimu", MODE:="0666"
 
 Arduino Rule:
-
+```bash
 sudo nano /etc/udev/rules.d/arduino.rules
+```
 
 Content:
 
@@ -124,18 +129,20 @@ SUBSYSTEM=="tty", ENV{ID_PATH}=="platform-xhci-hcd.1-usb-0:2:1.0", SYMLINK+="ard
 ------------------------------------------------------------
 Step 6 - Reload udev Rules
 ------------------------------------------------------------
-
+```bash
 sudo udevadm control --reload-rules
 sudo udevadm trigger
+```
 
 Reconnect both USB devices afterwards.
 
 ------------------------------------------------------------
 Step 7 - Verify
 ------------------------------------------------------------
-
+```bash
 ls -l /dev/myimu
 ls -l /dev/arduino
+```
 
 Expected result:
 
@@ -159,12 +166,14 @@ Optional - Serial Permissions
 ------------------------------------------------------------
 
 To access serial devices without sudo:
-
+```bash
 sudo usermod -aG dialout $USER
+```
 
 Reboot afterwards:
-
+```bash
 sudo reboot
+```
 
 ------------------------------------------------------------
 Notes
