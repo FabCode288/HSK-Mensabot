@@ -17,7 +17,7 @@ def generate_launch_description():
             os.path.join(
                 pkg_mensabot_bringup,
                 'launch/Simulation',
-                'sim_bringup.launch.py'
+                'sim_bringup_robot.launch.py'
             )
         )
     )
