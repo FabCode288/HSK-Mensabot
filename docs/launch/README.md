@@ -8,7 +8,7 @@ Depending on the desired operating mode, individual launch files can be used to 
 
 # 1. Launch Directory Structure
 
-The launch files are located in the **[mensabot_bringup](../../src/mensabot_bringup/launch/)** package and are separated into two groups.
+The launch files are located in the `mensabot_bringup` package and are separated into two groups.
 
 ```text
 launch/
