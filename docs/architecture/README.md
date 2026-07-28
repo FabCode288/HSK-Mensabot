@@ -220,8 +220,15 @@ Detailed information is available in the **Safety Documentation**.
 ROS2 uses the TF framework to maintain the spatial relationship between all coordinate frames.
 
 <p align="center">
-  <img src="../images/tf_tree.pdf">
+  <img src="../images/architecture/tf_tree.png" width="900">
 </p>
+
+<p align="center">
+  <a href="../images/architecture/tf_tree.pdf">
+    High-resolution PDF
+  </a>
+</p>
+
 The TF tree contains the robot base frame, wheel frames, sensor frames, odometry frame and map frame. This allows all navigation and localization components to operate within a common coordinate system.
 
 ---
