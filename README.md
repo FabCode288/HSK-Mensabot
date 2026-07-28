@@ -133,27 +133,20 @@ For detailed hardware information, see the **[docs/hardware](docs/hardware)**.
 
 # Installation
 
-Clone the repository:
+Create a new ROS2 workspace and clone the repository:
 
 ```bash
+mkdir -p ~/ros2_mensabot_ws/
+cd ~/ros2_mensabot_ws/
+
 git clone https://github.com/FabCode288/HSK-Mensabot.git
-```
-
-Build the workspace:
-
-```bash
-cd ros2_mensabot_ws
 
 colcon build --symlink-install
-```
 
-Source the workspace:
-
-```bash
 source install/setup.bash
 ```
 
-A complete installation guide including Raspberry Pi setup, dependencies and udev configuration is available in: **[docs/installation](docs/installation)**.
+A complete installation guide, including Raspberry Pi setup, required dependencies, and USB (udev) configuration, is available in the **[Installation Guide](docs/installation)**.
 
 ---
 
@@ -210,7 +203,7 @@ Each package contains its own README with additional documentation.
 
 # Documentation
 
-Additional documentation can be found in the **docs/** directory.
+Additional documentation can be found in the **[docs/](docs/)** directory.
 
 | Documentation | Description |
 |---------------|-------------|
