@@ -188,7 +188,7 @@ Using ID_PATH is more robust than matching KERNELS because it relies on the phys
 - CH340-based devices often do not provide unique serial numbers,
   therefore USB path matching is used.
 
-Another method for setting up the usb port for the imu is provide here: https://www.yahboom.net/study/IMU_Sensor
+Another method for setting up the usb port for the imu is provide here: https://www.yahboom.net/study/IMU_Sensor (ROS2 Applications)
 
 ------------------------------------------------------------
 Summary

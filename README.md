@@ -148,7 +148,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-A complete installation guide, including Raspberry Pi setup, required dependencies, and USB (udev) configuration, is available in the **[Installation Guide](docs/installation)**.
+A complete installation guide, including Raspberry Pi setup, required dependencies, and USB (udev) configuration, is available in the **[Installation Guide](docs/installation/)**.
 
 ---
 
