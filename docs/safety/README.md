@@ -11,7 +11,7 @@ This separation ensures that the certified safety components remain fully functi
 The HSK-Mensabot implements a two-layer safety concept consisting of an independent hardware safety circuit and a software-based safety layer.
 
 <p align="center">
-  <img src="../images/safety_circuit.png" width="900">
+  <img src="../images/safety_circuit.png" width="500">
 </p>
 
 The certified hardware safety system consists of:
@@ -82,6 +82,13 @@ The Safety Control Node automatically selects the appropriate monitoring case an
 > **Empty Monitoring Case**
 > The **Empty** monitoring case disables all protective fields and is intended exclusively for manual recovery procedures. It cannot be selected automatically during normal robot operation and should only be used by the operator when recovering the robot from situations where an active protective field prevents further movement.
 
+> **Manual Override**  
+> The **Empty** monitoring case can be activated manually by publishing a `true` value to the `/safety/manual_override` topic. The manual override remains active for a limited time before the system automatically returns to the normal field selection.
+
+```bash
+ros2 topic pub --once /safety/manual_override std_msgs/msg/Bool "{data: true}"
+```
+
 ---
 
 # 5. Safety Features
@@ -91,8 +98,8 @@ Not all safety functions are available in both operating modes. The following ta
 | Safety Feature                    | Simulation | Real Robot |
 | --------------------------------- | :--------: | :--------: |
 | Emergency Stop Handling           |      ✓     |      ✓     |
-| Communication Monitoring          |      ✓     |      ✓     |
-| Hardware Monitoring               |      ✓     |      ✓     |
+| Communication Monitoring          |      ✗     |      ✓     |
+| Hardware Monitoring               |      ✗     |      ✓     |
 | Dynamic Field Selection           |      ✓     |      ✓     |
 | Dynamic Robot Footprint           |      ✓     |      ✓     |
 | Warning Field Speed Limitation    |      ✗     |      ✓     |
