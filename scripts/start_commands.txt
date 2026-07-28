@@ -1,8 +1,0 @@
-Joystick:
-PS5: 
-ros2 launch teleop_twist_joy teleop-launch.py joy_config:=ps5
-
-
-AMCL:
-Gloabl Loalization:
-ros2 service call /reinitialize_global_localization std_srvs/srv/Empty

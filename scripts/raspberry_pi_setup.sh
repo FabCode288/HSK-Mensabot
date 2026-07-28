@@ -1,19 +1,41 @@
 #!/bin/bash
 
 # ============================================================
-# ROS2 Jazzy Desktop Setup für Raspberry Pi 5
-# Vollsetup für mobilen Roboter (Nav2, Gazebo, RViz, Teleop)
+# HSK MensaBot - Raspberry Pi 5 Setup
+#
+# Installs and configures a complete ROS2 Jazzy development
+# environment for the HSK MensaBot platform.
+#
+# The script installs:
+#   - ROS2 Jazzy Desktop
+#   - Development tools
+#   - Navigation packages
+#   - Gazebo
+#   - RViz
+#   - GPIO support
+#   - VS Code
+#   - Additional utilities
+#
+# Version: 1.0
+# Tested on:
+#   - Raspberry Pi 5
+#   - Ubuntu 24.04 LTS
+#   - ROS2 Jazzy Jalisco
 # ============================================================
 
 set -e
 
-echo ">>> 1. Systemupdate und Upgrade"
+echo "============================================================"
+echo "HSK MensaBot - Raspberry Pi Setup"
+echo "============================================================"
+
+echo "[1/16] Updating system packages..."
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get autoremove -y
 sudo apt-get clean
 
-echo ">>> 2. Grundlegende Pakete installieren"
+echo "[2/16] Installing basic system packages..."
 sudo apt-get install -y \
 locales curl gnupg2 lsb-release software-properties-common
 
@@ -26,16 +48,16 @@ sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 sudo apt-get update
 
-echo ">>> 3. Locale setzen"
+echo "[3/16] Configuring system locale..."
 sudo locale-gen en_US en_US.UTF-8
 sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-echo ">>> 4. SSH aktivieren"
+echo "[4/16] Enabling SSH service..."
 sudo systemctl enable ssh
 sudo systemctl start ssh
 
-echo ">>> 5. Build-Tools und Python"
+echo "[5/16] Installing build tools and Python packages..."
 sudo apt-get install -y \
 build-essential cmake git python3-pip \
 python3-rosdep python3-colcon-common-extensions \
@@ -43,14 +65,14 @@ python3-vcstool python3-argcomplete \
 python3-empy python3-numpy python3-yaml \
 python3-serial python3-smbus2
 
-echo ">>> 6. rosdep initialisieren"
+echo "[6/16] Initializing rosdep..."
 sudo rosdep init || true
 rosdep update
 
-echo ">>> 7. ROS2 Jazzy Desktop installieren"
+echo "[7/16] Installing ROS2 Jazzy Desktop..."
 sudo apt-get install -y ros-jazzy-desktop
 
-echo ">>> 8. ROS2 Robotik Pakete"
+echo "[8/16] Installing ROS2 robotics packages..."
 sudo apt-get install -y \
 ros-jazzy-ros2-control \
 ros-jazzy-ros2-controllers \
@@ -65,28 +87,28 @@ ros-jazzy-imu-filter-madgwick \
 ros-jazzy-sick-safetyscanners2-interfaces \
 ros-jazzy-sick-safetyscanners-base
 
-echo ">>> 9. Gazebo Sim + ROS Integration"
+echo "[9/16] Installing Gazebo integration"
 sudo apt-get install -y \
 ros-jazzy-ros-gz \
 ros-jazzy-gz-ros2-control
 
-echo ">>> 10. RViz Plugins"
+echo "[10/16] Installing RViz Plugins"
 sudo apt-get install -y \
 ros-jazzy-rviz-imu-plugin
 
-echo ">>> 11. rqt GUI Tools"
+echo "[11/16] Installing rqt GUI Tools"
 sudo apt-get install -y \
 ros-jazzy-rqt \
 ros-jazzy-rqt-common-plugins
 
-echo ">>> 12. Teleoperation + Joystick"
+echo "[12/16] Installing Teleoperation + Joystick"
 sudo apt-get install -y \
 ros-jazzy-teleop-twist-keyboard \
 ros-jazzy-teleop-twist-joy \
 joystick \
 jstest-gtk
 
-echo ">>> 13. Zusätzliche Tools"
+echo "[13/16] Installing additional tools and utilities"
 sudo apt-get install -y \
 terminator \
 htop \
@@ -104,22 +126,22 @@ sudo usermod -aG gpio $USER
 sudo chgrp gpio /dev/gpiochip4
 sudo chmod 660 /dev/gpiochip4
 
-echo ">>> 14. VS Code installieren (sauber & konfliktfrei)"
+echo "[14/16] Installing VS Code (clean & conflict-free)"
 
-# Alte Microsoft / VS Code Quellen entfernen (wichtig!)
+# Remove previous VS Code repositories
 sudo rm -f /etc/apt/sources.list.d/vscode.list
 sudo rm -f /etc/apt/sources.list.d/vscode.sources
 sudo rm -f /etc/apt/sources.list.d/*microsoft*.list
 
-# Alte Keys entfernen
+# Remove old Microsoft/VS Code keys
 sudo rm -f /usr/share/keyrings/microsoft.gpg
 sudo rm -f /usr/share/keyrings/packages.microsoft.gpg
 
-# Microsoft GPG Key neu setzen
+# Install new Microsoft GPG key
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 sudo install -D -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/packages.microsoft.gpg
 
-# VS Code Repository sauber hinzufügen
+# Add Visual Studio Code repository
 echo "deb [arch=arm64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | \
 sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
 
@@ -127,11 +149,11 @@ sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y code
 
-echo ">>> 15. System final updaten (ROS Updates)"
+echo "[15/16] Updating installed packages..."
 sudo apt-get update
 sudo apt-get upgrade -y
 
-echo ">>> 16. ROS2 Environment setzen"
+echo "[16/16] Setting up ROS2 Environment"
 if ! grep -Fxq "source /opt/ros/jazzy/setup.bash" ~/.bashrc; then
   echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 fi
@@ -144,5 +166,13 @@ echo "if [ -f ~/ros2_mensabot_ws/install/setup.bash ]; then
     source ~/ros2_mensabot_ws/install/setup.bash
 fi" >> ~/.bashrc
 
-echo ">>> 17. Installation abgeschlossen"
-echo ""
+echo
+echo "============================================================"
+echo "Setup completed successfully."
+echo
+echo "Please restart your terminal or execute:"
+echo
+echo "    source ~/.bashrc"
+echo
+echo "You can now clone and build the HSK-Mensabot workspace."
+echo "============================================================"
