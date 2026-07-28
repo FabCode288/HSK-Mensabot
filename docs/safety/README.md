@@ -83,10 +83,10 @@ The Safety Control Node automatically selects the appropriate monitoring case an
 > The **Empty** monitoring case disables all protective fields and is intended exclusively for manual recovery procedures. It cannot be selected automatically during normal robot operation and should only be used by the operator when recovering the robot from situations where an active protective field prevents further movement.
 
 > **Manual Override**  
-> The **Empty** monitoring case can be activated manually by publishing a `true` value to the `/safety/manual_override` topic. The manual override remains active for a limited time before the system automatically returns to the normal field selection.
+> The **Empty** monitoring case can be activated manually by publishing a `true` value to the `/safety/manual_override` topic. The manual override remains active as long as the publisher for the topic is active.
 
 ```bash
-ros2 topic pub --once /safety/manual_override std_msgs/msg/Bool "{data: true}"
+ros2 topic pub /safety/manual_override std_msgs/msg/Bool "{data: true}" -r 10
 ```
 
 ---
