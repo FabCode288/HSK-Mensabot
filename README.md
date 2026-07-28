@@ -199,6 +199,14 @@ Detailed launch descriptions are available in: **[docs/launch](docs/launch)**.
 
 ---
 
+## Monitoring
+
+Start an external GUI for debugging information:
+```bash
+python3 docs/monitoring/mensabot_monitor.py
+```
+For morme detailed information: **[docs/monitoring](docs/monitoring/)**.
+
 # Repository Packages
 
 | Package | Description |

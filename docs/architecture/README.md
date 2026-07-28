@@ -245,7 +245,7 @@ One of the primary design goals of the project is to use nearly identical softwa
 | Motor Driver       | Gazebo Plugin | Arduino Controller              |
 | Hardware Interface | Simulated     | ros2_control Hardware Interface |
 | Navigation         | Identical     | Identical                       |
-| Safety Logic       | Identical     | Identical                       |
+| Safety Logic       | Simulated     | Identical                       |
 
 Only hardware-specific interfaces differ between both operating modes. Navigation, localization, safety logic, configuration files and most launch files remain unchanged.
 
