@@ -1,4 +1,20 @@
-# HSK MensaBot
+# HSK-Mensabot
+
+![ROS2](https://img.shields.io/badge/ROS2-Jazzy-22314E?logo=ros&logoColor=white)
+
+![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white)
+
+![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic-blue)
+
+![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi%205-green)
+
+![C++](https://img.shields.io/badge/C++-17-blue?logo=cplusplus)
+
+![Python](https://img.shields.io/badge/Python-3.12-yellow?logo=python)
+
+![License](https://img.shields.io/badge/License-MIT-green)
+
+![University](https://img.shields.io/badge/Kempten-University-red)
 
 ## A ROS2-Based Autonomous Mobile Robot Platform
 
@@ -8,11 +24,31 @@ The **HSK MensaBot** project is a ROS2-based mobile robot platform designed for 
 
 ---
 
+# Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Design Goals](#design-goals)
+- [System Architecture](#system-architecture)
+- [Repository Structure](#repository-structure)
+- [Hardware Overview](#hardware-overview)
+- [Software Stack](#software-stack)
+- [Installation](#installation)
+- [Running the System](#running-the-system)
+- [Repository Packages](#repository-packages)
+- [Documentation](#documentation)
+- [Third-Party Projects](#third-party-projects)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
+---
+
 # Project Overview
 
-> **Insert image of the real robot here**
-
-> **Insert image of the Gazebo simulation here**
+<p align="center">
+  <img src="docs/images/Real_Robot_V1.jpg" width="45%">
+  <img src="docs/images/Gazebo_mit_Welt.png" width="45%">
+</p>
 
 The software architecture has been developed with a strong focus on modularity, maintainability, and hardware abstraction. The project demonstrates how ROS2 can be used to integrate navigation, localization, hardware control, and functional safety into a single robotic platform.
 
