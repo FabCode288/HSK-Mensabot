@@ -38,7 +38,7 @@ The repository is designed to keep documentation, hardware-specific files, utili
 The software consists of several independent subsystems connected through ROS2 topics, services, actions, and the TF framework.
 
 <p align="center">
-  <img src="docs/images/dataflow.png">
+  <img src="../images/dataflow.png">
 </p>
 
 The architecture follows a layered design:
@@ -96,7 +96,7 @@ Each package contains its own README with additional implementation details.
 Each major software component is implemented as an individual ROS2 node.
 
 <p align="center">
-  <img src="docs/images/real_rqt_graph.png">
+  <img src="../images/real_rqt_graph.png">
 </p>
 
 The most important project-specific nodes are summarized below.
@@ -220,7 +220,7 @@ Detailed information is available in the **Safety Documentation**.
 ROS2 uses the TF framework to maintain the spatial relationship between all coordinate frames.
 
 <p align="center">
-  <img src="docs/images/tf_tree.png">
+  <img src="../images/tf_tree.pdf">
 </p>
 The TF tree contains the robot base frame, wheel frames, sensor frames, odometry frame and map frame. This allows all navigation and localization components to operate within a common coordinate system.
 
