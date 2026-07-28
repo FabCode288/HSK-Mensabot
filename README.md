@@ -233,21 +233,14 @@ Additional documentation can be found in the **[docs/](docs/)** directory.
 | Monitoring | Mensabot Monitor |
 | USB Configuration | USB mapping and udev rules |
 | Launch Files | Launch file documentation |
-
+| Third-Party Software | External open-source software and licenses ([THIRD_PARTY.md](THIRD_PARTY.md)) |
 ---
 
-# Third-Party Projects
+# Third-Party Software
 
-This project integrates and builds upon several excellent open-source ROS2 projects:
+This project integrates several third-party open-source components from the ROS ecosystem.
 
-- Navigation2 (Nav2)
-- SLAM Toolbox
-- robot_localization
-- ros2_control
-- RF2O Laser Odometry
-- laser_scan_merger
-- SICK Safety Scanners ROS2 Driver
-- imu_ros2_device
+A complete overview of all external dependencies, their purpose, repository links, and applicable licenses is available in the **[Third-Party Software Overview](THIRD_PARTY.md)**.
 
 Please refer to the respective repositories for licensing information.
 

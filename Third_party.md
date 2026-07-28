@@ -1,6 +1,6 @@
 # Third-Party Software
 
-The HSK MensaBot project is built upon several excellent open-source projects from the ROS community. This document provides an overview of the external software used within this repository.
+The HSK-Mensabot project is built upon several excellent open-source projects from the ROS community. This document provides an overview of the external software used within this repository.
 
 ---
 
@@ -13,7 +13,7 @@ The HSK MensaBot project is built upon several excellent open-source projects fr
 | laser_scan_merger | Merge multiple LiDAR scans | https://github.com/BruceChanJianLe/laser_scan_merger | Apache 2.0 |
 | SICK Safety Scanners ROS2 Driver | NanoScan3 ROS2 driver | https://github.com/SICKAG/sick_safetyscanners2 | Apache 2.0 |
 | SICK Safety Scanners Base | Scanner communication library | https://github.com/SICKAG/sick_safetyscanners_base | Apache 2.0 |
-| imu_ros2 | IMU driver | https://github.com/NEU-REAL/imu_ros2 | Apache 2.0 |
+| imu_ros2 | IMU driver | https://www.yahboom.net/study/IMU_Sensor | Apache 2.0 |
 
 ---
 
@@ -143,9 +143,13 @@ Apache License 2.0
 
 ROS2 driver providing IMU measurements used by the localization system.
 
-**Repository**
+**Documetation and code**
 
-https://github.com/NEU-REAL/imu_ros2
+https://www.yahboom.net/study/IMU_Sensor
+
+**Website**
+
+https://category.yahboom.net/products/yahboom-imu-sensor-modules?_pos=1&_sid=bf9f036bf&_ss=r&variant=52338310578492
 
 **License**
 
@@ -155,6 +159,6 @@ Apache License 2.0
 
 # Notes
 
-This repository contains custom software developed specifically for the HSK MensaBot project. All third-party software remains subject to the respective licenses provided by their original authors.
+This repository contains custom software developed specifically for the HSK-Mensabot project. All third-party software remains subject to the respective licenses provided by their original authors.
 
 Please refer to the individual repositories for detailed licensing information and attribution requirements.
