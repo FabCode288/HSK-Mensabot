@@ -68,7 +68,9 @@ The repository contains all software required to operate the robot, including si
 
 # System Architecture
 
-> **Insert system architecture diagram here**
+<p align="center">
+  <img src="docs/images/Real_Ros_Graph.png">
+</p>
 
 The robot software is organized into multiple independent ROS2 packages. Navigation, localization, hardware control, safety monitoring, and simulation are implemented as separate components communicating via ROS2 topics, services, and actions.
 
@@ -82,7 +84,7 @@ A detailed description of the complete software architecture is available in: **
 
 ros2_mensabot_ws/
 
-├── Arduino_Code/
+├── arduino_code/
 ├── docs/
 ├── scripts/
 ├── src/
@@ -157,6 +159,11 @@ A complete installation guide, including Raspberry Pi setup, required dependenci
 Start the complete simulation:
 
 ```bash
+ros2 launch mensabot_bringup sim_complete_bringup.launch.py
+```
+
+Start the simulation without navigation and localization:
+```bash
 ros2 launch mensabot_bringup sim_bringup.launch.py
 ```
 
@@ -170,11 +177,15 @@ Further information: **[docs/simulation](docs/simulation)**.
 Start the complete robot:
 
 ```bash
+ros2 launch mensabot_bringup real_complete_bringup.launch.py
+```
+
+Start the robot without navigation and localization:
+```bash
 ros2 launch mensabot_bringup real_bringup.launch.py
 ```
 
-Start with LiDAR reset:
-
+Start the robot without navigation and localization while performing a LiDAR reset:
 ```bash
 ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
 ```
