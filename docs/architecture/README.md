@@ -38,7 +38,7 @@ The repository is designed to keep documentation, hardware-specific files, utili
 The software consists of several independent subsystems connected through ROS2 topics, services, actions, and the TF framework.
 
 <p align="center">
-  <img src="../images/dataflow.png">
+  <img src="../images/dataflow.png" width="900">
 </p>
 
 The architecture follows a layered design:
