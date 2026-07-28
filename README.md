@@ -72,9 +72,7 @@ The repository contains all software required to operate the robot, including si
 
 The robot software is organized into multiple independent ROS2 packages. Navigation, localization, hardware control, safety monitoring, and simulation are implemented as separate components communicating via ROS2 topics, services, and actions.
 
-A detailed description of the complete software architecture is available in:
-
-**[Setup](docs/architecture)**.
+A detailed description of the complete software architecture is available in: **[docs/architecture](docs/architecture)**.
 
 ---
 
@@ -115,7 +113,7 @@ The current hardware platform consists of:
 | Drive Motors | 2× JMC iHSV57 Servo Motors |
 | Drive Type | Differential Drive |
 
-For detailed hardware information, see the **[Hardware Documentation](docs/hardware)**.
+For detailed hardware information, see the **[docs/hardware](docs/hardware)**.
 
 ---
 
@@ -155,13 +153,7 @@ Source the workspace:
 source install/setup.bash
 ```
 
-A complete installation guide including Raspberry Pi setup, dependencies and udev configuration is available in:
-
-```
-
-**[Setup](docs/installation)**.
-
-```
+A complete installation guide including Raspberry Pi setup, dependencies and udev configuration is available in: **[docs/installation](docs/installation)**.
 
 ---
 
@@ -175,13 +167,8 @@ Start the complete simulation:
 ros2 launch mensabot_bringup sim_bringup.launch.py
 ```
 
-Further information:
+Further information: **[docs/simulation](docs/simulation)**.
 
-```
-
-docs/simulation/
-
-```
 
 ---
 
@@ -199,13 +186,7 @@ Start with LiDAR reset:
 ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
 ```
 
-Detailed launch descriptions are available in:
-
-```
-
-docs/launch_files/
-
-```
+Detailed launch descriptions are available in: **[docs/launch](docs/launch)**.
 
 ---
 
@@ -277,6 +258,6 @@ This project was developed at
 
 **Kempten University of Applied Sciences (Hochschule Kempten)**
 
-as part of the **HSK MensaBot** project.
+as part of the **HSK-MensaBot** project.
 
 Special thanks to everyone involved in the development of the robot platform and to the open-source ROS community for providing the software foundation used throughout this project.
