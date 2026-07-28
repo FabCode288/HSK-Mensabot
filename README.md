@@ -1,19 +1,10 @@
 # HSK-Mensabot
 
 ![ROS2](https://img.shields.io/badge/ROS2-Jazzy-22314E?logo=ros&logoColor=white)
-
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420?logo=ubuntu&logoColor=white)
-
 ![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic-blue)
-
 ![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi%205-green)
-
-![C++](https://img.shields.io/badge/C++-17-blue?logo=cplusplus)
-
-![Python](https://img.shields.io/badge/Python-3.12-yellow?logo=python)
-
 ![License](https://img.shields.io/badge/License-MIT-green)
-
 ![University](https://img.shields.io/badge/Kempten-University-red)
 
 ## A ROS2-Based Autonomous Mobile Robot Platform
@@ -28,7 +19,6 @@ The **HSK MensaBot** project is a ROS2-based mobile robot platform designed for 
 
 - [Project Overview](#project-overview)
 - [Features](#features)
-- [Design Goals](#design-goals)
 - [System Architecture](#system-architecture)
 - [Repository Structure](#repository-structure)
 - [Hardware Overview](#hardware-overview)
@@ -46,7 +36,7 @@ The **HSK MensaBot** project is a ROS2-based mobile robot platform designed for 
 # Project Overview
 
 <p align="center">
-  <img src="docs/images/Real_Robot_V1.jpg" width="45%">
+  <img src="docs/images/Real_Robot_V1.jpeg" width="45%">
   <img src="docs/images/Gazebo_mit_Welt.png" width="45%">
 </p>
 
@@ -59,7 +49,7 @@ The repository contains all software required to operate the robot, including si
 # Features
 
 - ROS2 Jazzy based software architecture
-- Ubuntu 24.04 LTS support
+- Ubuntu 24.04 LTS
 - Autonomous navigation using Nav2
 - SLAM Toolbox for map creation
 - AMCL localization
@@ -76,20 +66,6 @@ The repository contains all software required to operate the robot, including si
 
 ---
 
-# Design Goals
-
-The project has been developed with the following objectives:
-
-- Unified software architecture for simulation and real hardware
-- Modular ROS2 package structure
-- Hardware abstraction through ros2_control
-- Safe robot operation using integrated safety monitoring
-- Reproducible development environment
-- Easy deployment on embedded hardware
-- Clear separation between hardware-specific and navigation-specific components
-
----
-
 # System Architecture
 
 > **Insert system architecture diagram here**
@@ -98,11 +74,7 @@ The robot software is organized into multiple independent ROS2 packages. Navigat
 
 A detailed description of the complete software architecture is available in:
 
-```
-
-docs/architecture/
-
-```
+**[Setup](docs/architecture)**.
 
 ---
 
@@ -143,13 +115,7 @@ The current hardware platform consists of:
 | Drive Motors | 2× JMC iHSV57 Servo Motors |
 | Drive Type | Differential Drive |
 
-A detailed hardware description including datasheets, configuration files and wiring information is available in:
-
-```
-
-docs/hardware/
-
-```
+For detailed hardware information, see the **[Hardware Documentation](docs/hardware)**.
 
 ---
 
@@ -172,7 +138,7 @@ docs/hardware/
 Clone the repository:
 
 ```bash
-git clone https://github.com/<username>/HSK_MensaBot.git
+git clone https://github.com/FabCode288/HSK-Mensabot.git
 ```
 
 Build the workspace:
@@ -193,7 +159,7 @@ A complete installation guide including Raspberry Pi setup, dependencies and ude
 
 ```
 
-docs/installation/
+**[Setup](docs/installation)**.
 
 ```
 
