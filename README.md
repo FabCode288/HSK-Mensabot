@@ -1,1 +1,280 @@
-THIS IS A PROJECT FOR A MOBILE DIFF DRIVE ROBOT
+# HSK MensaBot
+
+## A ROS2-Based Autonomous Mobile Robot Platform
+
+Developed at **Kempten University of Applied Sciences (Hochschule Kempten)**.
+
+The **HSK MensaBot** project is a ROS2-based mobile robot platform designed for autonomous indoor navigation. It combines modern navigation algorithms, hardware abstraction, integrated safety monitoring, and simulation into a unified software architecture. The system supports both simulation and real-world operation while maintaining a nearly identical software stack for both environments.
+
+---
+
+# Project Overview
+
+> **Insert image of the real robot here**
+
+> **Insert image of the Gazebo simulation here**
+
+The software architecture has been developed with a strong focus on modularity, maintainability, and hardware abstraction. The project demonstrates how ROS2 can be used to integrate navigation, localization, hardware control, and functional safety into a single robotic platform.
+
+The repository contains all software required to operate the robot, including simulation, navigation, hardware drivers, utility nodes, launch files, and Arduino firmware.
+
+---
+
+# Features
+
+- ROS2 Jazzy based software architecture
+- Ubuntu 24.04 LTS support
+- Autonomous navigation using Nav2
+- SLAM Toolbox for map creation
+- AMCL localization
+- Differential drive robot
+- ros2_control hardware interface
+- Custom Arduino motor communication protocol
+- Dual SICK NanoScan3 safety scanners
+- Dynamic safety field selection
+- Dynamic Nav2 footprint adaptation
+- RF2O laser odometry
+- Extended Kalman Filter localization
+- Gazebo simulation environment
+- Nearly identical simulation and real robot software architecture
+
+---
+
+# Design Goals
+
+The project has been developed with the following objectives:
+
+- Unified software architecture for simulation and real hardware
+- Modular ROS2 package structure
+- Hardware abstraction through ros2_control
+- Safe robot operation using integrated safety monitoring
+- Reproducible development environment
+- Easy deployment on embedded hardware
+- Clear separation between hardware-specific and navigation-specific components
+
+---
+
+# System Architecture
+
+> **Insert system architecture diagram here**
+
+The robot software is organized into multiple independent ROS2 packages. Navigation, localization, hardware control, safety monitoring, and simulation are implemented as separate components communicating via ROS2 topics, services, and actions.
+
+A detailed description of the complete software architecture is available in:
+
+```
+
+docs/architecture/
+
+```
+
+---
+
+# Repository Structure
+
+```
+
+ros2_mensabot_ws/
+
+├── Arduino_Code/
+├── docs/
+├── scripts/
+├── src/
+├── README.md
+└── LICENSE
+
+```
+
+| Folder | Description |
+|----------|-------------|
+| Arduino_Code | Arduino firmware used for motor control |
+| docs | Complete project documentation |
+| scripts | Installation and setup scripts |
+| src | ROS2 workspace packages |
+
+---
+
+# Hardware Overview
+
+The current hardware platform consists of:
+
+| Component | Model |
+|------------|-------------------------------|
+| Embedded Computer | Raspberry Pi 5 |
+| Microcontroller | Arduino Uno |
+| IMU | Yahboom IMU |
+| Safety Scanner | 2× SICK NanoScan3 |
+| Drive Motors | 2× JMC iHSV57 Servo Motors |
+| Drive Type | Differential Drive |
+
+A detailed hardware description including datasheets, configuration files and wiring information is available in:
+
+```
+
+docs/hardware/
+
+```
+
+---
+
+# Software Stack
+
+| Software | Version |
+|------------|-------------|
+| Ubuntu | 24.04 LTS |
+| ROS2 | Jazzy Jalisco |
+| Gazebo | Harmonic |
+| Nav2 | Jazzy |
+| SLAM Toolbox | Latest ROS2 Jazzy Release |
+| robot_localization | Jazzy |
+| ros2_control | Jazzy |
+
+---
+
+# Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/<username>/HSK_MensaBot.git
+```
+
+Build the workspace:
+
+```bash
+cd ros2_mensabot_ws
+
+colcon build --symlink-install
+```
+
+Source the workspace:
+
+```bash
+source install/setup.bash
+```
+
+A complete installation guide including Raspberry Pi setup, dependencies and udev configuration is available in:
+
+```
+
+docs/installation/
+
+```
+
+---
+
+# Running the System
+
+## Simulation
+
+Start the complete simulation:
+
+```bash
+ros2 launch mensabot_bringup sim_bringup.launch.py
+```
+
+Further information:
+
+```
+
+docs/simulation/
+
+```
+
+---
+
+## Real Robot
+
+Start the complete robot:
+
+```bash
+ros2 launch mensabot_bringup real_bringup.launch.py
+```
+
+Start with LiDAR reset:
+
+```bash
+ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
+```
+
+Detailed launch descriptions are available in:
+
+```
+
+docs/launch_files/
+
+```
+
+---
+
+# Repository Packages
+
+| Package | Description |
+|----------|-------------|
+| mensabot_bringup | Launch files for simulation and real robot |
+| mensabot_description | Robot description and URDF |
+| mensabot_navigation | Navigation and localization configuration |
+| mensabot_hardware | ros2_control hardware interface |
+| mensabot_utils | Utility and safety nodes |
+| mensabot_simulation | Gazebo simulation environment |
+| laser_scan_merger | Laser scan merging package |
+| rf2o_laser_odometry | RF2O laser odometry |
+| imu_ros2_device | IMU driver |
+
+Each package contains its own README with additional documentation.
+
+---
+
+# Documentation
+
+Additional documentation can be found in the **docs/** directory.
+
+| Documentation | Description |
+|---------------|-------------|
+| Architecture | Overall software architecture |
+| Installation | Complete installation guide |
+| Hardware | Hardware documentation and datasheets |
+| Navigation | Navigation configuration |
+| Safety | Safety concept |
+| Communication | Arduino communication protocol |
+| Simulation | Gazebo simulation |
+| Monitoring | Mensabot Monitor |
+| USB Configuration | USB mapping and udev rules |
+| Launch Files | Launch file documentation |
+
+---
+
+# Third-Party Projects
+
+This project integrates and builds upon several excellent open-source ROS2 projects:
+
+- Navigation2 (Nav2)
+- SLAM Toolbox
+- robot_localization
+- ros2_control
+- RF2O Laser Odometry
+- laser_scan_merger
+- SICK Safety Scanners ROS2 Driver
+- imu_ros2_device
+
+Please refer to the respective repositories for licensing information.
+
+---
+
+# License
+
+This repository contains software developed as part of the **HSK MensaBot** project at **Kempten University of Applied Sciences**.
+
+Third-party software remains subject to its respective license.
+
+---
+
+# Acknowledgements
+
+This project was developed at
+
+**Kempten University of Applied Sciences (Hochschule Kempten)**
+
+as part of the **HSK MensaBot** project.
+
+Special thanks to everyone involved in the development of the robot platform and to the open-source ROS community for providing the software foundation used throughout this project.
