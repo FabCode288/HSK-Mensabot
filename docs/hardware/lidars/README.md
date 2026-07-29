@@ -59,7 +59,7 @@ The NanoScan3 scanners use multiple monitoring cases consisting of protective an
 The following figure illustrates the monitoring fields used for forward operation.
 
 <p align="center">
-  <img src="../images/stopfield_front.png" width="700">
+  <img src="../../images/stopfield_front.png">
 </p>
 
 The protective field immediately stops the robot when an object enters the monitored area. The surrounding warning field reduces the robot speed before the protective field is reached, enabling smooth and safe obstacle avoidance.
