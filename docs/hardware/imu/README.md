@@ -1,122 +1,86 @@
-# Hardware
+# IMU
 
-The **HSK-Mensabot** is built on a modular hardware platform consisting of a Raspberry Pi 5, an Arduino-based motor controller, two SICK NanoScan3 safety laser scanners, an IMU, certified safety hardware and two integrated servo motors. The hardware architecture is designed to provide a clear separation between high-level robot software and low-level hardware control while allowing easy maintenance and future extensions.
+The **HSK-Mensabot** uses a **Yahboom Inertial Measurement Unit (IMU)** to provide linear acceleration and angular velocity measurements for state estimation. The IMU complements the wheel odometry by providing orientation information that is fused within the robot localization framework. Since the robot does not use wheel encoders, the IMU plays an important role in achieving a stable pose estimation.
 
 ---
 
 # 1. Hardware Overview
 
-The following figure provides an overview of the hardware layout of the HSK-Mensabot and the position of the main components.
+The robot is equipped with a single Yahboom IMU connected directly to the Raspberry Pi.
 
-![HSK-Mensabot Hardware Overview](../../images/topview_robot.pdf)
+| Component | Description |
+|-----------|-------------|
+| Yahboom IMU | Inertial Measurement Unit for state estimation |
 
-The main hardware components are summarized below.
-
-| Component | Purpose |
-|-----------|---------|
-| Raspberry Pi 5 | Main robot computer running ROS2 |
-| Arduino Uno | Low-level motor controller |
-| SICK NanoScan3 (Front) | Front safety laser scanner |
-| SICK NanoScan3 (Rear) | Rear safety laser scanner |
-| Yahboom IMU | Orientation and angular velocity measurement |
-| Servo Motors | Robot propulsion |
-| Safety Relay | Certified hardware safety system |
+The IMU provides acceleration and angular velocity measurements that are processed by the robot localization pipeline.
 
 ---
 
-# 2. Hardware Architecture
+# 2. Technical Specifications
 
-The hardware architecture separates perception, navigation and motor control into dedicated hardware components connected through standardized interfaces.
+The most important characteristics of the IMU are summarized below.
 
-<p align="center">
-  <img src="../images/dataflow.png" width="500">
-</p>
-The Raspberry Pi executes the complete ROS2 software stack including localization, navigation and safety supervision. Sensor information from the laser scanners and the IMU is processed on the Raspberry Pi, while motion commands are transmitted to the Arduino motor controller. The Arduino is responsible for the real-time control of the integrated servo motors.
+| Parameter | Value |
+|-----------|-------|
+| Manufacturer | Yahboom |
+| Sensor Type | Inertial Measurement Unit |
+| Communication | USB |
+| Measured Values | Linear acceleration, angular velocity |
+| Number of Sensors | 1 |
 
----
-
-# 3. Robot Specifications
-
-The most important technical specifications of the HSK-Mensabot are listed below.
-
-| Specification | Value |
-|---------------|-------|
-| Length | 845 mm |
-| Width | 610 mm |
-| Height | 400 mm |
-| Drive Type | Differential Drive |
-| Maximum Velocity | 0.5 m/s |
-| Main Computer | Raspberry Pi 5 |
-| Motor Controller | Arduino Uno |
-| Operating System | Ubuntu 24.04 LTS |
-| ROS Version | ROS2 Jazzy Jalisco |
+Further technical information is available from the manufacturer documentation and the ROS2 driver package.
 
 ---
 
-# 4. Hardware Connections
+# 3. Mounting Position
 
-## 4.1 Communication Interfaces
+The IMU is mounted inside the robot above the driven axle and close to the geometric center of the platform. It is installed inside the router enclosure and rigidly attached to the robot frame.
 
-The hardware components communicate using dedicated physical interfaces optimized for their respective applications.
-
-| Device | Interface |
-|---------|-----------|
-| Front SICK NanoScan3 | Ethernet |
-| Rear SICK NanoScan3 | Ethernet |
-| Arduino Uno | USB |
-| Yahboom IMU | USB |
-| Safety Relay | GPIO |
-
-The communication interfaces provide a clear separation between sensor communication, motor control and safety-related signals.
+This mounting position minimizes the influence of rotational offsets and allows the measured accelerations and angular velocities to represent the robot motion as accurately as possible.
 
 ---
 
-## 4.2 GPIO Connections
+# 4. ROS2 Integration
 
-The Raspberry Pi GPIO interface is used to communicate with the external safety hardware. Digital outputs control the active monitoring cases of the SICK NanoScan3 safety scanners, while dedicated GPIO lines are used to reset the safety relays and monitor their status.
+The IMU communicates with the Raspberry Pi via a USB serial interface and is integrated into ROS2 using the **imu_ros2_device** package.
 
-The following diagram illustrates the GPIO assignment and the electrical connections between the Raspberry Pi, the relay board, the safety relays and the laser scanners.
+The driver continuously publishes both raw and processed sensor measurements.
 
-![GPIO Connections](../../images/GPIO_PI5.png)
+| Topic | Description |
+|--------|-------------|
+| `/imu/data_raw` | Raw accelerometer and gyroscope measurements |
+| `/imu/data` | Filtered IMU data including orientation |
 
-The GPIO interface provides a simple and reliable hardware abstraction for controlling the different safety monitoring cases while allowing the software to monitor the current safety status of the robot.
+The raw sensor measurements are processed using the **Madgwick filter**, which estimates the robot orientation from the measured accelerations and angular velocities. The resulting orientation data is subsequently fused together with the wheel odometry inside the **Extended Kalman Filter (EKF)** to generate the robot odometry used for localization and autonomous navigation.
 
----
+Additional information about the ROS2 driver can be found in the repository:
 
-# 5. Hardware Components
-
-Detailed information about the individual hardware components is available in the dedicated documentation.
-
-| Component | Documentation |
-|-----------|---------------|
-| IMU | [IMU Documentation](imu/) |
-| LiDAR | [LiDAR Documentation](lidar/) |
-| Motors | [Motor Documentation](motors/) |
-
-Each section contains hardware descriptions, configuration files, technical specifications and additional resources.
+- **[`src/imu_ros2_device`](../../../src/imu_ros2_device/)**
 
 ---
 
-# 6. Additional Documentation
+# 5. Validation
 
-The detailed hardware documentation includes:
+The IMU was initially tested independently from the remaining robot software.
 
-- Technical specifications
-- Configuration files
-- Datasheets
-- Wiring information
-- Images
+During commissioning, the published sensor measurements and the estimated orientation were verified by performing controlled rotational movements of the robot and comparing the reported orientation with the actual motion.
+
+After successful verification, the IMU was integrated into the EKF-based sensor fusion pipeline and used as part of the complete localization system.
+
+---
+
+# 6. Additional Resources
+
+Further information about the IMU can be found in:
+
+- **`src/imu_ros2_device/`** – ROS2 driver package and configuration
 - Manufacturer documentation
-
-This structure keeps the hardware overview concise while providing comprehensive information for each individual subsystem.
 
 ---
 
 # Related Documentation
 
-- **[Architecture](../architecture/)**
-- **[Communication](../communication/)**
-- **[Navigation](../navigation/)**
-- **[Safety](../safety/)**
-- **[Network](../network/)**
-- **[Installation](../installation/)**
+- **[Hardware](../)**
+- **[Navigation](../../navigation/)**
+- **[Communication](../../communication/)**
+- **[Network](../../network/)**
