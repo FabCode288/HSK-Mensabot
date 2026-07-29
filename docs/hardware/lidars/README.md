@@ -48,7 +48,7 @@ Both NanoScan3 scanners communicate with the Raspberry Pi through dedicated Ethe
 
 The scanner parameters, monitoring cases and communication settings are configured using the **SICK Safety Designer** software.
 
-General network configuration of the robot is described in the **Network Documentation**.
+General network configuration of the robot is described in the **[Network Documentation](docs/network/)**.
 
 ---
 
@@ -59,7 +59,7 @@ The NanoScan3 scanners use multiple monitoring cases consisting of protective an
 The following figure illustrates the monitoring fields used for forward operation.
 
 <p align="center">
-  <img src="../../images/stopfield_front.png">
+  <img src="../../images/stopfield_front.png" width="700">
 </p>
 
 The protective field immediately stops the robot when an object enters the monitored area. The surrounding warning field reduces the robot speed before the protective field is reached, enabling smooth and safe obstacle avoidance.
