@@ -13,7 +13,7 @@ The simulation is based on **Gazebo Harmonic**, which simulates the physical beh
 The figure below shows the HSK-Mensabot inside the Gazebo simulation environment.
 
 <p align="center">
-  <img src="docs/images/gazebo_robot.png" width="700">
+  <img src="../images/gazebo_robot.png" width="700">
 </p>
 
 A key design objective was to use the same software architecture for both simulation and real-world operation. Therefore, both operating modes share the same configuration files for robot control, localization and navigation. This ensures that parameter changes only need to be made once and remain consistent across both environments. :contentReference[oaicite:2]{index=2}
