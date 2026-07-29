@@ -95,7 +95,7 @@ Detailed information about the individual hardware components is available in th
 | Component | Documentation |
 |-----------|---------------|
 | IMU | [IMU Documentation](imu/) |
-| LiDAR | [LiDAR Documentation](lidar/) |
+| LiDAR | [LiDAR Documentation](lidars/) |
 | Motors | [Motor Documentation](motors/) |
 
 Each section contains hardware descriptions, configuration files, technical specifications and additional resources.
