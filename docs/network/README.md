@@ -11,7 +11,7 @@ The Raspberry Pi and both SICK NanoScan3 laser scanners are connected to the rou
 The following figure illustrates the network structure of the HSK-Mensabot.
 
 <p align="center">
-  <img src="/images/network_plan.png" width="700">
+  <img src="/docs/images/network_plan.png" width="700">
 </p>
 
 ---
