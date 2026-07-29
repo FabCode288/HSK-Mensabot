@@ -8,7 +8,9 @@ The **HSK-Mensabot** is built on a modular hardware platform consisting of a Ras
 
 The following figure provides an overview of the hardware layout of the HSK-Mensabot and the position of the main components.
 
-![HSK-Mensabot Hardware Overview](../images/topview_robot.png)
+<p align="center">
+  <img src="../images/topview_robot.png" width="700">
+</p>
 
 The main hardware components are summarized below.
 
@@ -31,6 +33,7 @@ The hardware architecture separates perception, navigation and motor control int
 <p align="center">
   <img src="../images/dataflow.png" width="700">
 </p>
+
 The Raspberry Pi executes the complete ROS2 software stack including localization, navigation and safety supervision. Sensor information from the laser scanners and the IMU is processed on the Raspberry Pi, while motion commands are transmitted to the Arduino motor controller. The Arduino is responsible for the real-time control of the integrated servo motors.
 
 ---
