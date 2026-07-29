@@ -1,3 +1,24 @@
+"""
+Launch file for the Mensabot real robot.
+
+This launch file starts all software components required for operating the
+physical robot, including:
+
+- robot_state_publisher
+- ros2_control
+- Hardware Interface
+- EKF localization
+- IMU driver and Madgwick filter
+- Dual LiDAR drivers
+- Laser scan merger
+- RF2O laser odometry
+- Safety Control Node
+- LiDAR Field Selection Node
+
+The launch file also supports an optional LiDAR reset before the remaining
+system components are started.
+"""
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction, ExecuteProcess, GroupAction
@@ -10,6 +31,16 @@ from ament_index_python.packages import get_package_share_directory, get_package
 from launch.conditions import IfCondition, UnlessCondition
 
 def generate_launch_description():
+    """
+    Create the launch description for the real Mensabot platform.
+
+    The launch sequence initializes all required ROS 2 nodes in a controlled
+    order. Event handlers are used to synchronize dependent components and
+    prevent race conditions during system startup.
+
+    Returns:
+        LaunchDescription: Complete launch configuration for the real robot.
+    """    
 
     pkg_mensabot_description = get_package_share_directory('mensabot_description')
     pkg_mensabot_bringup = get_package_share_directory('mensabot_bringup')

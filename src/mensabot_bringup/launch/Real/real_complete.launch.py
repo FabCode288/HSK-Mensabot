@@ -1,3 +1,19 @@
+"""
+Launch file for the complete Mensabot software stack.
+
+This launch file starts the complete software system for the physical robot by
+including the individual launch files for robot bringup, localization and
+navigation.
+
+Startup delays are used to ensure that hardware, localization and navigation
+components are initialized in the required order.
+
+Included launch files:
+    - real_bringup.launch.py
+    - localization_real_amcl.launch.py
+    - navigation_real.launch.py
+"""
+
 import os
 
 from launch import LaunchDescription
@@ -7,6 +23,17 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
+    """
+    Create the launch description for the complete real robot system.
+
+    The launch process is divided into multiple stages. First, the robot hardware
+    and core system components are started. Localization is launched after a short
+    delay, followed by the navigation stack once the localization system has been
+    initialized.
+
+    Returns:
+        LaunchDescription: Complete launch description for the real robot.
+    """
 
     pkg_mensabot_bringup = get_package_share_directory(
         'mensabot_bringup'

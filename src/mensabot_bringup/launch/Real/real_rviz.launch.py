@@ -1,3 +1,20 @@
+"""
+Launch file for RViz visualization.
+
+This launch file starts RViz using a configurable visualization
+configuration file. RViz startup can be enabled or disabled through
+a launch argument, allowing the file to be reused in automated launch
+sequences where visualization is optional.
+
+Launch Arguments:
+    rviz (bool):
+        Enables or disables RViz startup.
+
+    rviz_config (str):
+        Name of the RViz configuration file located in the navigation
+        package.
+"""
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
@@ -7,6 +24,16 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
+    """
+    Create the launch description for RViz.
+
+    This launch file declares the required launch arguments and starts an
+    RViz instance with the selected configuration file if visualization is
+    enabled.
+
+    Returns:
+        LaunchDescription: Launch description for the RViz visualization.
+    """
 
     pkg_mensabot_navigation = get_package_share_directory(
         'mensabot_navigation'

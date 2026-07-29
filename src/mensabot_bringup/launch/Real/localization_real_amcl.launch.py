@@ -1,3 +1,22 @@
+"""
+Launch file for AMCL-based localization.
+
+This launch file starts the Nav2 localization stack using Adaptive Monte
+Carlo Localization (AMCL) and loads the predefined environment map together
+with the project-specific localization parameters.
+
+After the localization components have been initialized, a global
+localization request is executed to distribute the initial particle set
+across the entire map.
+
+Launch Arguments:
+    params_file:
+        AMCL parameter file.
+
+    map:
+        Occupancy grid map used for localization.
+"""
+
 import os
 
 from launch import LaunchDescription
@@ -7,6 +26,17 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
+    """
+    Create the launch description for the AMCL localization system.
+
+    The launch description starts the Nav2 localization stack with the configured
+    map and AMCL parameters. After the localization lifecycle nodes have become
+    active, a global localization request is executed to initialize the particle
+    filter without requiring an initial pose estimate.
+
+    Returns:
+        LaunchDescription: Launch description for the localization system.
+"""
 
     pkg_mensabot_navigation = get_package_share_directory(
         'mensabot_navigation'
