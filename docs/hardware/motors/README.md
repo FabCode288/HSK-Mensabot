@@ -1,122 +1,108 @@
-# Hardware
+# Motors
 
-The **HSK-Mensabot** is built on a modular hardware platform consisting of a Raspberry Pi 5, an Arduino-based motor controller, two SICK NanoScan3 safety laser scanners, an IMU, certified safety hardware and two integrated servo motors. The hardware architecture is designed to provide a clear separation between high-level robot software and low-level hardware control while allowing easy maintenance and future extensions.
+The **HSK-Mensabot** is driven by two integrated **JMC AC servo motors** with planetary gearboxes and electromagnetic holding brakes. The motors provide the propulsion for the differential drive platform and are controlled by an Arduino-based motor controller receiving velocity commands from the ROS2 hardware interface.
 
 ---
 
 # 1. Hardware Overview
 
-The following figure provides an overview of the hardware layout of the HSK-Mensabot and the position of the main components.
+The propulsion system consists of two identical servo motors mounted on the left and right side of the robot.
 
-![HSK-Mensabot Hardware Overview](../../images/topview_robot.pdf)
+| Component | Description |
+|-----------|-------------|
+| JMC Servo Motor | Robot propulsion |
+| Planetary Gearbox | Torque multiplication and speed reduction |
+| Electromagnetic Brake | Holds the robot when the drive is disabled |
 
-The main hardware components are summarized below.
-
-| Component | Purpose |
-|-----------|---------|
-| Raspberry Pi 5 | Main robot computer running ROS2 |
-| Arduino Uno | Low-level motor controller |
-| SICK NanoScan3 (Front) | Front safety laser scanner |
-| SICK NanoScan3 (Rear) | Rear safety laser scanner |
-| Yahboom IMU | Orientation and angular velocity measurement |
-| Servo Motors | Robot propulsion |
-| Safety Relay | Certified hardware safety system |
+The combination of servo motor, gearbox and holding brake provides precise motion control while ensuring safe operation during emergency stops and power loss.
 
 ---
 
-# 2. Hardware Architecture
+# 2. Technical Specifications
 
-The hardware architecture separates perception, navigation and motor control into dedicated hardware components connected through standardized interfaces.
+The most important specifications of the drive system are summarized below.
 
-<p align="center">
-  <img src="../images/dataflow.png" width="500">
-</p>
-The Raspberry Pi executes the complete ROS2 software stack including localization, navigation and safety supervision. Sensor information from the laser scanners and the IMU is processed on the Raspberry Pi, while motion commands are transmitted to the Arduino motor controller. The Arduino is responsible for the real-time control of the integrated servo motors.
+| Parameter | Value |
+|-----------|-------|
+| Manufacturer | JMC |
+| Motor Type | iHSV57-30-18-36-21-38 |
+| Rated Power | 180 W |
+| Number of Motors | 2 |
+| Gear Ratio | 39.878 : 1 |
+| Brake | Integrated electromagnetic holding brake |
 
----
-
-# 3. Robot Specifications
-
-The most important technical specifications of the HSK-Mensabot are listed below.
-
-| Specification | Value |
-|---------------|-------|
-| Length | 845 mm |
-| Width | 610 mm |
-| Height | 400 mm |
-| Drive Type | Differential Drive |
-| Maximum Velocity | 0.5 m/s |
-| Main Computer | Raspberry Pi 5 |
-| Motor Controller | Arduino Uno |
-| Operating System | Ubuntu 24.04 LTS |
-| ROS Version | ROS2 Jazzy Jalisco |
+Detailed electrical and mechanical specifications are available in the included datasheets.
 
 ---
 
-# 4. Hardware Connections
+# 3. Mechanical Drive System
 
-## 4.1 Communication Interfaces
+The HSK-Mensabot uses a differential drive configuration consisting of two independently driven wheels and passive caster wheels for support.
 
-The hardware components communicate using dedicated physical interfaces optimized for their respective applications.
+Each drive wheel is powered by an integrated servo motor through a planetary gearbox with a gear ratio of **39.878 : 1**. This configuration increases the available wheel torque while reducing the output speed, providing smooth and precise robot motion.
 
-| Device | Interface |
-|---------|-----------|
-| Front SICK NanoScan3 | Ethernet |
-| Rear SICK NanoScan3 | Ethernet |
-| Arduino Uno | USB |
-| Yahboom IMU | USB |
-| Safety Relay | GPIO |
-
-The communication interfaces provide a clear separation between sensor communication, motor control and safety-related signals.
+The integrated holding brake prevents unintended movement whenever the motors are disabled or the robot is switched off.
 
 ---
 
-## 4.2 GPIO Connections
+# 4. Electrical Connections
 
-The Raspberry Pi GPIO interface is used to communicate with the external safety hardware. Digital outputs control the active monitoring cases of the SICK NanoScan3 safety scanners, while dedicated GPIO lines are used to reset the safety relays and monitor their status.
+The servo motors are controlled using dedicated digital control signals generated by the Arduino motor controller.
 
-The following diagram illustrates the GPIO assignment and the electrical connections between the Raspberry Pi, the relay board, the safety relays and the laser scanners.
+| Connection | Purpose |
+|------------|---------|
+| Power Supply | Motor power supply |
+| Pulse | Position and speed command |
+| Direction | Rotation direction |
+| Enable | Motor enable signal |
+| Brake | Electromagnetic brake control |
 
-![GPIO Connections](../../images/GPIO_PI5.png)
-
-The GPIO interface provides a simple and reliable hardware abstraction for controlling the different safety monitoring cases while allowing the software to monitor the current safety status of the robot.
-
----
-
-# 5. Hardware Components
-
-Detailed information about the individual hardware components is available in the dedicated documentation.
-
-| Component | Documentation |
-|-----------|---------------|
-| IMU | [IMU Documentation](imu/) |
-| LiDAR | [LiDAR Documentation](lidar/) |
-| Motors | [Motor Documentation](motors/) |
-
-Each section contains hardware descriptions, configuration files, technical specifications and additional resources.
+This interface provides deterministic low-level motor control while separating the hardware from the higher-level ROS2 software.
 
 ---
 
-# 6. Additional Documentation
+# 5. Motor Control
 
-The detailed hardware documentation includes:
+Velocity commands generated by the navigation stack are converted into wheel velocities by the ROS2 Diff Drive Controller. The Hardware Interface translates these commands into a binary communication packet and transmits them to the Arduino via the serial interface.
 
-- Technical specifications
-- Configuration files
-- Datasheets
-- Wiring information
-- Images
-- Manufacturer documentation
+The Arduino calculates the corresponding pulse frequency for each motor and generates the required pulse and direction signals for the integrated servo drives.
 
-This structure keeps the hardware overview concise while providing comprehensive information for each individual subsystem.
+To improve the resolution of low-speed robot motion, the **Steps per Revolution** parameter of the servo motors was adjusted from the factory default value of **4000** to **50** during motor configuration. This significantly simplifies the conversion between commanded wheel velocity and generated pulse frequency while providing sufficient resolution for the operating speed of the HSK-Mensabot.
+
+---
+
+# 6. Brake System
+
+Each servo motor includes an integrated electromagnetic holding brake.
+
+The brake is automatically released when the motor is enabled and engaged whenever the drive is disabled or power is removed. This prevents unintended robot movement during emergency stops, power failures and maintenance operations.
+
+---
+
+# 7. Configuration
+
+The project repository contains all files required to reproduce the motor configuration.
+
+- **config/** – Servo motor parameter configuration files
+- **datasheets/** – Manufacturer datasheets
+
+These resources document the configured drive parameters and provide the information required for commissioning or replacing a motor.
+
+---
+
+# 8. Additional Resources
+
+The motor documentation includes:
+
+- Parameter configuration files
+- Manufacturer datasheets
+- Technical documentation
 
 ---
 
 # Related Documentation
 
-- **[Architecture](../architecture/)**
-- **[Communication](../communication/)**
-- **[Navigation](../navigation/)**
-- **[Safety](../safety/)**
-- **[Network](../network/)**
-- **[Installation](../installation/)**
+- **[Hardware](../)**
+- **[Communication](../../communication/)**
+- **[Navigation](../../navigation/)**
+- **[Safety](../../safety/)**
