@@ -14,26 +14,34 @@ from gpiod.line import Direction, Value
 GPIO_CHIP = "/dev/gpiochip4"
 PIN = 16
 
-request = gpiod.request_lines(
-    GPIO_CHIP,
-    consumer="lidar_reset",
-    config={
-        PIN: gpiod.LineSettings(
-            direction=Direction.OUTPUT,
-            output_value=Value.INACTIVE
-        )
-    }
-)
 
-# Generate a reset pulse for the connected LiDAR sensors.
-request.set_value(PIN, Value.INACTIVE)
-time.sleep(0.6)
-request.set_value(PIN, Value.ACTIVE)
+def main():
+    """Perform a hardware reset of the connected LiDAR sensors."""
 
-time.sleep(0.5)
+    request = gpiod.request_lines(
+        GPIO_CHIP,
+        consumer="lidar_reset",
+        config={
+            PIN: gpiod.LineSettings(
+                direction=Direction.OUTPUT,
+                output_value=Value.INACTIVE,
+            )
+        },
+    )
 
-request.release()
+    # Generate a reset pulse for the connected LiDAR sensors.
+    request.set_value(PIN, Value.INACTIVE)
+    time.sleep(0.6)
+    request.set_value(PIN, Value.ACTIVE)
 
-print("[INFO] [lidar_reset] Rebooting Lidars...")
-time.sleep(12.0)
-print("[INFO] [lidar_reset] Lidar reset complete.")
+    time.sleep(0.5)
+
+    request.release()
+
+    print("[INFO] [lidar_reset] Rebooting Lidars...")
+    time.sleep(12.0)
+    print("[INFO] [lidar_reset] Lidar reset complete.")
+
+
+if __name__ == "__main__":
+    main()
