@@ -1,3 +1,19 @@
+<!--
+Main Xacro description of the Mensabot platform.
+
+This file defines the robot structure, kinematic chain, collision geometry
+and visual representation. Depending on the use_sim argument, either the
+Gazebo simulation plugins or the real ros2_control hardware interface are
+included.
+
+Arguments:
+    use_sim:
+        Enables simulation-specific components.
+
+    model_only:
+        Generates only the robot model without hardware interfaces.
+-->
+
 <?xml version='1.0'?>
 
 <robot name="mensabot" xmlns:xacro="http://www.ros.org/wiki/xacro">
@@ -5,11 +21,12 @@
   <xacro:arg name="use_sim" default="false"/>
   <xacro:arg name="model_only" default="False" />
 
-  <!-- nur wenn Simulation -->
+  <!-- Include Gazebo-specific plugins only in simulation. -->
   <xacro:if value="$(arg use_sim)">
     <xacro:include filename="$(find mensabot_description)/urdf/mensabot.gazebo" />
   </xacro:if>
   
+  <!-- Load the real ros2_control hardware interface on the physical robot. -->
   <xacro:unless value="$(arg use_sim)">
     <xacro:include filename="$(find mensabot_description)/urdf/mensabot.ros2_control_real.xacro" />
     <xacro:mensabot_ros2_control/>
