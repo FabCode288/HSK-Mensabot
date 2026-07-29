@@ -14,7 +14,7 @@ sys.path.insert(
     os.path.abspath("../../src")
 )
 
-project = 'Mensabot'
+project = 'HSK-Mensabot'
 copyright = '2026, Fabian K'
 author = 'Fabian K'
 release = '1.0'
