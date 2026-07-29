@@ -177,17 +177,17 @@ MensabotHardware::export_command_interfaces()
 // ================= ACTIVATE =================
 
 hardware_interface::CallbackReturn MensabotHardware::on_activate(
-  const rclcpp_lifecycle::State &)
+    const rclcpp_lifecycle::State &previous_state)
 {
-  /**
-  * @brief Activate the hardware interface.
-  *
-  * Called when the controller manager activates the hardware component.
-  *
-  * @param State Current lifecycle state.
-  *
-  * @return CallbackReturn::SUCCESS.
-  */
+    /**
+     * @brief Activate the hardware interface.
+     *
+     * Called when the controller manager activates the hardware component.
+     *
+     * @param previous_state Previous lifecycle state.
+     *
+     * @return CallbackReturn::SUCCESS.
+     */
 
   RCLCPP_INFO(
     rclcpp::get_logger("MensabotHardware"),
@@ -197,17 +197,17 @@ hardware_interface::CallbackReturn MensabotHardware::on_activate(
 }
 
 hardware_interface::CallbackReturn MensabotHardware::on_deactivate(
-  const rclcpp_lifecycle::State &)
+  const rclcpp_lifecycle::State &previous_state)
 {
   /**
-  * @brief Deactivate the hardware interface.
-  *
-  * Closes the serial connection and releases hardware resources.
-  *
-  * @param State Current lifecycle state.
-  *
-  * @return CallbackReturn::SUCCESS.
-  */
+   * @brief Deactivate the hardware interface.
+   *
+   * Closes the serial connection and releases hardware resources.
+   *
+   * @param previous_state Previous lifecycle state.
+   *
+   * @return CallbackReturn::SUCCESS.
+   */
 
   close(serial_fd_);
 
