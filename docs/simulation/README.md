@@ -3,6 +3,7 @@
 The **HSK-Mensabot** simulation provides a realistic development environment for implementing and testing the complete software stack without requiring access to the physical robot. It enables reproducible testing, simplifies software integration and allows new features to be validated before deployment on the real hardware.
 
 The simulation has been designed to closely resemble the real robot. As a result, the transition from simulation to the physical platform only requires replacing the simulated hardware interfaces with the real sensors and actuators, while the remaining software architecture remains unchanged.
+
 ---
 
 # 1. Simulation Architecture
@@ -50,6 +51,7 @@ The simulation includes virtual LiDAR sensors and an IMU to reproduce the sensin
 
 The two simulated LiDAR sensors generate front and rear laser scans that are merged into a single scan exactly as on the physical robot. Simulated measurement noise is added to create more realistic sensor data for localization and navigation. The simulated IMU provides acceleration and angular velocity measurements, which are fused with the robot odometry by the Extended Kalman Filter (EKF). 
 Communication between Gazebo and ROS2 is handled by the **ros_gz_bridge**, allowing the simulated sensors to publish the same ROS2 topics as the physical hardware. This enables localization, mapping and navigation to operate without modification in either operating mode.
+
 ---
 
 # 5. Launch
