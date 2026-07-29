@@ -48,7 +48,7 @@ Both NanoScan3 scanners communicate with the Raspberry Pi through dedicated Ethe
 
 The scanner parameters, monitoring cases and communication settings are configured using the **SICK Safety Designer** software.
 
-General network configuration of the robot is described in the **[Network Documentation](docs/network/)**.
+General network configuration of the robot is described in the **[Network Documentation](../../network/)**.
 
 ---
 
