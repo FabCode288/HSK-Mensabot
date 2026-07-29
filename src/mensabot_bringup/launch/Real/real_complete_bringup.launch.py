@@ -44,7 +44,7 @@ def generate_launch_description():
             os.path.join(
                 pkg_mensabot_bringup,
                 'launch/Real',
-                'real_bringup.launch.py'
+                'real_bringup_robot.launch.py'
             )
         )
     )
