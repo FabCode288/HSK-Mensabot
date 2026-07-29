@@ -39,17 +39,23 @@ autodoc_default_options = {
 
 autodoc_mock_imports = [
     "rclpy",
-    "numpy",
-    "yaml",
-    "gpiod",
     "geometry_msgs",
     "sensor_msgs",
     "nav_msgs",
     "std_msgs",
     "builtin_interfaces",
     "tf2_ros",
+    "numpy",
+    "yaml",
+    "gpiod",
     "PyQt6",
     "pyqtgraph",
+
+    # zusätzlich:
+    "nav2_msgs",
+    "nav2_msgs.msg",
+    "sick_safetyscanners2_interfaces",
+    "sick_safetyscanners2_interfaces.msg",
 ]
 
 autodoc_member_order = "bysource"
