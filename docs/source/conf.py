@@ -51,7 +51,7 @@ autodoc_mock_imports = [
     "PyQt6",
     "pyqtgraph",
 
-    # zusätzlich:
+    "action_msgs",
     "nav2_msgs",
     "nav2_msgs.msg",
     "sick_safetyscanners2_interfaces",
