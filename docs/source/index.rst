@@ -6,9 +6,9 @@
 Mensabot Documentation
 ======================
 
-Welcome to the documentation of the Mensabot project.
+Welcome to the documentation of the HSK-Mensabot project.
 
-This documentation contains the project description as well as the complete Python and C++ API documentation.
+This documentation contains the project description and launch files as well as the complete Python and C++ API documentation.
 
 .. toctree::
    :maxdepth: 2
