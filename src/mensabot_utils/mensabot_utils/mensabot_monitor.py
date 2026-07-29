@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+Graphical monitoring application for the Mensabot platform.
+
+The application combines a ROS 2 monitoring node with a PyQt6 user interface
+to visualize robot state, safety information, velocity commands, diagnostics
+and live telemetry.
+"""
+
 import math
 import sys
 import time
@@ -43,13 +51,30 @@ MUTED = "#aeb6bf"
 
 
 def yaw_from_quaternion(q):
+    """
+    Convert a quaternion orientation into a yaw angle.
+
+    Args:
+        q: Quaternion representing the robot orientation.
+
+    Returns:
+        float: Yaw angle in radians.
+    """
+
     siny_cosp = 2.0 * (q.w * q.z + q.x * q.y)
     cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
     return math.atan2(siny_cosp, cosy_cosp)
 
 
 class ValueCard(QFrame):
+    """
+    Reusable GUI widget for displaying a labeled value.
+    """
+
     def __init__(self, title, value="--", parent=None):
+        """
+        Initialize the value card widget.
+        """
         super().__init__(parent)
         self.setObjectName("card")
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -68,11 +93,24 @@ class ValueCard(QFrame):
         layout.addWidget(self.value, 1)
 
     def set_value(self, text):
+        """
+        Update the displayed value.
+
+        Args:
+            text: Value to display.
+        """
         self.value.setText(str(text))
 
 
 class BoolCard(ValueCard):
+    """
+    Card widget for displaying boolean states.
+    """
     def __init__(self, title, true_text="AKTIV", false_text="INAKTIV", invert_good=False):
+        """
+        Initialize a boolean status card.
+        """
+
         super().__init__(title)
         self.true_text = true_text
         self.false_text = false_text
@@ -80,6 +118,13 @@ class BoolCard(ValueCard):
         self.set_state(None)
 
     def set_state(self, state):
+        """
+        Update the displayed boolean state.
+
+        Args:
+            state: Current boolean state.
+        """
+
         if state is None:
             self.value.setText("--")
             self.setStyleSheet("QFrame#card { background: #566573; border-radius: 10px; }")
@@ -95,7 +140,17 @@ class BoolCard(ValueCard):
 
 
 class StateCard(ValueCard):
+    """
+    Card widget for displaying textual system states.
+    """
     def set_state(self, text, color=BLUE):
+        """
+        Update the displayed system state.
+
+        Args:
+            text: State description.
+            color: Background color of the card.
+        """
         self.value.setText(text)
         self.setStyleSheet(
             f"QFrame#card {{ background: {color}; border-radius: 10px; }}"
@@ -104,17 +159,26 @@ class StateCard(ValueCard):
 
 
 class RosWorker(QObject):
+    """
+    Background worker executing the ROS 2 event loop.
+    """
     data_changed = pyqtSignal(dict)
     ros_error = pyqtSignal(str)
     finished = pyqtSignal()
 
     def __init__(self):
+        """
+        Initialize the ROS worker.
+        """
         super().__init__()
         self.running = True
         self.node = None
         self.executor = None
 
     def run(self):
+        """
+        Start the ROS 2 executor and process incoming messages.
+        """
         try:
             rclpy.init(args=None)
             self.node = MonitorNode(self.data_changed)
@@ -136,11 +200,20 @@ class RosWorker(QObject):
             self.finished.emit()
 
     def stop(self):
+        """
+        Request the worker thread to terminate.
+        """
         self.running = False
 
 
 class MonitorNode(Node):
+    """
+    ROS 2 node providing monitoring data for the graphical interface.
+    """
     def __init__(self, signal):
+        """
+        Initialize all ROS subscriptions and timers.
+        """
         super().__init__("mensabot_gui_monitor")
         self.signal = signal
         self.last_seen = {}
@@ -176,16 +249,31 @@ class MonitorNode(Node):
         self.create_timer(0.25, self.watchdog_cb)
 
     def mark(self, topic_key):
+        """
+        Update the timestamp of the latest received message.
+
+        Args:
+            topic_key: Identifier of the monitored topic.
+        """
         self.last_seen[topic_key] = time.monotonic()
 
     def emit(self, **kwargs):
+        """
+        Forward updated monitoring data to the graphical interface.
+        """
         self.signal.emit(kwargs)
 
     def bool_cb(self, key, msg):
+        """
+        Process incoming boolean messages.
+        """
         self.mark(key)
         self.emit(**{key: bool(msg.data)})
 
     def twist_cb(self, key, msg):
+        """
+        Process incoming velocity commands.
+        """
         self.mark(key)
         self.emit(**{
             key: {
@@ -195,6 +283,9 @@ class MonitorNode(Node):
         })
 
     def odom_cb(self, msg):
+        """
+        Process incoming odometry messages.
+        """
         self.mark("odom")
         q = msg.pose.pose.orientation
         self.emit(odom={
@@ -206,14 +297,23 @@ class MonitorNode(Node):
         })
 
     def field_cb(self, msg):
+        """
+        Process the current LiDAR monitoring state.
+        """
         self.mark("field_state")
         self.emit(field_state=msg.data)
 
     def speed_limit_cb(self, msg):
+        """
+        Process speed limit updates.
+        """
         self.mark("speed_limit")
         self.emit(speed_limit=float(msg.speed_limit))
 
     def scanner_cb(self, side, msg):
+        """
+        Process LiDAR safety scanner status messages.
+        """
         self.mark(f"{side}_scanner")
         protective_safe = len(msg.status) > 0 and bool(msg.status[0])
         warning_safe = len(msg.status) > 1 and bool(msg.status[1])
@@ -226,6 +326,9 @@ class MonitorNode(Node):
         })
 
     def goal_cb(self, msg):
+        """
+        Process navigation goal status updates.
+        """
         self.mark("goal_status")
         if not msg.status_list:
             self.emit(goal_state=("IDLE","#566573")); return
@@ -234,6 +337,9 @@ class MonitorNode(Node):
         self.emit(goal_state=m.get(s,("UNKNOWN","#566573")))
 
     def imu_cb(self, msg):
+        """
+        Process IMU measurements.
+        """
         self.mark("imu")
         yaw = math.degrees(yaw_from_quaternion(msg.orientation))
         self.emit(imu={
@@ -242,6 +348,9 @@ class MonitorNode(Node):
         })
 
     def watchdog_cb(self):
+        """
+        Monitor message reception times for all subscribed topics.
+        """
         now = time.monotonic()
         ages = {}
         keys = [
@@ -260,7 +369,13 @@ class MonitorNode(Node):
 # ============================================================
 
 class MensabotMonitor(QMainWindow):
+    """
+    Main window of the Mensabot monitoring application.
+    """
     def __init__(self):
+        """
+        Initialize the graphical user interface and monitoring components.
+        """
         super().__init__()
         self.setWindowTitle("Mensabot Monitor")
         self.resize(1500, 950)
@@ -289,6 +404,9 @@ class MensabotMonitor(QMainWindow):
         self.plot_timer.start(100)
 
     def build_ui(self):
+        """
+        Create and arrange all graphical user interface elements.
+        """
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         self.setCentralWidget(scroll)
@@ -487,6 +605,9 @@ class MensabotMonitor(QMainWindow):
         main.addWidget(watchdog_group)
 
     def apply_style(self):
+        """
+        Apply the graphical style sheet to the user interface.
+        """
         self.setStyleSheet(f"""
             QMainWindow, QWidget {{
                 background: {DARK};
@@ -593,6 +714,9 @@ class MensabotMonitor(QMainWindow):
         """)
 
     def start_ros(self):
+        """
+        Start the background ROS worker thread.
+        """
         self.ros_thread = QThread(self)
         self.ros_worker = RosWorker()
         self.ros_worker.moveToThread(self.ros_thread)
@@ -603,10 +727,16 @@ class MensabotMonitor(QMainWindow):
         self.ros_thread.start()
 
     def on_ros_error(self, text):
+        """
+        Display ROS communication errors.
+        """
         self.overall_state.set_state("ROS FEHLER", RED)
         self.statusBar().showMessage(text)
 
     def on_data(self, update):
+        """
+        Update the graphical interface with newly received monitoring data.
+        """
         self.data.update(update)
 
         if "hardware_connected" in update:
@@ -664,9 +794,18 @@ class MensabotMonitor(QMainWindow):
         self.update_overall_state()
 
     def set_twist_card(self, card, value):
+        """
+        Update a velocity display card.
+        """
         card.set_value(f'v: {value["linear"]:+.3f} m/s\nω: {value["angular"]:+.3f} rad/s')
 
     def derive_motion(self):
+        """
+        Determine the current robot motion from controller commands.
+
+        Returns:
+            str: Current motion state.
+        """
         v = self.data.get("controller_cmd", {}).get("linear", 0.0)
         w = self.data.get("controller_cmd", {}).get("angular", 0.0)
         lin_th = 0.02
@@ -685,9 +824,15 @@ class MensabotMonitor(QMainWindow):
         return "KURVENFAHRT VORWÄRTS" if v > 0 else "KURVENFAHRT RÜCKWÄRTS"
 
     def update_motion_state(self):
+        """
+        Update the displayed robot motion state.
+        """
         self.motion.set_state(self.derive_motion(), BLUE)
 
     def update_field_match(self):
+        """
+        Check whether the selected LiDAR field matches the robot motion.
+        """
         field = self.data.get("field_state")
         if field is None:
             self.field_match.set_state(None)
@@ -711,6 +856,9 @@ class MensabotMonitor(QMainWindow):
         self.field_match.set_state(field == expected)
 
     def update_overall_state(self):
+        """
+        Determine and display the overall system status.
+        """
         if self.data.get("estop", False):
             self.overall_state.set_state("E-STOP AKTIV", RED)
         elif self.data.get("hardware_connected") is False:
@@ -725,18 +873,33 @@ class MensabotMonitor(QMainWindow):
             self.overall_state.set_state("BETRIEBSBEREIT", GREEN)
 
     def any_protective_triggered(self):
+        """
+        Check whether any protective field is active.
+
+        Returns:
+            bool: True if a protective field is active.
+        """
         for side in ("front_scanner", "rear_scanner"):
             if side in self.data and not self.data[side]["protective_safe"]:
                 return True
         return False
 
     def any_warning_triggered(self):
+        """
+        Check whether any warning field is active.
+
+        Returns:
+            bool: True if a warning field is active.
+        """
         for side in ("front_scanner", "rear_scanner"):
             if side in self.data and not self.data[side]["warning_safe"]:
                 return True
         return False
 
     def update_watchdog(self, ages):
+        """
+        Update the topic watchdog indicators.
+        """
         for key, age in ages.items():
             if key not in self.watchdog_labels:
                 continue
@@ -767,6 +930,9 @@ class MensabotMonitor(QMainWindow):
         self.rear_data.set_state(rear_age is not None and rear_age < 1.0)
 
     def update_plots(self):
+        """
+        Update the live velocity plots.
+        """
         t = time.monotonic() - self.start_time
 
         cmd = self.data.get("cmd_vel", {"linear": 0.0, "angular": 0.0})
@@ -853,12 +1019,21 @@ class MensabotMonitor(QMainWindow):
                     )
 
     def toggle_auto_follow(self, checked):
+        """
+        Enable or disable automatic plot following.
+        """
         self.auto_follow = checked
 
     def change_time_window(self, text):
+        """
+        Update the displayed plot time window.
+        """
         self.time_window = float(text)
 
     def center_plots(self):
+        """
+        Re-center the live plots and enable automatic following.
+        """
         self.auto_follow = True
         self.auto_follow_checkbox.setChecked(True)
 
@@ -866,6 +1041,9 @@ class MensabotMonitor(QMainWindow):
         self.angular_plot.enableAutoRange(axis="y")
     
     def user_changed_plot(self):
+        """
+        Disable automatic following after manual plot interaction.
+        """
         if self.auto_follow:
             self.auto_follow = False
 
@@ -874,6 +1052,9 @@ class MensabotMonitor(QMainWindow):
             self.auto_follow_checkbox.blockSignals(False)
 
     def closeEvent(self, event):
+        """
+        Stop all background components before closing the application.
+        """
         self.plot_timer.stop()
         self.ros_worker.stop()
         self.ros_thread.quit()
@@ -882,6 +1063,9 @@ class MensabotMonitor(QMainWindow):
 
 
 def main():
+    """
+    Start the Mensabot monitoring application.
+    """
     app = QApplication(sys.argv)
     app.setFont(QFont("DejaVu Sans", 10))
     pg.setConfigOption("background", DARK)

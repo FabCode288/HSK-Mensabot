@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+"""
+Reset the connected LiDAR sensors via a dedicated GPIO output.
+
+The script generates a reset pulse, waits for the sensors to reboot and
+terminates after the reset sequence has completed.
+"""
+
 import time
 import gpiod
 from gpiod.line import Direction, Value
@@ -18,6 +25,7 @@ request = gpiod.request_lines(
     }
 )
 
+# Generate a reset pulse for the connected LiDAR sensors.
 request.set_value(PIN, Value.INACTIVE)
 time.sleep(0.6)
 request.set_value(PIN, Value.ACTIVE)

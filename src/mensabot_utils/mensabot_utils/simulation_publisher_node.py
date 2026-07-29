@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+Provides simulated safety inputs for the Mensabot platform.
+
+This node publishes dummy hardware connection and LiDAR safety scanner
+messages, allowing the Safety Control Node to operate unchanged in the
+simulation environment.
+"""
+
 import rclpy
 
 from rclpy.node import Node
@@ -11,8 +19,14 @@ from sick_safetyscanners2_interfaces.msg import OutputPaths
 
 
 class SafetySimInputs(Node):
+    """
+    ROS 2 node providing simulated safety hardware signals.
+    """
 
     def __init__(self):
+        """
+        Initialize publishers, timers and simulation states.
+        """
 
         super().__init__('safety_sim_inputs')
 
@@ -104,6 +118,9 @@ class SafetySimInputs(Node):
     # ==========================================================
 
     def timer_callback(self):
+        """
+        Publish simulated hardware connection and LiDAR safety scanner messages.
+        """
 
         # ------------------------------------------------------
         # HARDWARE CONNECTED
@@ -167,6 +184,9 @@ class SafetySimInputs(Node):
 # ==============================================================
 
 def main(args=None):
+    """
+    Start the Safety Simulation Input node.
+    """
 
     rclpy.init(args=args)
 

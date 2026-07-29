@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+Selects the active LiDAR monitoring field based on the robot's motion state.
+
+The node evaluates the commanded robot motion, selects the corresponding
+LiDAR monitoring field, updates the GPIO outputs for the safety scanner and
+publishes the matching Nav2 footprint.
+"""
+
 import rclpy
 from rclpy.node import Node
 
@@ -11,6 +19,9 @@ from enum import Enum
 
 
 class FieldState(Enum):
+    """
+    Enumeration of all supported LiDAR monitoring states.
+    """
 
     STOP = 0
 
@@ -24,9 +35,18 @@ class FieldState(Enum):
 
 
 class LidarFieldSelector(Node):
+    """
+    ROS 2 node for selecting LiDAR monitoring fields.
+
+    The node determines the robot's current motion state from velocity commands,
+    controls the LiDAR field selection via GPIO outputs and updates the dynamic
+    Nav2 footprint accordingly.
+    """
 
     def __init__(self):
-
+        """
+        Initialize parameters, GPIO interfaces, ROS interfaces and internal state.
+        """
         super().__init__('lidar_field_selector')
 
         # ============================================================
@@ -296,6 +316,12 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def manual_override_callback(self, msg: Bool):
+        """
+        Handle manual override requests.
+
+        Args:
+            msg: Manual override state.
+        """
 
         self.last_manual_override_msg_time = self.get_clock().now()
 
@@ -326,6 +352,12 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def cmd_vel_callback(self, msg: TwistStamped):
+        """
+        Process commanded robot velocities and update the active monitoring field.
+
+        Args:
+            msg: Commanded robot velocity.
+        """
 
         self.last_cmd_time = self.get_clock().now()
 
@@ -367,6 +399,16 @@ class LidarFieldSelector(Node):
         linear_x: float,
         angular_z: float
     ) -> FieldState:
+        """
+        Determine the LiDAR monitoring state from the commanded motion.
+
+        Args:
+            linear_x: Linear velocity in x-direction.
+            angular_z: Angular velocity around the z-axis.
+
+        Returns:
+            FieldState: Selected monitoring state.
+        """
 
         # STOP
         if linear_x == 0.0 and angular_z == 0.0:
@@ -402,6 +444,9 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def publish_footprint(self):
+        """
+        Publish the footprint corresponding to the current monitoring state.
+        """
 
         footprint_points = self.footprints.get(
             self.current_state
@@ -440,6 +485,9 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def set_gpio_state(self):
+        """
+        Update the GPIO outputs according to the selected monitoring field.
+        """
 
         self.get_logger().info(
             f'Field state: {self.current_state.name}'
@@ -493,6 +541,9 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def publish_state(self):
+        """
+        Publish the current LiDAR monitoring state.
+        """
 
         msg = String()
 
@@ -505,6 +556,12 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def timer_callback(self):
+        """
+        Monitor command and manual override timeouts.
+
+        Resets the monitoring state if no valid command or manual override message
+        has been received within the configured timeout.
+        """
 
         now = self.get_clock().now()
 
@@ -569,6 +626,9 @@ class LidarFieldSelector(Node):
     # ============================================================
 
     def destroy_node(self):
+        """
+        Release GPIO resources before shutting down the node.
+        """
 
         if self.gpio_available:
 
@@ -585,6 +645,12 @@ class LidarFieldSelector(Node):
 
 
 def main(args=None):
+    """
+    Start the LiDAR field selector node.
+
+    Initializes ROS 2, spins the node and performs a clean shutdown when the node
+    terminates.
+    """
 
     rclpy.init(args=args)
 
