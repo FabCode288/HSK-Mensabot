@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - doku
   workflow_dispatch:
 
 permissions:
