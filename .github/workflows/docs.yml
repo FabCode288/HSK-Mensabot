@@ -35,6 +35,7 @@ jobs:
           sudo apt-get install -y doxygen graphviz make
           python -m pip install --upgrade pip
           pip install sphinx sphinx-rtd-theme breathe
+          pip install -e src/mensabot_utils
 
       - name: Generate Doxygen XML
         run: doxygen Doxyfile
