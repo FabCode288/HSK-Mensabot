@@ -38,7 +38,7 @@ jobs:
           pip install -e src/mensabot_utils
 
       - name: Generate Doxygen XML
-        run: doxygen Doxyfile
+        run: doxygen docs/Doxyfile
 
       - name: Build Sphinx documentation
         working-directory: docs
