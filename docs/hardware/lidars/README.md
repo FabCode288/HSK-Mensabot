@@ -68,18 +68,18 @@ The monitoring cases are switched through the GPIO outputs described in the Hard
 
 The protective field immediately stops the robot when an object enters the monitored area. The surrounding warning field reduces the robot speed before the protective field is reached, enabling smooth and safe obstacle avoidance.
 
-The HSK-Mensabot uses multiple monitoring cases that are selected depending on the current driving direction and operating state.
+The HSK-Mensabot uses multiple monitoring cases that are automatically selected depending on the current operating state.
 
 | Monitoring Case | Description |
 |-----------------|-------------|
-| Front | Standard monitoring during forward driving. |
-| Front Left | Enlarged monitoring area on the left side while driving forward and turning left. |
-| Front Right | Enlarged monitoring area on the right side while driving forward and turning right. |
-| Rear | Standard monitoring during reverse driving. |
-| Rear Left | Enlarged monitoring area on the left side while reversing and turning left. |
-| Rear Right | Enlarged monitoring area on the right side while reversing and turning right. |
+| **Front** | Active during forward driving. The front protective and warning fields monitor the driving direction. |
+| **Backwards** | Active during reverse driving. The rear monitoring fields provide obstacle detection while reversing. |
+| **Rotate Left** | Optimized monitoring field for counterclockwise rotation of the robot. |
+| **Rotate Right** | Optimized monitoring field for clockwise rotation of the robot. |
+| **Standstill** | Reduced monitoring field used while the robot is stationary, maintaining obstacle detection without unnecessary field extensions. |
+| **Empty** | Monitoring fields are deactivated for maintenance and commissioning purposes. This mode can only be activated manually and is not intended for normal robot operation. |
 
-The active monitoring case is selected by the Raspberry Pi through dedicated GPIO outputs connected to the safety relay interface. This allows the monitored area to adapt dynamically to the current motion of the robot while maintaining certified safety functionality.
+The active monitoring case is selected by the Raspberry Pi through dedicated GPIO outputs connected to the safety relay interface. This allows the monitored area to adapt dynamically to the current operating state while maintaining certified safety functionality.
 
 ---
 
