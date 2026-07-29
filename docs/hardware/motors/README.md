@@ -40,7 +40,7 @@ Detailed electrical and mechanical specifications are available in the included 
 
 The HSK-Mensabot uses a differential drive configuration consisting of two independently driven wheels and passive caster wheels for support.
 
-Each drive wheel is powered by an integrated servo motor through a **planetary gearbox** followed by a **belt drive**. The planetary gearbox provides a transmission ratio of **39.878 : 1**, increasing the available wheel torque while reducing the output speed. The belt drive transfers the torque to the drive wheel and allows the mechanical arrangement required by the robot chassis.
+Each drive wheel is powered by an integrated servo motor through a **planetary gearbox** followed by a **belt drive**. This combination provides a transmission ratio of **39.878 : 1**, increasing the available wheel torque while reducing the output speed. The belt drive transfers the torque to the drive wheel and allows the mechanical arrangement required by the robot chassis.
 
 The integrated holding brake prevents unintended movement whenever the motors are disabled or the robot is switched off.
 
@@ -86,8 +86,8 @@ The brake is automatically released when the motor is enabled and engaged whenev
 
 The project repository contains all files required to reproduce the motor configuration.
 
-- **config/** – Servo motor parameter configuration files
-- **datasheets/** – Manufacturer datasheets
+- **[config/](../motors/config/)** – Servo motor parameter configuration files
+- **[datasheets/](../motors/datasheets/)** – Manufacturer datasheets
 
 The configuration files document all modified drive parameters, including the adapted **Steps per Revolution** value used by the HSK-Mensabot.
 
