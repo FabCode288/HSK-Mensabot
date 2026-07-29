@@ -29,7 +29,7 @@ The main hardware components are summarized below.
 The hardware architecture separates perception, navigation and motor control into dedicated hardware components connected through standardized interfaces.
 
 <p align="center">
-  <img src="../images/dataflow.png" width="500">
+  <img src="../images/dataflow.png" width="700">
 </p>
 The Raspberry Pi executes the complete ROS2 software stack including localization, navigation and safety supervision. Sensor information from the laser scanners and the IMU is processed on the Raspberry Pi, while motion commands are transmitted to the Arduino motor controller. The Arduino is responsible for the real-time control of the integrated servo motors.
 
@@ -77,7 +77,9 @@ The Raspberry Pi GPIO interface is used to communicate with the external safety 
 
 The following diagram illustrates the GPIO assignment and the electrical connections between the Raspberry Pi, the relay board, the safety relays and the laser scanners.
 
-![GPIO Connections](../images/GPIO_PI5.png)
+<p align="center">
+  <img src="../images/GPIO_PI5.png" width="700">
+</p>
 
 The GPIO interface provides a simple and reliable hardware abstraction for controlling the different safety monitoring cases while allowing the software to monitor the current safety status of the robot.
 
