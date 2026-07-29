@@ -13,6 +13,8 @@ Developed at **Kempten University of Applied Sciences (Hochschule Kempten)**.
 
 The **HSK-Mensabot** project is a ROS2-based mobile robot platform designed for autonomous indoor navigation. It combines modern navigation algorithms, hardware abstraction, integrated safety monitoring, and simulation into a unified software architecture. The system supports both simulation and real-world operation while maintaining a nearly identical software stack for both environments.
 
+The API documentation can be found here: https://fabcode288.github.io/HSK-Mensabot/index.html
+
 ---
 
 # Table of Contents
