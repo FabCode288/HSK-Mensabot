@@ -8,7 +8,7 @@ The **HSK-Mensabot** is built on a modular hardware platform consisting of a Ras
 
 The following figure provides an overview of the hardware layout of the HSK-Mensabot and the position of the main components.
 
-![HSK-Mensabot Hardware Overview](../images/topview_robot.png)
+![HSK-Mensabot Hardware Overview](../../images/topview_robot.pdf)
 
 The main hardware components are summarized below.
 
@@ -77,7 +77,7 @@ The Raspberry Pi GPIO interface is used to communicate with the external safety 
 
 The following diagram illustrates the GPIO assignment and the electrical connections between the Raspberry Pi, the relay board, the safety relays and the laser scanners.
 
-![GPIO Connections](../images/GPIO_PI5.png)
+![GPIO Connections](../../images/GPIO_PI5.png)
 
 The GPIO interface provides a simple and reliable hardware abstraction for controlling the different safety monitoring cases while allowing the software to monitor the current safety status of the robot.
 
