@@ -1,3 +1,30 @@
+"""
+Launch file for simultaneous mapping and navigation in simulation.
+
+This launch file starts the SLAM Toolbox and the Nav2 navigation stack
+within the simulation environment. Simulation time is enabled and RViz can
+optionally be launched for visualization.
+
+The launch file is intended for scenarios where navigation is performed while
+a map is being created or continuously updated.
+
+Launch Arguments:
+    rviz (bool):
+        Enables or disables RViz startup.
+
+    rviz_config (str):
+        Name of the RViz configuration file.
+
+    use_sim_time (bool):
+        Enables simulation time provided by Gazebo.
+
+    params_file:
+        Navigation parameter file used to configure the Nav2 stack.
+
+    slam_params_file:
+        SLAM Toolbox parameter file used for map generation.
+"""
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -9,6 +36,17 @@ from launch_ros.actions import SetRemap
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+    """
+    Create the launch description for simultaneous mapping and navigation.
+
+    The launch description starts the SLAM Toolbox together with the Nav2
+    navigation stack using simulation time. RViz can optionally be launched to
+    visualize the mapping and navigation process.
+
+    Returns:
+        LaunchDescription: Launch description for the simulated mapping and
+        navigation system.
+    """
 
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
 

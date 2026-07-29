@@ -1,3 +1,21 @@
+"""
+Launch file for SLAM-based map creation in simulation.
+
+This launch file starts the SLAM Toolbox in asynchronous online mapping mode
+within the simulation environment. Simulation time is enabled and RViz can be
+optionally launched for real-time visualization of the mapping process.
+
+Launch Arguments:
+    rviz (bool):
+        Enables or disables RViz startup.
+
+    rviz_config (str):
+        Name of the RViz configuration file used for mapping.
+
+    use_sim_time (bool):
+        Enables simulation time provided by Gazebo.
+"""
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -8,6 +26,16 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+    """
+    Create the launch description for the simulated mapping system.
+
+    The launch description starts the SLAM Toolbox using simulation time and the
+    project-specific mapping configuration. RViz can optionally be launched to
+    visualize the generated occupancy grid map during the mapping process.
+
+    Returns:
+        LaunchDescription: Launch description for the simulated mapping system.
+    """
 
     pkg_mensabot_simulation = get_package_share_directory('mensabot_simulation')
 

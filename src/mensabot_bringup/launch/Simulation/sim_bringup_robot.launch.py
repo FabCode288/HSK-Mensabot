@@ -1,3 +1,33 @@
+"""
+Launch file for the Mensabot simulation environment.
+
+This launch file initializes the complete simulated robot system, including
+the Gazebo simulation environment, robot model, ros2_control, localization,
+sensor processing, safety functions and supporting utility nodes.
+
+The simulated robot is spawned into the selected Gazebo world and all required
+ROS 2 interfaces are initialized for autonomous navigation and testing.
+
+Launch Arguments:
+    world (str):
+        Path to the Gazebo world file.
+
+    model (str):
+        Robot description (URDF/Xacro) file.
+
+    x (float):
+        Initial x-coordinate of the spawned robot.
+
+    y (float):
+        Initial y-coordinate of the spawned robot.
+
+    yaw (float):
+        Initial heading of the spawned robot.
+
+    use_sim_time (bool):
+        Enables simulation time provided by Gazebo.
+"""
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -8,6 +38,17 @@ from launch_ros.descriptions import ComposableNode
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+    """
+    Create the launch description for the simulated robot platform.
+
+    The launch description starts the Gazebo world, spawns the robot model,
+    initializes ros2_control, localization, sensor processing, safety functions
+    and all supporting utility nodes required for operating the robot in
+    simulation.
+
+    Returns:
+        LaunchDescription: Complete launch description for the simulated robot.
+    """
 
     pkg_mensabot_description = get_package_share_directory('mensabot_description')
     pkg_mensabot_bringup = get_package_share_directory('mensabot_bringup')
