@@ -66,6 +66,21 @@ The protective field immediately stops the robot when an object enters the monit
 
 The monitoring cases are switched through the GPIO outputs described in the Hardware documentation and are continuously supervised by the safety system.
 
+The protective field immediately stops the robot when an object enters the monitored area. The surrounding warning field reduces the robot speed before the protective field is reached, enabling smooth and safe obstacle avoidance.
+
+The HSK-Mensabot uses multiple monitoring cases that are selected depending on the current driving direction and operating state.
+
+| Monitoring Case | Description |
+|-----------------|-------------|
+| Front | Standard monitoring during forward driving. |
+| Front Left | Enlarged monitoring area on the left side while driving forward and turning left. |
+| Front Right | Enlarged monitoring area on the right side while driving forward and turning right. |
+| Rear | Standard monitoring during reverse driving. |
+| Rear Left | Enlarged monitoring area on the left side while reversing and turning left. |
+| Rear Right | Enlarged monitoring area on the right side while reversing and turning right. |
+
+The active monitoring case is selected by the Raspberry Pi through dedicated GPIO outputs connected to the safety relay interface. This allows the monitored area to adapt dynamically to the current motion of the robot while maintaining certified safety functionality.
+
 ---
 
 # 6. ROS2 Integration
