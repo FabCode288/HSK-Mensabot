@@ -42,7 +42,7 @@ Some hardware-specific information available on the real robot cannot be generat
 
 To provide these signals, a dedicated ROS2 node publishes simulated hardware messages on the same topics used by the real robot. As a result, higher-level software components, including the Safety Control Node, operate identically in both simulation and real-world operation without requiring separate software implementations.
 
-**[Simulation publisher node](../../src/mensabot_utils/mensabot_utils/simulation_publisher_node.py)
+[Simulation publisher node](../../src/mensabot_utils/mensabot_utils/simulation_publisher_node.py)
 
 # 4. Sensor Simulation
 
