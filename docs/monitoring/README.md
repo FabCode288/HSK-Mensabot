@@ -7,7 +7,7 @@ The application subscribes to the relevant ROS2 topics and presents important sy
 ---
 
 <p align="center">
-  <img src="../images/mensabot_monitor.png" width="700">
+  <img src="../images/mensabot_monitor.png">
 </p>
 
 ---
