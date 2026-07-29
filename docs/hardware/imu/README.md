@@ -53,7 +53,7 @@ The driver continuously publishes both raw and processed sensor measurements.
 
 The raw sensor measurements are processed using the **Madgwick filter**, which estimates the robot orientation from the measured accelerations and angular velocities. The resulting orientation data is subsequently fused together with the wheel odometry inside the **Extended Kalman Filter (EKF)** to generate the robot odometry used for localization and autonomous navigation.
 
-Additional information about the ROS2 driver can be found in the repository:
+Additional information about the ROS2 driver can be found in the imu package:
 
 - **[`src/imu_ros2_device`](../../../src/imu_ros2_device/)**
 
@@ -74,7 +74,7 @@ After successful verification, the IMU was integrated into the EKF-based sensor 
 Further information about the IMU can be found in:
 
 - **`src/imu_ros2_device/`** – ROS2 driver package and configuration
-- Manufacturer documentation
+- Manufacturer documentation: https://www.yahboom.net/study/IMU_Sensor
 
 ---
 
