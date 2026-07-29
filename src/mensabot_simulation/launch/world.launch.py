@@ -1,3 +1,11 @@
+"""
+Launches a Gazebo simulation world for the Mensabot project.
+
+This launch file starts the Gazebo simulator with a selectable world file
+and configures the required resource paths so custom simulation assets can
+be located correctly.
+"""
+
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -7,7 +15,16 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Text
 
 
 def generate_launch_description():
+    """
+    Create the launch description for the Gazebo simulation world.
 
+    Declares the world file argument, extends the Gazebo resource path
+    and starts the Gazebo simulator with the selected world.
+
+    Returns:
+        LaunchDescription: Configured launch description.
+    """
+    
     # Declare the world file argument
     world_arg = DeclareLaunchArgument(
         'world', default_value='home.sdf',
