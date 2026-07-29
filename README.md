@@ -95,7 +95,7 @@ ros2_mensabot_ws/
 
 | Folder | Description |
 |----------|-------------|
-| Arduino_Code | Arduino firmware used for motor control |
+| arduino_code | Arduino firmware used for motor control |
 | docs | Complete project documentation |
 | scripts | Installation and setup scripts |
 | src | ROS2 workspace packages |
