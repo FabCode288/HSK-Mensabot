@@ -34,7 +34,7 @@ Further technical information is available from the manufacturer documentation a
 
 # 3. Mounting Position
 
-The IMU is mounted inside the robot above the driven axle and close to the geometric center of the platform. It is installed inside the router enclosure and rigidly attached to the robot frame.
+The IMU is mounted inside the robot in the centre above the driven axle. It is rigidly attached to the robot frame.
 
 This mounting position minimizes the influence of rotational offsets and allows the measured accelerations and angular velocities to represent the robot motion as accurately as possible.
 
@@ -61,11 +61,13 @@ Additional information about the ROS2 driver can be found in the imu package:
 
 # 5. Validation
 
-The IMU was initially tested independently from the remaining robot software.
+The IMU was initially validated independently from the remaining robot software before being integrated into the localization pipeline.
 
-During commissioning, the published sensor measurements and the estimated orientation were verified by performing controlled rotational movements of the robot and comparing the reported orientation with the actual motion.
+During commissioning, the published sensor measurements and the estimated orientation were evaluated by performing controlled rotational movements of the robot. The measured orientation was compared with the actual robot motion to verify the correct operation of the sensor and the ROS2 driver.
 
-After successful verification, the IMU was integrated into the EKF-based sensor fusion pipeline and used as part of the complete localization system.
+As expected for a MEMS-based IMU, the sensor exhibits a small, continuous orientation drift over time due to measurement noise and bias. While this drift is negligible during short-term motion, it accumulates during longer operating periods and therefore cannot be used as the sole source for robot localization.
+
+To compensate for this behavior, the filtered IMU measurements are fused with the wheel odometry in the Extended Kalman Filter (EKF). This sensor fusion significantly improves the stability of the estimated robot pose and provides the odometry required by the localization and navigation system.
 
 ---
 
