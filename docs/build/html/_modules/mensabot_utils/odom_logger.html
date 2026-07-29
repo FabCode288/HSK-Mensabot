@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mensabot_utils.odom_logger &mdash; Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mensabot_utils.odom_logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mensabot_utils.odom_logger</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">rclpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rclpy.node</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nav_msgs.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">Odometry</span>
+
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Quaternion -&gt; Yaw</span>
+<span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="quaternion_to_yaw">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.quaternion_to_yaw">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">quaternion_to_yaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+
+    <span class="n">siny_cosp</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">z</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">cosy_cosp</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">siny_cosp</span><span class="p">,</span> <span class="n">cosy_cosp</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Pose Container</span>
+<span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="PoseData">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.PoseData">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PoseData</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yaw</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<div class="viewcode-block" id="PoseData.copy">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.PoseData.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">PoseData</span><span class="p">()</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">yaw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yaw</span>
+
+        <span class="k">return</span> <span class="n">p</span></div>
+</div>
+
+
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Odom Logger</span>
+<span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="OdomLogger">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OdomLogger</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;odom_logger&quot;</span><span class="p">)</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># Current poses</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_pose</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_pose</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ekf_pose</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># Start poses</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ekf_start</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># Subscribers</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span>
+            <span class="n">Odometry</span><span class="p">,</span>
+            <span class="s2">&quot;/mensabot_base_controller/odom&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">controller_callback</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span>
+            <span class="n">Odometry</span><span class="p">,</span>
+            <span class="s2">&quot;/odom_rf2o&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_callback</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span>
+            <span class="n">Odometry</span><span class="p">,</span>
+            <span class="s2">&quot;/odom&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ekf_callback</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># CSV Folder</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span>
+            <span class="s2">&quot;~/odom_validation&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span>
+            <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+            <span class="s2">&quot;odometry_validation_%Y_%m_</span><span class="si">%d</span><span class="s2">.csv&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">csv_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span>
+            <span class="n">filename</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv_path</span><span class="p">):</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">csv_path</span><span class="p">,</span>
+                <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+
+                <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+                <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span>
+                    <span class="s2">&quot;Trial&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Start_X&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Start_Y&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;End_X&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;End_Y&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Delta_X&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Delta_Y&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Distance&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Start_Yaw&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;End_Yaw&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Delta_Yaw&quot;</span>
+                <span class="p">])</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># State</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">measurement_running</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_timer</span><span class="p">(</span>
+            <span class="mf">0.2</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state_machine</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Odom Logger started.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ========================================================</span>
+    <span class="c1"># Convert ROS Odometry -&gt; PoseData</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.odom_to_pose">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.odom_to_pose">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">odom_to_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+
+        <span class="n">pose</span> <span class="o">=</span> <span class="n">PoseData</span><span class="p">()</span>
+
+        <span class="n">pose</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">pose</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">orientation</span>
+
+        <span class="n">pose</span><span class="o">.</span><span class="n">yaw</span> <span class="o">=</span> <span class="n">quaternion_to_yaw</span><span class="p">(</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">w</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pose</span></div>
+
+
+    <span class="c1"># ========================================================</span>
+    <span class="c1"># Callbacks</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.controller_callback">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.controller_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">controller_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">odom_to_pose</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OdomLogger.rf2o_callback">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.rf2o_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rf2o_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">odom_to_pose</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OdomLogger.ekf_callback">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.ekf_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ekf_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ekf_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">odom_to_pose</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+    <span class="c1"># ========================================================</span>
+    <span class="c1"># Trial Number</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.get_trial_number">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.get_trial_number">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_trial_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+
+            <span class="n">lines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">lines</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="p">((</span><span class="n">lines</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+
+    <span class="c1"># ========================================================</span>
+    <span class="c1"># State Machine</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.state_machine">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.state_machine">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state_machine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_running</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">controller_pose</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_pose</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ekf_pose</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">measurement_running</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">measurement_thread</span><span class="p">,</span>
+            <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+            <span class="c1"># ========================================================</span>
+    <span class="c1"># Measurement Thread</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.measurement_thread">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.measurement_thread">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">measurement_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================================&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mensabot Odometry Validation&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========================================&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Place robot exactly on the start line.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The current pose will be stored in 5 seconds.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting in </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># Store start poses</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller_pose</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_pose</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ekf_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ekf_pose</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start pose stored.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Drive the robot manually to the finish line.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+        <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Press ENTER when the robot has stopped...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># ----------------------------------------------------</span>
+        <span class="c1"># Store end poses</span>
+        <span class="c1"># ----------------------------------------------------</span>
+
+        <span class="n">controller_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller_pose</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">rf2o_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_pose</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ekf_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ekf_pose</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Small pause to ensure last messages arrived</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+            <span class="n">controller_end</span><span class="p">,</span>
+            <span class="n">rf2o_end</span><span class="p">,</span>
+            <span class="n">ekf_end</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Measurement finished.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+        <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+            <span class="s2">&quot;Start another measurement? (y/n): &quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">measurement_running</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Logger stopped.&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">rclpy</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+
+    <span class="c1"># ========================================================</span>
+    <span class="c1"># Calculate travelled distance</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.calculate_values">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.calculate_values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_values</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start_pose</span><span class="p">,</span>
+        <span class="n">end_pose</span>
+    <span class="p">):</span>
+
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">end_pose</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">start_pose</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">end_pose</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">start_pose</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="n">dx</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span>
+            <span class="n">dy</span> <span class="o">*</span> <span class="n">dy</span>
+        <span class="p">)</span>
+
+        <span class="n">delta_yaw</span> <span class="o">=</span> <span class="n">end_pose</span><span class="o">.</span><span class="n">yaw</span> <span class="o">-</span> <span class="n">start_pose</span><span class="o">.</span><span class="n">yaw</span>
+
+        <span class="k">while</span> <span class="n">delta_yaw</span> <span class="o">&gt;</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">delta_yaw</span> <span class="o">-=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="k">while</span> <span class="n">delta_yaw</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span>
+            <span class="n">delta_yaw</span> <span class="o">+=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="n">delta_yaw</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">delta_yaw</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">dx</span><span class="p">,</span>
+            <span class="n">dy</span><span class="p">,</span>
+            <span class="n">distance</span><span class="p">,</span>
+            <span class="n">delta_yaw</span>
+        <span class="p">)</span></div>
+
+        <span class="c1"># ========================================================</span>
+    <span class="c1"># Evaluate measurement</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.evaluate">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">controller_end</span><span class="p">,</span>
+        <span class="n">rf2o_end</span><span class="p">,</span>
+        <span class="n">ekf_end</span>
+    <span class="p">):</span>
+
+        <span class="n">trial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_trial_number</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;==============================================&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RESULTS - TRIAL </span><span class="si">{</span><span class="n">trial</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;==============================================&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">csv_path</span><span class="p">,</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+            <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_source</span><span class="p">(</span>
+                <span class="n">writer</span><span class="p">,</span>
+                <span class="n">trial</span><span class="p">,</span>
+                <span class="s2">&quot;Controller&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">controller_start</span><span class="p">,</span>
+                <span class="n">controller_end</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_source</span><span class="p">(</span>
+                <span class="n">writer</span><span class="p">,</span>
+                <span class="n">trial</span><span class="p">,</span>
+                <span class="s2">&quot;RF2O&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rf2o_start</span><span class="p">,</span>
+                <span class="n">rf2o_end</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_source</span><span class="p">(</span>
+                <span class="n">writer</span><span class="p">,</span>
+                <span class="n">trial</span><span class="p">,</span>
+                <span class="s2">&quot;EKF&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ekf_start</span><span class="p">,</span>
+                <span class="n">ekf_end</span>
+            <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CSV saved to:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csv_path</span><span class="p">)</span></div>
+
+
+
+    <span class="c1"># ========================================================</span>
+    <span class="c1"># Evaluate one odometry source</span>
+    <span class="c1"># ========================================================</span>
+
+<div class="viewcode-block" id="OdomLogger.evaluate_source">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.OdomLogger.evaluate_source">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_source</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">writer</span><span class="p">,</span>
+        <span class="n">trial</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">,</span>
+        <span class="n">start_pose</span><span class="p">,</span>
+        <span class="n">end_pose</span>
+    <span class="p">):</span>
+
+        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">delta_yaw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_values</span><span class="p">(</span>
+            <span class="n">start_pose</span><span class="p">,</span>
+            <span class="n">end_pose</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------------------------------&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Start Pose : &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">start_pose</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start_pose</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;End Pose   : &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">end_pose</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end_pose</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Δx         : </span><span class="si">{</span><span class="n">dx</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Δy         : </span><span class="si">{</span><span class="n">dy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distance   : </span><span class="si">{</span><span class="n">distance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Yaw Start  : &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">start_pose</span><span class="o">.</span><span class="n">yaw</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> °&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Yaw End    : &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">end_pose</span><span class="o">.</span><span class="n">yaw</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> °&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;ΔYaw       : &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">delta_yaw</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> °&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span>
+            <span class="n">trial</span><span class="p">,</span>
+            <span class="n">source</span><span class="p">,</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">start_pose</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">start_pose</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">end_pose</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">end_pose</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">start_pose</span><span class="o">.</span><span class="n">yaw</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">end_pose</span><span class="o">.</span><span class="n">yaw</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="nb">round</span><span class="p">(</span><span class="n">delta_yaw</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">])</span></div>
+</div>
+
+
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Main</span>
+<span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../api/mensabot_utils.html#mensabot_utils.odom_logger.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="n">rclpy</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="n">node</span> <span class="o">=</span> <span class="n">OdomLogger</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="n">rclpy</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+
+        <span class="k">pass</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+
+        <span class="n">node</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">()</span>
+
+        <span class="n">rclpy</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

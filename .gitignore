@@ -1,7 +1,7 @@
-build/
-install/
-log/
-frames_*
+/build/
+/install/
+/log/
+/frames_*
 *.pyc
 __pycache__/
 .vscode/

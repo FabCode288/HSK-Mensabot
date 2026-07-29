@@ -1,0 +1,902 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mensabot Utility Nodes &mdash; Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="C++ API" href="../cpp_api.html" />
+    <link rel="prev" title="Python API" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Python API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mensabot Utility Nodes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.cmd_vel_transform_node">Velocity Command Transform Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.cmd_vel_transform_node.TwistToStamped"><code class="docutils literal notranslate"><span class="pre">TwistToStamped</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.cmd_vel_transform_node.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.lidar_field_selection_node">Lidar Field Selection Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.FieldState"><code class="docutils literal notranslate"><span class="pre">FieldState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector"><code class="docutils literal notranslate"><span class="pre">LidarFieldSelector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.lidar_reset">Lidar Reset Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.lidar_reset.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.mensabot_monitor">Mensabot Monitor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.yaw_from_quaternion"><code class="docutils literal notranslate"><span class="pre">yaw_from_quaternion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.ValueCard"><code class="docutils literal notranslate"><span class="pre">ValueCard</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.BoolCard"><code class="docutils literal notranslate"><span class="pre">BoolCard</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.StateCard"><code class="docutils literal notranslate"><span class="pre">StateCard</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.RosWorker"><code class="docutils literal notranslate"><span class="pre">RosWorker</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.MonitorNode"><code class="docutils literal notranslate"><span class="pre">MonitorNode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.MensabotMonitor"><code class="docutils literal notranslate"><span class="pre">MensabotMonitor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.mensabot_monitor.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.odom_logger">Mensabot Odom Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.odom_logger.quaternion_to_yaw"><code class="docutils literal notranslate"><span class="pre">quaternion_to_yaw()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.odom_logger.PoseData"><code class="docutils literal notranslate"><span class="pre">PoseData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.odom_logger.OdomLogger"><code class="docutils literal notranslate"><span class="pre">OdomLogger</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.odom_logger.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.safety_control_node">Mensabot Safety Control Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.safety_control_node.SafetyControlNode"><code class="docutils literal notranslate"><span class="pre">SafetyControlNode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.safety_control_node.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-mensabot_utils.simulation_publisher_node">Simulation Publisher Node</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.simulation_publisher_node.SafetySimInputs"><code class="docutils literal notranslate"><span class="pre">SafetySimInputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mensabot_utils.simulation_publisher_node.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cpp_api.html">C++ API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Python API</a></li>
+      <li class="breadcrumb-item active">Mensabot Utility Nodes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/mensabot_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mensabot-utility-nodes">
+<h1>Mensabot Utility Nodes<a class="headerlink" href="#mensabot-utility-nodes" title="Link to this heading"></a></h1>
+<section id="module-mensabot_utils.cmd_vel_transform_node">
+<span id="velocity-command-transform-node"></span><h2>Velocity Command Transform Node<a class="headerlink" href="#module-mensabot_utils.cmd_vel_transform_node" title="Link to this heading"></a></h2>
+<p>Converts Twist velocity commands into TwistStamped messages.</p>
+<p>This node adapts the velocity commands generated by the safety layer to the
+message format required by the ros2_control Diff Drive Controller.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.cmd_vel_transform_node.TwistToStamped">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.cmd_vel_transform_node.</span></span><span class="sig-name descname"><span class="pre">TwistToStamped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/cmd_vel_transform_node.html#TwistToStamped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.cmd_vel_transform_node.TwistToStamped" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node that converts Twist messages to TwistStamped messages.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.cmd_vel_transform_node.TwistToStamped.cb">
+<span class="sig-name descname"><span class="pre">cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/cmd_vel_transform_node.html#TwistToStamped.cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.cmd_vel_transform_node.TwistToStamped.cb" title="Link to this definition"></a></dt>
+<dd><p>Convert an incoming Twist message into a TwistStamped message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Incoming velocity command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.cmd_vel_transform_node.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.cmd_vel_transform_node.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/cmd_vel_transform_node.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.cmd_vel_transform_node.main" title="Link to this definition"></a></dt>
+<dd><p>Entry point for the TwistToStamped node.</p>
+<p>Initializes rclpy, spins the node, and performs
+a clean shutdown when the node stops.</p>
+</dd></dl>
+
+</section>
+<section id="module-mensabot_utils.lidar_field_selection_node">
+<span id="lidar-field-selection-node"></span><h2>Lidar Field Selection Node<a class="headerlink" href="#module-mensabot_utils.lidar_field_selection_node" title="Link to this heading"></a></h2>
+<p>Selects the active LiDAR monitoring field based on the robot’s motion state.</p>
+<p>The node evaluates the commanded robot motion, selects the corresponding
+LiDAR monitoring field, updates the GPIO outputs for the safety scanner and
+publishes the matching Nav2 footprint.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_field_selection_node.</span></span><span class="sig-name descname"><span class="pre">FieldState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#FieldState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enumeration of all supported LiDAR monitoring states.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.STOP">
+<span class="sig-name descname"><span class="pre">STOP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.STOP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.FORWARD">
+<span class="sig-name descname"><span class="pre">FORWARD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.FORWARD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.BACKWARD">
+<span class="sig-name descname"><span class="pre">BACKWARD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.BACKWARD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_LEFT">
+<span class="sig-name descname"><span class="pre">ROTATE_LEFT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_RIGHT">
+<span class="sig-name descname"><span class="pre">ROTATE_RIGHT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_RIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.MANUAL_OVERRIDE">
+<span class="sig-name descname"><span class="pre">MANUAL_OVERRIDE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.MANUAL_OVERRIDE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_field_selection_node.</span></span><span class="sig-name descname"><span class="pre">LidarFieldSelector</span></span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node for selecting LiDAR monitoring fields.</p>
+<p>The node determines the robot’s current motion state from velocity commands,
+controls the LiDAR field selection via GPIO outputs and updates the dynamic
+Nav2 footprint accordingly.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.manual_override_callback">
+<span class="sig-name descname"><span class="pre">manual_override_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">std_msgs.msg.Bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.manual_override_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.manual_override_callback" title="Link to this definition"></a></dt>
+<dd><p>Handle manual override requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Manual override state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.cmd_vel_callback">
+<span class="sig-name descname"><span class="pre">cmd_vel_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">geometry_msgs.msg.TwistStamped</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.cmd_vel_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.cmd_vel_callback" title="Link to this definition"></a></dt>
+<dd><p>Process commanded robot velocities and update the active monitoring field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Commanded robot velocity.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.determine_state">
+<span class="sig-name descname"><span class="pre">determine_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linear_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.FieldState" title="mensabot_utils.lidar_field_selection_node.FieldState"><span class="pre">FieldState</span></a></span></span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.determine_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.determine_state" title="Link to this definition"></a></dt>
+<dd><p>Determine the LiDAR monitoring state from the commanded motion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linear_x</strong> – Linear velocity in x-direction.</p></li>
+<li><p><strong>angular_z</strong> – Angular velocity around the z-axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Selected monitoring state.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.FieldState" title="mensabot_utils.lidar_field_selection_node.FieldState">FieldState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_footprint">
+<span class="sig-name descname"><span class="pre">publish_footprint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.publish_footprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_footprint" title="Link to this definition"></a></dt>
+<dd><p>Publish the footprint corresponding to the current monitoring state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.set_gpio_state">
+<span class="sig-name descname"><span class="pre">set_gpio_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.set_gpio_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.set_gpio_state" title="Link to this definition"></a></dt>
+<dd><p>Update the GPIO outputs according to the selected monitoring field.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_state">
+<span class="sig-name descname"><span class="pre">publish_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.publish_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_state" title="Link to this definition"></a></dt>
+<dd><p>Publish the current LiDAR monitoring state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.timer_callback">
+<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.timer_callback" title="Link to this definition"></a></dt>
+<dd><p>Monitor command and manual override timeouts.</p>
+<p>Resets the monitoring state if no valid command or manual override message
+has been received within the configured timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.destroy_node">
+<span class="sig-name descname"><span class="pre">destroy_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.destroy_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.destroy_node" title="Link to this definition"></a></dt>
+<dd><p>Release GPIO resources before shutting down the node.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_field_selection_node.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_field_selection_node.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.main" title="Link to this definition"></a></dt>
+<dd><p>Start the LiDAR field selector node.</p>
+<p>Initializes ROS 2, spins the node and performs a clean shutdown when the node
+terminates.</p>
+</dd></dl>
+
+</section>
+<section id="module-mensabot_utils.lidar_reset">
+<span id="lidar-reset-node"></span><h2>Lidar Reset Node<a class="headerlink" href="#module-mensabot_utils.lidar_reset" title="Link to this heading"></a></h2>
+<p>Reset the connected LiDAR sensors via a dedicated GPIO output.</p>
+<p>The script generates a reset pulse, waits for the sensors to reboot and
+terminates after the reset sequence has completed.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_reset.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_reset.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/lidar_reset.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_reset.main" title="Link to this definition"></a></dt>
+<dd><p>Perform a hardware reset of the connected LiDAR sensors.</p>
+</dd></dl>
+
+</section>
+<section id="module-mensabot_utils.mensabot_monitor">
+<span id="mensabot-monitor"></span><h2>Mensabot Monitor<a class="headerlink" href="#module-mensabot_utils.mensabot_monitor" title="Link to this heading"></a></h2>
+<p>Graphical monitoring application for the Mensabot platform.</p>
+<p>The application combines a ROS 2 monitoring node with a PyQt6 user interface
+to visualize robot state, safety information, velocity commands, diagnostics
+and live telemetry.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.yaw_from_quaternion">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">yaw_from_quaternion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#yaw_from_quaternion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.yaw_from_quaternion" title="Link to this definition"></a></dt>
+<dd><p>Convert a quaternion orientation into a yaw angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>q</strong> – Quaternion representing the robot orientation.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Yaw angle in radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.ValueCard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">ValueCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#ValueCard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.ValueCard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QFrame</span></code></p>
+<p>Reusable GUI widget for displaying a labeled value.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.ValueCard.set_value">
+<span class="sig-name descname"><span class="pre">set_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#ValueCard.set_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.ValueCard.set_value" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Value to display.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.BoolCard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">BoolCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#BoolCard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.BoolCard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mensabot_utils.mensabot_monitor.ValueCard" title="mensabot_utils.mensabot_monitor.ValueCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueCard</span></code></a></p>
+<p>Card widget for displaying boolean states.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.BoolCard.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#BoolCard.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.BoolCard.set_state" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed boolean state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – Current boolean state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.StateCard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">StateCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#StateCard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.StateCard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mensabot_utils.mensabot_monitor.ValueCard" title="mensabot_utils.mensabot_monitor.ValueCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueCard</span></code></a></p>
+<p>Card widget for displaying textual system states.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.StateCard.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#2874a6'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#StateCard.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.StateCard.set_state" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed system state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – State description.</p></li>
+<li><p><strong>color</strong> – Background color of the card.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">RosWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#RosWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>Background worker executing the ROS 2 event loop.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.data_changed">
+<span class="sig-name descname"><span class="pre">data_changed</span></span><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.data_changed" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.ros_error">
+<span class="sig-name descname"><span class="pre">ros_error</span></span><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.ros_error" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#RosWorker.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.run" title="Link to this definition"></a></dt>
+<dd><p>Start the ROS 2 executor and process incoming messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#RosWorker.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.stop" title="Link to this definition"></a></dt>
+<dd><p>Request the worker thread to terminate.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">MonitorNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node providing monitoring data for the graphical interface.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.mark">
+<span class="sig-name descname"><span class="pre">mark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.mark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.mark" title="Link to this definition"></a></dt>
+<dd><p>Update the timestamp of the latest received message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topic_key</strong> – Identifier of the monitored topic.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.emit">
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.emit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.emit" title="Link to this definition"></a></dt>
+<dd><p>Forward updated monitoring data to the graphical interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.bool_cb">
+<span class="sig-name descname"><span class="pre">bool_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.bool_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.bool_cb" title="Link to this definition"></a></dt>
+<dd><p>Process incoming boolean messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.twist_cb">
+<span class="sig-name descname"><span class="pre">twist_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.twist_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.twist_cb" title="Link to this definition"></a></dt>
+<dd><p>Process incoming velocity commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.odom_cb">
+<span class="sig-name descname"><span class="pre">odom_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.odom_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.odom_cb" title="Link to this definition"></a></dt>
+<dd><p>Process incoming odometry messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.field_cb">
+<span class="sig-name descname"><span class="pre">field_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.field_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.field_cb" title="Link to this definition"></a></dt>
+<dd><p>Process the current LiDAR monitoring state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.speed_limit_cb">
+<span class="sig-name descname"><span class="pre">speed_limit_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.speed_limit_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.speed_limit_cb" title="Link to this definition"></a></dt>
+<dd><p>Process speed limit updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.scanner_cb">
+<span class="sig-name descname"><span class="pre">scanner_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.scanner_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.scanner_cb" title="Link to this definition"></a></dt>
+<dd><p>Process LiDAR safety scanner status messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.goal_cb">
+<span class="sig-name descname"><span class="pre">goal_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.goal_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.goal_cb" title="Link to this definition"></a></dt>
+<dd><p>Process navigation goal status updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.imu_cb">
+<span class="sig-name descname"><span class="pre">imu_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.imu_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.imu_cb" title="Link to this definition"></a></dt>
+<dd><p>Process IMU measurements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.watchdog_cb">
+<span class="sig-name descname"><span class="pre">watchdog_cb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.watchdog_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.watchdog_cb" title="Link to this definition"></a></dt>
+<dd><p>Monitor message reception times for all subscribed topics.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">MensabotMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<p>Main window of the Mensabot monitoring application.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.build_ui">
+<span class="sig-name descname"><span class="pre">build_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.build_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.build_ui" title="Link to this definition"></a></dt>
+<dd><p>Create and arrange all graphical user interface elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.apply_style">
+<span class="sig-name descname"><span class="pre">apply_style</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.apply_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.apply_style" title="Link to this definition"></a></dt>
+<dd><p>Apply the graphical style sheet to the user interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.start_ros">
+<span class="sig-name descname"><span class="pre">start_ros</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.start_ros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.start_ros" title="Link to this definition"></a></dt>
+<dd><p>Start the background ROS worker thread.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.on_ros_error">
+<span class="sig-name descname"><span class="pre">on_ros_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.on_ros_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.on_ros_error" title="Link to this definition"></a></dt>
+<dd><p>Display ROS communication errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.on_data">
+<span class="sig-name descname"><span class="pre">on_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.on_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.on_data" title="Link to this definition"></a></dt>
+<dd><p>Update the graphical interface with newly received monitoring data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.set_twist_card">
+<span class="sig-name descname"><span class="pre">set_twist_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">card</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.set_twist_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.set_twist_card" title="Link to this definition"></a></dt>
+<dd><p>Update a velocity display card.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.derive_motion">
+<span class="sig-name descname"><span class="pre">derive_motion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.derive_motion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.derive_motion" title="Link to this definition"></a></dt>
+<dd><p>Determine the current robot motion from controller commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current motion state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_motion_state">
+<span class="sig-name descname"><span class="pre">update_motion_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_motion_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_motion_state" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed robot motion state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_field_match">
+<span class="sig-name descname"><span class="pre">update_field_match</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_field_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_field_match" title="Link to this definition"></a></dt>
+<dd><p>Check whether the selected LiDAR field matches the robot motion.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_overall_state">
+<span class="sig-name descname"><span class="pre">update_overall_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_overall_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_overall_state" title="Link to this definition"></a></dt>
+<dd><p>Determine and display the overall system status.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.any_protective_triggered">
+<span class="sig-name descname"><span class="pre">any_protective_triggered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.any_protective_triggered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.any_protective_triggered" title="Link to this definition"></a></dt>
+<dd><p>Check whether any protective field is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if a protective field is active.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.any_warning_triggered">
+<span class="sig-name descname"><span class="pre">any_warning_triggered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.any_warning_triggered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.any_warning_triggered" title="Link to this definition"></a></dt>
+<dd><p>Check whether any warning field is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if a warning field is active.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_watchdog">
+<span class="sig-name descname"><span class="pre">update_watchdog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ages</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_watchdog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_watchdog" title="Link to this definition"></a></dt>
+<dd><p>Update the topic watchdog indicators.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_plots">
+<span class="sig-name descname"><span class="pre">update_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_plots" title="Link to this definition"></a></dt>
+<dd><p>Update the live velocity plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.toggle_auto_follow">
+<span class="sig-name descname"><span class="pre">toggle_auto_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.toggle_auto_follow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.toggle_auto_follow" title="Link to this definition"></a></dt>
+<dd><p>Enable or disable automatic plot following.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.change_time_window">
+<span class="sig-name descname"><span class="pre">change_time_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.change_time_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.change_time_window" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed plot time window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.center_plots">
+<span class="sig-name descname"><span class="pre">center_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.center_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.center_plots" title="Link to this definition"></a></dt>
+<dd><p>Re-center the live plots and enable automatic following.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.user_changed_plot">
+<span class="sig-name descname"><span class="pre">user_changed_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.user_changed_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.user_changed_plot" title="Link to this definition"></a></dt>
+<dd><p>Disable automatic following after manual plot interaction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Stop all background components before closing the application.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/mensabot_monitor.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.main" title="Link to this definition"></a></dt>
+<dd><p>Start the Mensabot monitoring application.</p>
+</dd></dl>
+
+</section>
+<section id="module-mensabot_utils.odom_logger">
+<span id="mensabot-odom-logger"></span><h2>Mensabot Odom Logger<a class="headerlink" href="#module-mensabot_utils.odom_logger" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.quaternion_to_yaw">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.odom_logger.</span></span><span class="sig-name descname"><span class="pre">quaternion_to_yaw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#quaternion_to_yaw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.quaternion_to_yaw" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.PoseData">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.odom_logger.</span></span><span class="sig-name descname"><span class="pre">PoseData</span></span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#PoseData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.PoseData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.PoseData.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#PoseData.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.PoseData.copy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.odom_logger.</span></span><span class="sig-name descname"><span class="pre">OdomLogger</span></span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.odom_to_pose">
+<span class="sig-name descname"><span class="pre">odom_to_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.odom_to_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.odom_to_pose" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.controller_callback">
+<span class="sig-name descname"><span class="pre">controller_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.controller_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.controller_callback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.rf2o_callback">
+<span class="sig-name descname"><span class="pre">rf2o_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.rf2o_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.rf2o_callback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.ekf_callback">
+<span class="sig-name descname"><span class="pre">ekf_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.ekf_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.ekf_callback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.get_trial_number">
+<span class="sig-name descname"><span class="pre">get_trial_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.get_trial_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.get_trial_number" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.state_machine">
+<span class="sig-name descname"><span class="pre">state_machine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.state_machine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.state_machine" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.measurement_thread">
+<span class="sig-name descname"><span class="pre">measurement_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.measurement_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.measurement_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.calculate_values">
+<span class="sig-name descname"><span class="pre">calculate_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_pose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.calculate_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.calculate_values" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controller_end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf2o_end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ekf_end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.evaluate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.OdomLogger.evaluate_source">
+<span class="sig-name descname"><span class="pre">evaluate_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_pose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_pose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#OdomLogger.evaluate_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.OdomLogger.evaluate_source" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.odom_logger.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.odom_logger.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/odom_logger.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.odom_logger.main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-mensabot_utils.safety_control_node">
+<span id="mensabot-safety-control-node"></span><h2>Mensabot Safety Control Node<a class="headerlink" href="#module-mensabot_utils.safety_control_node" title="Link to this heading"></a></h2>
+<p>Implements the central safety controller for the Mensabot platform.</p>
+<p>The node combines hardware emergency stop signals, LiDAR safety scanner
+information and hardware connection status to enforce safe robot operation.
+It publishes speed limits, emergency stop states and filtered velocity
+commands.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.safety_control_node.</span></span><span class="sig-name descname"><span class="pre">SafetyControlNode</span></span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node responsible for monitoring and enforcing the robot safety state.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.front_scanner_callback">
+<span class="sig-name descname"><span class="pre">front_scanner_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OutputPaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.front_scanner_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.front_scanner_callback" title="Link to this definition"></a></dt>
+<dd><p>Process the front LiDAR safety scanner state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Front scanner monitoring data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.rear_scanner_callback">
+<span class="sig-name descname"><span class="pre">rear_scanner_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OutputPaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.rear_scanner_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.rear_scanner_callback" title="Link to this definition"></a></dt>
+<dd><p>Process the rear LiDAR safety scanner state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Rear scanner monitoring data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.update_safety_state">
+<span class="sig-name descname"><span class="pre">update_safety_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.update_safety_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.update_safety_state" title="Link to this definition"></a></dt>
+<dd><p>Determine the global safety state from the LiDAR scanner states.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.connected_callback">
+<span class="sig-name descname"><span class="pre">connected_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">std_msgs.msg.Bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.connected_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.connected_callback" title="Link to this definition"></a></dt>
+<dd><p>Update the hardware connection state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Hardware connection status.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.cmd_vel_callback">
+<span class="sig-name descname"><span class="pre">cmd_vel_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">geometry_msgs.msg.Twist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.cmd_vel_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.cmd_vel_callback" title="Link to this definition"></a></dt>
+<dd><p>Forward velocity commands only if safe operation is permitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Incoming velocity command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.timer_callback">
+<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.timer_callback" title="Link to this definition"></a></dt>
+<dd><p>Execute the cyclic safety supervision.</p>
+<p>Monitors the hardware emergency stop input, performs automatic relay reset,
+updates the emergency stop state and publishes the corresponding speed limit.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.publish_speed_limit">
+<span class="sig-name descname"><span class="pre">publish_speed_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.publish_speed_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.publish_speed_limit" title="Link to this definition"></a></dt>
+<dd><p>Publish the currently active speed limit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Speed limit as a percentage.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.is_estop_active">
+<span class="sig-name descname"><span class="pre">is_estop_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.is_estop_active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.is_estop_active" title="Link to this definition"></a></dt>
+<dd><p>Determine whether an emergency stop condition is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if robot motion must be stopped.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.publish_zero_twist">
+<span class="sig-name descname"><span class="pre">publish_zero_twist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.publish_zero_twist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.publish_zero_twist" title="Link to this definition"></a></dt>
+<dd><p>Publish a zero velocity command to stop the robot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.destroy_node">
+<span class="sig-name descname"><span class="pre">destroy_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.destroy_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.destroy_node" title="Link to this definition"></a></dt>
+<dd><p>Release GPIO resources before shutting down the node.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.safety_control_node.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/safety_control_node.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.main" title="Link to this definition"></a></dt>
+<dd><p>Start the Safety Control node.</p>
+</dd></dl>
+
+</section>
+<section id="module-mensabot_utils.simulation_publisher_node">
+<span id="simulation-publisher-node"></span><h2>Simulation Publisher Node<a class="headerlink" href="#module-mensabot_utils.simulation_publisher_node" title="Link to this heading"></a></h2>
+<p>Provides simulated safety inputs for the Mensabot platform.</p>
+<p>This node publishes dummy hardware connection and LiDAR safety scanner
+messages, allowing the Safety Control Node to operate unchanged in the
+simulation environment.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.simulation_publisher_node.SafetySimInputs">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.simulation_publisher_node.</span></span><span class="sig-name descname"><span class="pre">SafetySimInputs</span></span><a class="reference internal" href="../_modules/mensabot_utils/simulation_publisher_node.html#SafetySimInputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.simulation_publisher_node.SafetySimInputs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node providing simulated safety hardware signals.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.simulation_publisher_node.SafetySimInputs.timer_callback">
+<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/simulation_publisher_node.html#SafetySimInputs.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.simulation_publisher_node.SafetySimInputs.timer_callback" title="Link to this definition"></a></dt>
+<dd><p>Publish simulated hardware connection and LiDAR safety scanner messages.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.simulation_publisher_node.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.simulation_publisher_node.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mensabot_utils/simulation_publisher_node.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.simulation_publisher_node.main" title="Link to this definition"></a></dt>
+<dd><p>Start the Safety Simulation Input node.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="Python API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../cpp_api.html" class="btn btn-neutral float-right" title="C++ API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

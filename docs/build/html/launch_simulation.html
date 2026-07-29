@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation Launch Files &mdash; Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Real Robot Launch Files" href="launch_real.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cpp_api.html">C++ API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="launch_files.html">Launch Files</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="launch_real.html">Real Robot Launch Files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulation Launch Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sim-complete-bringup-launch-py">sim_complete_bringup.launch.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sim-bringup-robot-launch-py">sim_bringup_robot.launch.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="launch_files.html">Launch Files</a></li>
+      <li class="breadcrumb-item active">Simulation Launch Files</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/launch_simulation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simulation-launch-files">
+<h1>Simulation Launch Files<a class="headerlink" href="#simulation-launch-files" title="Link to this heading"></a></h1>
+<section id="sim-complete-bringup-launch-py">
+<h2>sim_complete_bringup.launch.py<a class="headerlink" href="#sim-complete-bringup-launch-py" title="Link to this heading"></a></h2>
+<p>Starts the complete simulation with navigation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 2</span><span class="sd">Launch file for the complete Mensabot simulation system.</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="sd">This launch file starts the complete software stack required for autonomous</span>
+<span class="linenos"> 5</span><span class="sd">operation in simulation. It sequentially launches the simulated robot,</span>
+<span class="linenos"> 6</span><span class="sd">localization and the Nav2 navigation stack to ensure that all required</span>
+<span class="linenos"> 7</span><span class="sd">components are initialized in the correct order.</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="sd">The staged startup prevents initialization conflicts by delaying the</span>
+<span class="linenos">10</span><span class="sd">localization and navigation components until the simulation environment is</span>
+<span class="linenos">11</span><span class="sd">fully available.</span>
+<span class="linenos">12</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos">15</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="linenos">16</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">IncludeLaunchDescription</span><span class="p">,</span> <span class="n">TimerAction</span>
+<span class="linenos">17</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch.launch_description_sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<span class="linenos">18</span><span class="kn">from</span><span class="w"> </span><span class="nn">ament_index_python.packages</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_package_share_directory</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="k">def</span><span class="w"> </span><span class="nf">generate_launch_description</span><span class="p">():</span>
+<span class="linenos">22</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">23</span><span class="sd">    Create the launch description for the complete simulation system.</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span><span class="sd">    The launch description first starts the simulated robot environment, followed</span>
+<span class="linenos">26</span><span class="sd">    by delayed initialization of the localization and navigation components to</span>
+<span class="linenos">27</span><span class="sd">    ensure a reliable startup sequence.</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="sd">    Returns:</span>
+<span class="linenos">30</span><span class="sd">        LaunchDescription: Launch description for the complete simulated robot</span>
+<span class="linenos">31</span><span class="sd">        system.</span>
+<span class="linenos">32</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span>    <span class="n">pkg_mensabot_bringup</span> <span class="o">=</span> <span class="n">get_package_share_directory</span><span class="p">(</span>
+<span class="linenos">35</span>        <span class="s1">&#39;mensabot_bringup&#39;</span>
+<span class="linenos">36</span>    <span class="p">)</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span>    <span class="n">sim_bringup_launch</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+<span class="linenos">39</span>        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+<span class="linenos">40</span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="linenos">41</span>                <span class="n">pkg_mensabot_bringup</span><span class="p">,</span>
+<span class="linenos">42</span>                <span class="s1">&#39;launch/Simulation&#39;</span><span class="p">,</span>
+<span class="linenos">43</span>                <span class="s1">&#39;sim_bringup_robot.launch.py&#39;</span>
+<span class="linenos">44</span>            <span class="p">)</span>
+<span class="linenos">45</span>        <span class="p">)</span>
+<span class="linenos">46</span>    <span class="p">)</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span>    <span class="n">localization_launch</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+<span class="linenos">49</span>        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+<span class="linenos">50</span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="linenos">51</span>                <span class="n">pkg_mensabot_bringup</span><span class="p">,</span>
+<span class="linenos">52</span>                <span class="s1">&#39;launch/Simulation&#39;</span><span class="p">,</span>
+<span class="linenos">53</span>                <span class="s1">&#39;localization_sim_amcl.launch.py&#39;</span>
+<span class="linenos">54</span>            <span class="p">)</span>
+<span class="linenos">55</span>        <span class="p">)</span>
+<span class="linenos">56</span>    <span class="p">)</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span>    <span class="n">navigation_launch</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+<span class="linenos">59</span>        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+<span class="linenos">60</span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="linenos">61</span>                <span class="n">pkg_mensabot_bringup</span><span class="p">,</span>
+<span class="linenos">62</span>                <span class="s1">&#39;launch/Simulation&#39;</span><span class="p">,</span>
+<span class="linenos">63</span>                <span class="s1">&#39;navigation_sim.launch.py&#39;</span>
+<span class="linenos">64</span>            <span class="p">)</span>
+<span class="linenos">65</span>        <span class="p">)</span>
+<span class="linenos">66</span>    <span class="p">)</span>
+<span class="linenos">67</span>
+<span class="linenos">68</span>    <span class="n">delayed_localization</span> <span class="o">=</span> <span class="n">TimerAction</span><span class="p">(</span>
+<span class="linenos">69</span>        <span class="n">period</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+<span class="linenos">70</span>        <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">71</span>            <span class="n">localization_launch</span>
+<span class="linenos">72</span>        <span class="p">]</span>
+<span class="linenos">73</span>    <span class="p">)</span>
+<span class="linenos">74</span>
+<span class="linenos">75</span>    <span class="n">delayed_navigation</span> <span class="o">=</span> <span class="n">TimerAction</span><span class="p">(</span>
+<span class="linenos">76</span>        <span class="n">period</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span>
+<span class="linenos">77</span>        <span class="n">actions</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">78</span>            <span class="n">navigation_launch</span>
+<span class="linenos">79</span>        <span class="p">]</span>
+<span class="linenos">80</span>    <span class="p">)</span>
+<span class="linenos">81</span>
+<span class="linenos">82</span>    <span class="k">return</span> <span class="n">LaunchDescription</span><span class="p">([</span>
+<span class="linenos">83</span>        <span class="n">sim_bringup_launch</span><span class="p">,</span>
+<span class="linenos">84</span>        <span class="n">delayed_localization</span><span class="p">,</span>
+<span class="linenos">85</span>        <span class="n">delayed_navigation</span><span class="p">,</span>
+<span class="linenos">86</span>    <span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="sim-bringup-robot-launch-py">
+<h2>sim_bringup_robot.launch.py<a class="headerlink" href="#sim-bringup-robot-launch-py" title="Link to this heading"></a></h2>
+<p>Starts the simulation without localization and navigation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos">  2</span><span class="sd">Launch file for the Mensabot simulation environment.</span>
+<span class="linenos">  3</span>
+<span class="linenos">  4</span><span class="sd">This launch file initializes the complete simulated robot system, including</span>
+<span class="linenos">  5</span><span class="sd">the Gazebo simulation environment, robot model, ros2_control, localization,</span>
+<span class="linenos">  6</span><span class="sd">sensor processing, safety functions and supporting utility nodes.</span>
+<span class="linenos">  7</span>
+<span class="linenos">  8</span><span class="sd">The simulated robot is spawned into the selected Gazebo world and all required</span>
+<span class="linenos">  9</span><span class="sd">ROS 2 interfaces are initialized for autonomous navigation and testing.</span>
+<span class="linenos"> 10</span>
+<span class="linenos"> 11</span><span class="sd">Launch Arguments:</span>
+<span class="linenos"> 12</span><span class="sd">    world (str):</span>
+<span class="linenos"> 13</span><span class="sd">        Path to the Gazebo world file.</span>
+<span class="linenos"> 14</span>
+<span class="linenos"> 15</span><span class="sd">    model (str):</span>
+<span class="linenos"> 16</span><span class="sd">        Robot description (URDF/Xacro) file.</span>
+<span class="linenos"> 17</span>
+<span class="linenos"> 18</span><span class="sd">    x (float):</span>
+<span class="linenos"> 19</span><span class="sd">        Initial x-coordinate of the spawned robot.</span>
+<span class="linenos"> 20</span>
+<span class="linenos"> 21</span><span class="sd">    y (float):</span>
+<span class="linenos"> 22</span><span class="sd">        Initial y-coordinate of the spawned robot.</span>
+<span class="linenos"> 23</span>
+<span class="linenos"> 24</span><span class="sd">    yaw (float):</span>
+<span class="linenos"> 25</span><span class="sd">        Initial heading of the spawned robot.</span>
+<span class="linenos"> 26</span>
+<span class="linenos"> 27</span><span class="sd">    use_sim_time (bool):</span>
+<span class="linenos"> 28</span><span class="sd">        Enables simulation time provided by Gazebo.</span>
+<span class="linenos"> 29</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 30</span>
+<span class="linenos"> 31</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="linenos"> 32</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="linenos"> 33</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclareLaunchArgument</span><span class="p">,</span> <span class="n">IncludeLaunchDescription</span>
+<span class="linenos"> 34</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch.launch_description_sources</span><span class="w"> </span><span class="kn">import</span> <span class="n">PythonLaunchDescriptionSource</span>
+<span class="linenos"> 35</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch.substitutions</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">PathJoinSubstitution</span><span class="p">,</span> <span class="n">Command</span>
+<span class="linenos"> 36</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComposableNodeContainer</span><span class="p">,</span> <span class="n">Node</span>
+<span class="linenos"> 37</span><span class="kn">from</span><span class="w"> </span><span class="nn">launch_ros.descriptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComposableNode</span>
+<span class="linenos"> 38</span><span class="kn">from</span><span class="w"> </span><span class="nn">ament_index_python.packages</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_package_share_directory</span>
+<span class="linenos"> 39</span>
+<span class="linenos"> 40</span><span class="k">def</span><span class="w"> </span><span class="nf">generate_launch_description</span><span class="p">():</span>
+<span class="linenos"> 41</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 42</span><span class="sd">    Create the launch description for the simulated robot platform.</span>
+<span class="linenos"> 43</span>
+<span class="linenos"> 44</span><span class="sd">    The launch description starts the Gazebo world, spawns the robot model,</span>
+<span class="linenos"> 45</span><span class="sd">    initializes ros2_control, localization, sensor processing, safety functions</span>
+<span class="linenos"> 46</span><span class="sd">    and all supporting utility nodes required for operating the robot in</span>
+<span class="linenos"> 47</span><span class="sd">    simulation.</span>
+<span class="linenos"> 48</span>
+<span class="linenos"> 49</span><span class="sd">    Returns:</span>
+<span class="linenos"> 50</span><span class="sd">        LaunchDescription: Complete launch description for the simulated robot.</span>
+<span class="linenos"> 51</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 52</span>
+<span class="linenos"> 53</span>    <span class="n">pkg_mensabot_description</span> <span class="o">=</span> <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s1">&#39;mensabot_description&#39;</span><span class="p">)</span>
+<span class="linenos"> 54</span>    <span class="n">pkg_mensabot_bringup</span> <span class="o">=</span> <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s1">&#39;mensabot_bringup&#39;</span><span class="p">)</span>
+<span class="linenos"> 55</span>    <span class="n">pkg_mensabot_simulation</span> <span class="o">=</span> <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s1">&#39;mensabot_simulation&#39;</span><span class="p">)</span>
+<span class="linenos"> 56</span>    <span class="n">pkg_mensabot_navigation</span> <span class="o">=</span> <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s1">&#39;mensabot_navigation&#39;</span><span class="p">)</span>    
+<span class="linenos"> 57</span>    <span class="n">pkg_laser_scan_merger</span> <span class="o">=</span> <span class="n">get_package_share_directory</span><span class="p">(</span><span class="s1">&#39;laser_scan_merger&#39;</span><span class="p">)</span>
+<span class="linenos"> 58</span>
+<span class="linenos"> 59</span>    <span class="n">world_arg</span> <span class="o">=</span> <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+<span class="linenos"> 60</span>        <span class="s1">&#39;world&#39;</span><span class="p">,</span>
+<span class="linenos"> 61</span>        <span class="n">default_value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="linenos"> 62</span>            <span class="n">pkg_mensabot_simulation</span><span class="p">,</span>
+<span class="linenos"> 63</span>            <span class="s1">&#39;worlds&#39;</span><span class="p">,</span>
+<span class="linenos"> 64</span>            <span class="s1">&#39;world_room.sdf&#39;</span>
+<span class="linenos"> 65</span>        <span class="p">),</span>
+<span class="linenos"> 66</span>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Full path to the Gazebo world file&#39;</span>
+<span class="linenos"> 67</span>    <span class="p">)</span>
+<span class="linenos"> 68</span>
+<span class="linenos"> 69</span>    <span class="n">model_arg</span> <span class="o">=</span> <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+<span class="linenos"> 70</span>        <span class="s1">&#39;model&#39;</span><span class="p">,</span>
+<span class="linenos"> 71</span>        <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;mensabot.urdf.xacro&#39;</span><span class="p">,</span>
+<span class="linenos"> 72</span>    <span class="p">)</span>
+<span class="linenos"> 73</span>
+<span class="linenos"> 74</span>    <span class="n">x_arg</span> <span class="o">=</span> <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+<span class="linenos"> 75</span>        <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;0.0&#39;</span><span class="p">,</span>
+<span class="linenos"> 76</span>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;x coordinate of spawned robot&#39;</span>
+<span class="linenos"> 77</span>    <span class="p">)</span>
+<span class="linenos"> 78</span>
+<span class="linenos"> 79</span>    <span class="n">y_arg</span> <span class="o">=</span> <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+<span class="linenos"> 80</span>        <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;0.0&#39;</span><span class="p">,</span>
+<span class="linenos"> 81</span>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;y coordinate of spawned robot&#39;</span>
+<span class="linenos"> 82</span>    <span class="p">)</span>
+<span class="linenos"> 83</span>
+<span class="linenos"> 84</span>    <span class="n">yaw_arg</span> <span class="o">=</span> <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+<span class="linenos"> 85</span>        <span class="s1">&#39;yaw&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;0.0&#39;</span><span class="p">,</span>
+<span class="linenos"> 86</span>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;yaw angle of spawned robot&#39;</span>
+<span class="linenos"> 87</span>    <span class="p">)</span>
+<span class="linenos"> 88</span>
+<span class="linenos"> 89</span>    <span class="n">sim_time_arg</span> <span class="o">=</span> <span class="n">DeclareLaunchArgument</span><span class="p">(</span>
+<span class="linenos"> 90</span>        <span class="s1">&#39;use_sim_time&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="p">,</span>
+<span class="linenos"> 91</span>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Flag to enable use_sim_time&#39;</span>
+<span class="linenos"> 92</span>    <span class="p">)</span>
+<span class="linenos"> 93</span>
+<span class="linenos"> 94</span>    <span class="c1"># Define the path to your URDF or Xacro file</span>
+<span class="linenos"> 95</span>    <span class="n">urdf_file_path</span> <span class="o">=</span> <span class="n">PathJoinSubstitution</span><span class="p">([</span>
+<span class="linenos"> 96</span>        <span class="n">pkg_mensabot_description</span><span class="p">,</span>  <span class="c1"># Replace with your package name</span>
+<span class="linenos"> 97</span>        <span class="s2">&quot;urdf&quot;</span><span class="p">,</span>
+<span class="linenos"> 98</span>        <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>  <span class="c1"># Replace with your URDF or Xacro file</span>
+<span class="linenos"> 99</span>    <span class="p">])</span>
+<span class="linenos">100</span>
+<span class="linenos">101</span>    <span class="n">gz_bridge_params_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="linenos">102</span>        <span class="n">pkg_mensabot_simulation</span><span class="p">,</span>
+<span class="linenos">103</span>        <span class="s1">&#39;config&#39;</span><span class="p">,</span>
+<span class="linenos">104</span>        <span class="s1">&#39;gz_bridge.yaml&#39;</span>
+<span class="linenos">105</span>    <span class="p">)</span>
+<span class="linenos">106</span>
+<span class="linenos">107</span>    <span class="n">world_launch</span> <span class="o">=</span> <span class="n">IncludeLaunchDescription</span><span class="p">(</span>
+<span class="linenos">108</span>        <span class="n">PythonLaunchDescriptionSource</span><span class="p">(</span>
+<span class="linenos">109</span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_mensabot_simulation</span><span class="p">,</span> <span class="s1">&#39;launch&#39;</span><span class="p">,</span> <span class="s1">&#39;world.launch.py&#39;</span><span class="p">),</span>
+<span class="linenos">110</span>        <span class="p">),</span>
+<span class="linenos">111</span>        <span class="n">launch_arguments</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos">112</span>            <span class="s1">&#39;world&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;world&#39;</span><span class="p">),</span>
+<span class="linenos">113</span>        <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="linenos">114</span>    <span class="p">)</span>
+<span class="linenos">115</span>
+<span class="linenos">116</span>    <span class="c1"># Spawn the URDF model using the /world/&lt;world_name&gt;/create service</span>
+<span class="linenos">117</span>    <span class="n">spawn_urdf_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">118</span>        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;ros_gz_sim&quot;</span><span class="p">,</span>
+<span class="linenos">119</span>        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+<span class="linenos">120</span>        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">121</span>            <span class="s2">&quot;-name&quot;</span><span class="p">,</span> <span class="s2">&quot;mensabot&quot;</span><span class="p">,</span>
+<span class="linenos">122</span>            <span class="s2">&quot;-topic&quot;</span><span class="p">,</span> <span class="s2">&quot;robot_description&quot;</span><span class="p">,</span>
+<span class="linenos">123</span>            <span class="s2">&quot;-x&quot;</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">),</span> <span class="s2">&quot;-y&quot;</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="s2">&quot;-z&quot;</span><span class="p">,</span> <span class="s2">&quot;0.5&quot;</span><span class="p">,</span> <span class="s2">&quot;-Y&quot;</span><span class="p">,</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;yaw&#39;</span><span class="p">)</span>  <span class="c1"># Initial spawn position</span>
+<span class="linenos">124</span>        <span class="p">],</span>
+<span class="linenos">125</span>        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;screen&quot;</span><span class="p">,</span>
+<span class="linenos">126</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">127</span>            <span class="p">{</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)},</span>
+<span class="linenos">128</span>        <span class="p">]</span>
+<span class="linenos">129</span>    <span class="p">)</span>
+<span class="linenos">130</span>
+<span class="linenos">131</span>    <span class="c1"># Node to bridge /cmd_vel and /odom</span>
+<span class="linenos">132</span>    <span class="n">gz_bridge_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">133</span>        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;ros_gz_bridge&quot;</span><span class="p">,</span>
+<span class="linenos">134</span>        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;parameter_bridge&quot;</span><span class="p">,</span>
+<span class="linenos">135</span>        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">136</span>            <span class="s1">&#39;--ros-args&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span>
+<span class="linenos">137</span>            <span class="sa">f</span><span class="s1">&#39;config_file:=</span><span class="si">{</span><span class="n">gz_bridge_params_path</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="linenos">138</span>        <span class="p">],</span>
+<span class="linenos">139</span>        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;screen&quot;</span><span class="p">,</span>
+<span class="linenos">140</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">141</span>            <span class="p">{</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)},</span>
+<span class="linenos">142</span>        <span class="p">]</span>
+<span class="linenos">143</span>    <span class="p">)</span>
+<span class="linenos">144</span>
+<span class="linenos">145</span>    <span class="n">robot_state_publisher_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">146</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;robot_state_publisher&#39;</span><span class="p">,</span>
+<span class="linenos">147</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;robot_state_publisher&#39;</span><span class="p">,</span>
+<span class="linenos">148</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;robot_state_publisher&#39;</span><span class="p">,</span>
+<span class="linenos">149</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span><span class="p">,</span>
+<span class="linenos">150</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">151</span>            <span class="p">{</span><span class="s1">&#39;robot_description&#39;</span><span class="p">:</span> <span class="n">Command</span><span class="p">([</span><span class="s1">&#39;xacro&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">urdf_file_path</span><span class="p">,</span> <span class="s1">&#39; use_sim:=true&#39;</span><span class="p">]),</span>
+<span class="linenos">152</span>             <span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)},</span>
+<span class="linenos">153</span>        <span class="p">],</span>
+<span class="linenos">154</span>    <span class="p">)</span>
+<span class="linenos">155</span>
+<span class="linenos">156</span>    <span class="n">joint_state_broadcaster_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">157</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;controller_manager&#39;</span><span class="p">,</span>
+<span class="linenos">158</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;spawner&#39;</span><span class="p">,</span>
+<span class="linenos">159</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;joint_state_broadcaster_spawner&#39;</span><span class="p">,</span>
+<span class="linenos">160</span>        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;joint_state_broadcaster&#39;</span><span class="p">,</span> <span class="s1">&#39;--controller-manager&#39;</span><span class="p">,</span> <span class="s1">&#39;/controller_manager&#39;</span><span class="p">],</span>
+<span class="linenos">161</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span><span class="p">,</span>
+<span class="linenos">162</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">163</span>            <span class="p">{</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)},</span>
+<span class="linenos">164</span>        <span class="p">]</span>
+<span class="linenos">165</span>    <span class="p">)</span>
+<span class="linenos">166</span>
+<span class="linenos">167</span>    <span class="n">diff_drive_controller_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">168</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;controller_manager&#39;</span><span class="p">,</span>
+<span class="linenos">169</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;spawner&#39;</span><span class="p">,</span>
+<span class="linenos">170</span>        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">171</span>            <span class="s1">&#39;mensabot_base_controller&#39;</span><span class="p">,</span>
+<span class="linenos">172</span>            <span class="s1">&#39;--controller-manager&#39;</span><span class="p">,</span> <span class="s1">&#39;/controller_manager&#39;</span>
+<span class="linenos">173</span>        <span class="p">],</span>
+<span class="linenos">174</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)}],</span>
+<span class="linenos">175</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span><span class="p">,</span>
+<span class="linenos">176</span>    <span class="p">)</span>
+<span class="linenos">177</span>
+<span class="linenos">178</span>    <span class="n">ekf_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">179</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;robot_localization&#39;</span><span class="p">,</span>
+<span class="linenos">180</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;ekf_node&#39;</span><span class="p">,</span>
+<span class="linenos">181</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ekf_filter_node&#39;</span><span class="p">,</span>
+<span class="linenos">182</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span><span class="p">,</span>
+<span class="linenos">183</span>        <span class="n">remappings</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;/odometry/filtered&#39;</span><span class="p">,</span> <span class="s1">&#39;/odom&#39;</span><span class="p">)],</span>   <span class="c1"># Remap the output of the EKF to /odom instead of /odometry/filtered like default</span>
+<span class="linenos">184</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">185</span>            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_mensabot_bringup</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;ekf.yaml&#39;</span><span class="p">),</span>
+<span class="linenos">186</span>            <span class="p">{</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)},</span>
+<span class="linenos">187</span>             <span class="p">]</span>
+<span class="linenos">188</span>    <span class="p">)</span>
+<span class="linenos">189</span>
+<span class="linenos">190</span>    <span class="n">cmd_vel_transform_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">191</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;mensabot_utils&#39;</span><span class="p">,</span>
+<span class="linenos">192</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;cmd_vel_transform&#39;</span><span class="p">,</span>
+<span class="linenos">193</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cmd_vel_transform_node&#39;</span><span class="p">,</span>
+<span class="linenos">194</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span>
+<span class="linenos">195</span>    <span class="p">)</span>
+<span class="linenos">196</span>
+<span class="linenos">197</span>    <span class="n">safety_control_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">198</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;mensabot_utils&#39;</span><span class="p">,</span>
+<span class="linenos">199</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;safety_control_node&#39;</span><span class="p">,</span>
+<span class="linenos">200</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;safety_control_node&#39;</span><span class="p">,</span>
+<span class="linenos">201</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;simulation&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}],</span>
+<span class="linenos">202</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span>
+<span class="linenos">203</span>    <span class="p">)</span>
+<span class="linenos">204</span>
+<span class="linenos">205</span>    <span class="n">simulation_publisher_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">206</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;mensabot_utils&#39;</span><span class="p">,</span>
+<span class="linenos">207</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;simulation_publisher_node&#39;</span><span class="p">,</span>
+<span class="linenos">208</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;simulation_publisher_node&#39;</span><span class="p">,</span>
+<span class="linenos">209</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span>
+<span class="linenos">210</span>    <span class="p">)</span>
+<span class="linenos">211</span>
+<span class="linenos">212</span>    <span class="n">laser_scan_merger_node</span> <span class="o">=</span> <span class="n">ComposableNodeContainer</span><span class="p">(</span>
+<span class="linenos">213</span>        <span class="n">package</span><span class="o">=</span><span class="s2">&quot;rclcpp_components&quot;</span><span class="p">,</span>
+<span class="linenos">214</span>        <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;component_container&quot;</span><span class="p">,</span>
+<span class="linenos">215</span>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;component_manager_node&quot;</span><span class="p">,</span>
+<span class="linenos">216</span>        <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="linenos">217</span>        <span class="n">composable_node_descriptions</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">218</span>            <span class="n">ComposableNode</span><span class="p">(</span>
+<span class="linenos">219</span>                <span class="n">package</span><span class="o">=</span><span class="s2">&quot;laser_scan_merger&quot;</span><span class="p">,</span>
+<span class="linenos">220</span>                <span class="n">plugin</span><span class="o">=</span><span class="s2">&quot;util::LaserScanMerger&quot;</span><span class="p">,</span>
+<span class="linenos">221</span>                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;laser_scan_merger_node&quot;</span><span class="p">,</span>
+<span class="linenos">222</span>                <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+<span class="linenos">223</span>                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_laser_scan_merger</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;laser_merger_param.yaml&#39;</span><span class="p">),</span>
+<span class="linenos">224</span>                    <span class="p">{</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">:</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;use_sim_time&#39;</span><span class="p">)},</span>
+<span class="linenos">225</span>                <span class="p">]</span>
+<span class="linenos">226</span>            <span class="p">)</span>
+<span class="linenos">227</span>        <span class="p">],</span>
+<span class="linenos">228</span>        <span class="n">output</span><span class="o">=</span><span class="s2">&quot;screen&quot;</span>
+<span class="linenos">229</span>    <span class="p">)</span>
+<span class="linenos">230</span>
+<span class="linenos">231</span>    <span class="n">lidar_field_selection_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">232</span>        <span class="n">package</span><span class="o">=</span><span class="s1">&#39;mensabot_utils&#39;</span><span class="p">,</span>
+<span class="linenos">233</span>        <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;lidar_field_selection_node&#39;</span><span class="p">,</span>
+<span class="linenos">234</span>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lidar_field_selection_node&#39;</span><span class="p">,</span>
+<span class="linenos">235</span>        <span class="n">parameters</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;simulation&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}],</span>
+<span class="linenos">236</span>        <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span>
+<span class="linenos">237</span>    <span class="p">)</span>
+<span class="linenos">238</span>
+<span class="linenos">239</span>    <span class="n">laser_scan_matcher_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span>
+<span class="linenos">240</span>                <span class="n">package</span><span class="o">=</span><span class="s1">&#39;rf2o_laser_odometry&#39;</span><span class="p">,</span>
+<span class="linenos">241</span>                <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;rf2o_laser_odometry_node&#39;</span><span class="p">,</span>
+<span class="linenos">242</span>                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;rf2o_laser_odometry&#39;</span><span class="p">,</span>
+<span class="linenos">243</span>                <span class="n">output</span><span class="o">=</span><span class="s1">&#39;screen&#39;</span><span class="p">,</span>
+<span class="linenos">244</span>                <span class="n">parameters</span><span class="o">=</span><span class="p">[{</span>
+<span class="linenos">245</span>                    <span class="s1">&#39;laser_scan_topic&#39;</span> <span class="p">:</span> <span class="s1">&#39;/merged_scan&#39;</span><span class="p">,</span>
+<span class="linenos">246</span>                    <span class="s1">&#39;odom_topic&#39;</span> <span class="p">:</span> <span class="s1">&#39;/odom_rf2o&#39;</span><span class="p">,</span>
+<span class="linenos">247</span>                    <span class="s1">&#39;publish_tf&#39;</span> <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos">248</span>                    <span class="s1">&#39;base_frame_id&#39;</span> <span class="p">:</span> <span class="s1">&#39;base_link&#39;</span><span class="p">,</span>
+<span class="linenos">249</span>                    <span class="s1">&#39;odom_frame_id&#39;</span> <span class="p">:</span> <span class="s1">&#39;odom&#39;</span><span class="p">,</span>
+<span class="linenos">250</span>                    <span class="s1">&#39;init_pose_from_topic&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="linenos">251</span>                    <span class="s1">&#39;freq&#39;</span> <span class="p">:</span> <span class="mf">5.0</span><span class="p">}],</span>
+<span class="linenos">252</span>    <span class="p">)</span>
+<span class="linenos">253</span>
+<span class="linenos">254</span>    <span class="n">launchDescriptionObject</span> <span class="o">=</span> <span class="n">LaunchDescription</span><span class="p">()</span>
+<span class="linenos">255</span>
+<span class="linenos">256</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">world_arg</span><span class="p">)</span>
+<span class="linenos">257</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">model_arg</span><span class="p">)</span>
+<span class="linenos">258</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">x_arg</span><span class="p">)</span>
+<span class="linenos">259</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">y_arg</span><span class="p">)</span>
+<span class="linenos">260</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">yaw_arg</span><span class="p">)</span>
+<span class="linenos">261</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">sim_time_arg</span><span class="p">)</span>
+<span class="linenos">262</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">world_launch</span><span class="p">)</span>
+<span class="linenos">263</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">spawn_urdf_node</span><span class="p">)</span>
+<span class="linenos">264</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">gz_bridge_node</span><span class="p">)</span>
+<span class="linenos">265</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">robot_state_publisher_node</span><span class="p">)</span>
+<span class="linenos">266</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">joint_state_broadcaster_node</span><span class="p">)</span>
+<span class="linenos">267</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">diff_drive_controller_node</span><span class="p">)</span>
+<span class="linenos">268</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">ekf_node</span><span class="p">)</span>
+<span class="linenos">269</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">cmd_vel_transform_node</span><span class="p">)</span>
+<span class="linenos">270</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">safety_control_node</span><span class="p">)</span>
+<span class="linenos">271</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">simulation_publisher_node</span><span class="p">)</span>
+<span class="linenos">272</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">laser_scan_merger_node</span><span class="p">)</span>
+<span class="linenos">273</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">lidar_field_selection_node</span><span class="p">)</span>
+<span class="linenos">274</span>    <span class="n">launchDescriptionObject</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">laser_scan_matcher_node</span><span class="p">)</span>
+<span class="linenos">275</span>    
+<span class="linenos">276</span>    <span class="k">return</span> <span class="n">launchDescriptionObject</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="launch_real.html" class="btn btn-neutral float-left" title="Real Robot Launch Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
