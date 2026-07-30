@@ -10,6 +10,14 @@ Welcome to the documentation of the HSK-Mensabot project.
 
 This documentation contains the project description and launch files as well as the complete Python and C++ API documentation.
 
+.. figure:: ../images/gazebo_robot.png
+   :width: 100%
+   :align: center
+   :alt: Mensabot gazebo image
+
+   Overview of the Mensabot.
+
+
 .. toctree::
    :maxdepth: 2
    :caption: User Guide
