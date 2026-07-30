@@ -41,7 +41,7 @@
         </childnode>
       </node>
       <node id="1">
-        <label>/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp</label>
+        <label>src/mensabot_hardware/src/mensabot_hardware.cpp</label>
         <link refid="mensabot__hardware_8cpp"/>
         <childnode refid="2" relation="include">
         </childnode>
@@ -548,6 +548,6 @@
 <codeline lineno="544"><highlight class="normal"><sp/><sp/><ref refid="classmensabot__hardware_1_1MensabotHardware" kindref="compound">mensabot_hardware::MensabotHardware</ref>,</highlight></codeline>
 <codeline lineno="545"><highlight class="normal"><sp/><sp/>hardware_interface::SystemInterface)</highlight></codeline>
     </programlisting>
-    <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp"/>
+    <location file="src/mensabot_hardware/src/mensabot_hardware.cpp"/>
   </compounddef>
 </doxygen>

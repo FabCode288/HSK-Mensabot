@@ -7,6 +7,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="74" column="1"/>
+    <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="74" column="1"/>
   </compounddef>
 </doxygen>

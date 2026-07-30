@@ -59,14 +59,14 @@
   </compound>
   <compound refid="mensabot__hardware_8cpp" kind="file"><name>mensabot_hardware.cpp</name>
   </compound>
-  <compound refid="dir_cb2c93cb746f1a9a3005dc79398f4777" kind="dir"><name>/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include</name>
+  <compound refid="dir_cb2c93cb746f1a9a3005dc79398f4777" kind="dir"><name>src/mensabot_hardware/include</name>
   </compound>
-  <compound refid="dir_82ccf1723c051228cb86db83a783368d" kind="dir"><name>/home/fabko/ros2_mensabot_ws/src/mensabot_hardware</name>
+  <compound refid="dir_82ccf1723c051228cb86db83a783368d" kind="dir"><name>src/mensabot_hardware</name>
   </compound>
-  <compound refid="dir_cf96f8cb78d1e93308081f2e55eb7f4d" kind="dir"><name>/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware</name>
+  <compound refid="dir_cf96f8cb78d1e93308081f2e55eb7f4d" kind="dir"><name>src/mensabot_hardware/include/mensabot_hardware</name>
   </compound>
-  <compound refid="dir_68267d1309a1af8e8297ef4c3efbcdba" kind="dir"><name>/home/fabko/ros2_mensabot_ws/src</name>
+  <compound refid="dir_68267d1309a1af8e8297ef4c3efbcdba" kind="dir"><name>src</name>
   </compound>
-  <compound refid="dir_4bd1deb483b5c245936883abf2167d12" kind="dir"><name>/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src</name>
+  <compound refid="dir_4bd1deb483b5c245936883abf2167d12" kind="dir"><name>src/mensabot_hardware/src</name>
   </compound>
 </doxygenindex>

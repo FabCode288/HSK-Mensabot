@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
   <compounddef id="dir_cf96f8cb78d1e93308081f2e55eb7f4d" kind="dir">
-    <compoundname>/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware</compoundname>
+    <compoundname>src/mensabot_hardware/include/mensabot_hardware</compoundname>
     <innerfile refid="mensabot__hardware_8hpp">mensabot_hardware.hpp</innerfile>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/"/>
+    <location file="src/mensabot_hardware/include/mensabot_hardware/"/>
   </compounddef>
 </doxygen>
