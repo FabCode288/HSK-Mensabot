@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="namespacemensabot__hardware" kind="namespace" language="C++">
+    <compoundname>mensabot_hardware</compoundname>
+    <innerclass refid="classmensabot__hardware_1_1MensabotHardware" prot="public">mensabot_hardware::MensabotHardware</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="74" column="1"/>
+  </compounddef>
+</doxygen>

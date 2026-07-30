@@ -64,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#build-workspace">Build Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#source-workspace">Source Workspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#clean-build">Clean Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-documentation">Build Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
@@ -83,6 +84,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
       <li class="breadcrumb-item active">Build</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/build.rst.txt" rel="nofollow"> View page source</a>
@@ -95,26 +97,49 @@
              
   <section id="build">
 <h1>Build<a class="headerlink" href="#build" title="Link to this heading"></a></h1>
+<p>This section describes the basic build workflow for the HSK-MensaBot software project. The project is implemented as a standard ROS 2 workspace and uses the <code class="docutils literal notranslate"><span class="pre">colcon</span></code> build system.</p>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
-<p>The project is developed using Ubuntu 24.04 LTS and ROS 2 Jazzy Jalisco.</p>
+<p>The development environment is based on the following software:</p>
+<ul class="simple">
+<li><p>Ubuntu 24.04 LTS</p></li>
+<li><p>ROS 2 Jazzy Jalisco</p></li>
+<li><p>Python 3</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">colcon</span></code> build tools</p></li>
+<li><p>All required ROS 2 package dependencies installed</p></li>
+</ul>
 </section>
 <section id="build-workspace">
 <h2>Build Workspace<a class="headerlink" href="#build-workspace" title="Link to this heading"></a></h2>
+<p>Compile all packages within the workspace:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>colcon<span class="w"> </span>build<span class="w"> </span>--symlink-install
 </pre></div>
 </div>
 </section>
 <section id="source-workspace">
 <h2>Source Workspace<a class="headerlink" href="#source-workspace" title="Link to this heading"></a></h2>
+<p>After a successful build, source the workspace before running any ROS 2 commands:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>install/setup.bash
 </pre></div>
 </div>
 </section>
 <section id="clean-build">
 <h2>Clean Build<a class="headerlink" href="#clean-build" title="Link to this heading"></a></h2>
+<p>To perform a clean rebuild, remove all generated files before compiling again:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm<span class="w"> </span>-rf<span class="w"> </span>build<span class="w"> </span>install<span class="w"> </span>log
 colcon<span class="w"> </span>build<span class="w"> </span>--symlink-install
+</pre></div>
+</div>
+</section>
+<section id="build-documentation">
+<h2>Build Documentation<a class="headerlink" href="#build-documentation" title="Link to this heading"></a></h2>
+<p>Generate the HTML documentation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>html
+</pre></div>
+</div>
+<p>If the C++ API documentation is used, generate the Doxygen XML files before building Sphinx:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doxygen<span class="w"> </span>Doxyfile
+make<span class="w"> </span>html
 </pre></div>
 </div>
 </section>

@@ -1,0 +1,823 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mensabot_utils.lidar_field_selection_node &mdash; HSK-Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HSK-Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Software Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packages/index.html">Packages</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HSK-Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mensabot_utils.lidar_field_selection_node</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mensabot_utils.lidar_field_selection_node</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Selects the active LiDAR monitoring field based on the robot&#39;s motion state.</span>
+
+<span class="sd">The node evaluates the commanded robot motion, selects the corresponding</span>
+<span class="sd">LiDAR monitoring field, updates the GPIO outputs for the safety scanner and</span>
+<span class="sd">publishes the matching Nav2 footprint.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">rclpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rclpy.node</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">geometry_msgs.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">TwistStamped</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">Point32</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">std_msgs.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">String</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">std_msgs.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bool</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+
+<div class="viewcode-block" id="FieldState">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.FieldState">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FieldState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumeration of all supported LiDAR monitoring states.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">STOP</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">FORWARD</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">BACKWARD</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="n">ROTATE_LEFT</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">ROTATE_RIGHT</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="n">MANUAL_OVERRIDE</span> <span class="o">=</span> <span class="mi">5</span></div>
+
+
+
+<div class="viewcode-block" id="LidarFieldSelector">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LidarFieldSelector</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ROS 2 node for selecting LiDAR monitoring fields.</span>
+
+<span class="sd">    The node determines the robot&#39;s current motion state from velocity commands,</span>
+<span class="sd">    controls the LiDAR field selection via GPIO outputs and updates the dynamic</span>
+<span class="sd">    Nav2 footprint accordingly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize parameters, GPIO interfaces, ROS interfaces and internal state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;lidar_field_selector&#39;</span><span class="p">)</span>
+
+        <span class="c1"># ============================================================</span>
+        <span class="c1"># PARAMETERS</span>
+        <span class="c1"># ============================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">declare_parameter</span><span class="p">(</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;simulation&#39;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get_parameter_value</span><span class="p">()</span><span class="o">.</span><span class="n">bool_value</span>
+
+        <span class="c1"># ============================================================</span>
+        <span class="c1"># GPIO CONFIG</span>
+        <span class="c1"># ============================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gpio_pins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gpio_available</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Import GPIO ONLY on Raspberry Pi / real robot</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+
+                <span class="kn">import</span><span class="w"> </span><span class="nn">gpiod</span>  <span class="c1"># type: ignore</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">gpiod.line</span><span class="w"> </span><span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Value</span>  <span class="c1"># type: ignore</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">gpiod</span> <span class="o">=</span> <span class="n">gpiod</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Direction</span> <span class="o">=</span> <span class="n">Direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">Value</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">gpio_chip_path</span> <span class="o">=</span> <span class="s2">&quot;/dev/gpiochip4&quot;</span>
+
+                <span class="k">for</span> <span class="n">pin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_pins</span><span class="p">:</span>
+
+                    <span class="n">gpio_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpiod</span><span class="o">.</span><span class="n">request_lines</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">gpio_chip_path</span><span class="p">,</span>
+                        <span class="n">consumer</span><span class="o">=</span><span class="s2">&quot;lidar_field_selector&quot;</span><span class="p">,</span>
+                        <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+                            <span class="n">pin</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">gpiod</span><span class="o">.</span><span class="n">LineSettings</span><span class="p">(</span>
+                                <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Direction</span><span class="o">.</span><span class="n">OUTPUT</span>
+                            <span class="p">)</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpio_request</span>
+
+                    <span class="c1"># Initialize HIGH</span>
+                    <span class="n">gpio_request</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                        <span class="n">pin</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">ACTIVE</span>
+                    <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">gpio_available</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;GPIO initialized&#39;</span>
+                <span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;GPIO initialization failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;Simulation mode active -&gt; GPIO disabled&#39;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ============================================================</span>
+        <span class="c1"># CONFIG</span>
+        <span class="c1"># ============================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_threshold</span> <span class="o">=</span> <span class="mf">0.02</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angular_threshold</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_sec</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_timeout_sec</span> <span class="o">=</span> <span class="mf">2.0</span>
+
+        <span class="c1"># ============================================================</span>
+        <span class="c1"># FOOTPRINT CONFIGURATION</span>
+        <span class="c1"># ============================================================</span>
+
+        <span class="c1"># Original robot footprint:</span>
+        <span class="c1">#</span>
+        <span class="c1"># Front:  x =  0.20 m</span>
+        <span class="c1"># Rear:   x = -0.65 m</span>
+        <span class="c1"># Left:   y =  0.35 m</span>
+        <span class="c1"># Right:  y = -0.35 m</span>
+        <span class="c1">#</span>
+        <span class="c1"># The following footprints include the additional safety</span>
+        <span class="c1"># distances for the corresponding lidar monitoring case.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">footprints</span> <span class="o">=</span> <span class="p">{</span>
+
+            <span class="c1"># --------------------------------------------------------</span>
+            <span class="c1"># FORWARD</span>
+            <span class="c1">#</span>
+            <span class="c1"># Front: +300 mm</span>
+            <span class="c1"># Rear:  +200 mm</span>
+            <span class="c1"># Left:  +100 mm</span>
+            <span class="c1"># Right: +100 mm</span>
+            <span class="c1"># --------------------------------------------------------</span>
+
+            <span class="n">FieldState</span><span class="o">.</span><span class="n">FORWARD</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+            <span class="p">],</span>
+
+            <span class="c1"># --------------------------------------------------------</span>
+            <span class="c1"># BACKWARD</span>
+            <span class="c1">#</span>
+            <span class="c1"># Front: +200 mm</span>
+            <span class="c1"># Rear:  +300 mm</span>
+            <span class="c1"># Left:  +100 mm</span>
+            <span class="c1"># Right: +100 mm</span>
+            <span class="c1"># --------------------------------------------------------</span>
+
+            <span class="n">FieldState</span><span class="o">.</span><span class="n">BACKWARD</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+            <span class="p">],</span>
+
+            <span class="c1"># --------------------------------------------------------</span>
+            <span class="c1"># ROTATE LEFT</span>
+            <span class="c1">#</span>
+            <span class="c1"># Base extension:</span>
+            <span class="c1"># Front: +200 mm</span>
+            <span class="c1"># Rear:  +200 mm</span>
+            <span class="c1"># Left:  +100 mm</span>
+            <span class="c1"># Right: +100 mm</span>
+            <span class="c1">#</span>
+            <span class="c1"># Additional extension at rear right:</span>
+            <span class="c1"># Right rear corner: -300 mm additional</span>
+            <span class="c1"># --------------------------------------------------------</span>
+
+            <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_LEFT</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.75</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+            <span class="p">],</span>
+
+            <span class="c1"># --------------------------------------------------------</span>
+            <span class="c1"># ROTATE RIGHT</span>
+            <span class="c1">#</span>
+            <span class="c1"># Base extension:</span>
+            <span class="c1"># Front: +200 mm</span>
+            <span class="c1"># Rear:  +200 mm</span>
+            <span class="c1"># Left:  +100 mm</span>
+            <span class="c1"># Right: +100 mm</span>
+            <span class="c1">#</span>
+            <span class="c1"># Additional extension at rear left:</span>
+            <span class="c1"># Left rear corner: +300 mm additional</span>
+            <span class="c1"># --------------------------------------------------------</span>
+
+            <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_RIGHT</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>
+            <span class="p">],</span>
+
+            <span class="c1"># --------------------------------------------------------</span>
+            <span class="c1"># STOP</span>
+            <span class="c1">#</span>
+            <span class="c1"># Front: +200 mm</span>
+            <span class="c1"># Rear:  +200 mm</span>
+            <span class="c1"># Left:  +100 mm</span>
+            <span class="c1"># Right: +100 mm</span>
+            <span class="c1"># --------------------------------------------------------</span>
+
+            <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+            <span class="p">],</span>
+
+            <span class="c1"># --------------------------------------------------------</span>
+            <span class="c1"># MANUAL OVERRIDE</span>
+            <span class="c1">#</span>
+            <span class="c1"># Uses STOP footprint for Nav2 collision checking.</span>
+            <span class="c1"># --------------------------------------------------------</span>
+
+            <span class="n">FieldState</span><span class="o">.</span><span class="n">MANUAL_OVERRIDE</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">],</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+
+        <span class="c1"># ============================================================</span>
+        <span class="c1"># STATE</span>
+        <span class="c1"># ============================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_cmd_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clock</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_manual_override_msg_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clock</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># ============================================================</span>
+        <span class="c1"># ROS INTERFACES</span>
+        <span class="c1"># ============================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_vel_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span>
+            <span class="n">TwistStamped</span><span class="p">,</span>
+            <span class="s1">&#39;/mensabot_base_controller/cmd_vel_out&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_vel_callback</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span>
+            <span class="n">Bool</span><span class="p">,</span>
+            <span class="s1">&#39;/safety/manual_override&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_callback</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_state_pub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_publisher</span><span class="p">(</span>
+            <span class="n">String</span><span class="p">,</span>
+            <span class="s1">&#39;/safety/field_state&#39;</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Dynamic Nav2 local costmap footprint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">footprint_pub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_publisher</span><span class="p">(</span>
+            <span class="n">Polygon</span><span class="p">,</span>
+            <span class="s1">&#39;/local_costmap/footprint&#39;</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_timer</span><span class="p">(</span>
+            <span class="mf">0.1</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timer_callback</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Lidar field selector started&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Publish initial state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">publish_state</span><span class="p">()</span>
+
+        <span class="c1"># Set initial lidar monitoring field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_gpio_state</span><span class="p">()</span>
+
+        <span class="c1"># Publish initial STOP footprint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">publish_footprint</span><span class="p">()</span>
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># MANUAL OVERRIDE CALLBACK</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.manual_override_callback">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.manual_override_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">manual_override_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle manual override requests.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            msg: Manual override state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_manual_override_msg_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clock</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="n">previous_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">previous_state</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;MANUAL OVERRIDE ACTIVE&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">!=</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">MANUAL_OVERRIDE</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">MANUAL_OVERRIDE</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">publish_state</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_gpio_state</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">publish_footprint</span><span class="p">()</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># CMD VEL CALLBACK</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.cmd_vel_callback">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.cmd_vel_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cmd_vel_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">TwistStamped</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process commanded robot velocities and update the active monitoring field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            msg: Commanded robot velocity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_cmd_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clock</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">linear_x</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">twist</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">angular_z</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">twist</span><span class="o">.</span><span class="n">angular</span><span class="o">.</span><span class="n">z</span>
+
+        <span class="c1"># Deadband</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">linear_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_threshold</span><span class="p">:</span>
+            <span class="n">linear_x</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">angular_z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">angular_threshold</span><span class="p">:</span>
+            <span class="n">angular_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">new_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determine_state</span><span class="p">(</span>
+            <span class="n">linear_x</span><span class="p">,</span>
+            <span class="n">angular_z</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Only switch field and footprint if state changed</span>
+        <span class="k">if</span> <span class="n">new_state</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">new_state</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">publish_state</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_gpio_state</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">publish_footprint</span><span class="p">()</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># DETERMINE STATE</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.determine_state">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.determine_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">determine_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">linear_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">angular_z</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FieldState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine the LiDAR monitoring state from the commanded motion.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            linear_x: Linear velocity in x-direction.</span>
+<span class="sd">            angular_z: Angular velocity around the z-axis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FieldState: Selected monitoring state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># STOP</span>
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span>
+
+        <span class="c1"># PURE FORWARD / BACKWARD</span>
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">FORWARD</span>
+
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">BACKWARD</span>
+
+        <span class="c1"># PURE ROTATION</span>
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_LEFT</span>
+
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_RIGHT</span>
+
+        <span class="c1"># COMBINED MOVEMENT</span>
+        <span class="c1"># Forward / Backward has priority</span>
+
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">FORWARD</span>
+
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">BACKWARD</span>
+
+        <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># FOOTPRINT PUBLISHER</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.publish_footprint">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_footprint">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">publish_footprint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Publish the footprint corresponding to the current monitoring state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">footprint_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">footprints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">footprint_points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;No footprint defined for state: &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="n">polygon</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">footprint_points</span><span class="p">:</span>
+
+            <span class="n">point</span> <span class="o">=</span> <span class="n">Point32</span><span class="p">()</span>
+
+            <span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="n">polygon</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">footprint_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Published footprint for state: &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># GPIO OUTPUT</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.set_gpio_state">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.set_gpio_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_gpio_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the GPIO outputs according to the selected monitoring field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Field state: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_available</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Set all outputs HIGH</span>
+        <span class="k">for</span> <span class="n">pin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_pins</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                <span class="n">pin</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">ACTIVE</span>
+            <span class="p">)</span>
+
+        <span class="n">active_pin</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">FORWARD</span><span class="p">:</span>
+            <span class="n">active_pin</span> <span class="o">=</span> <span class="mi">22</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">BACKWARD</span><span class="p">:</span>
+            <span class="n">active_pin</span> <span class="o">=</span> <span class="mi">23</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_LEFT</span><span class="p">:</span>
+            <span class="n">active_pin</span> <span class="o">=</span> <span class="mi">24</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_RIGHT</span><span class="p">:</span>
+            <span class="n">active_pin</span> <span class="o">=</span> <span class="mi">25</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">MANUAL_OVERRIDE</span><span class="p">:</span>
+            <span class="n">active_pin</span> <span class="o">=</span> <span class="mi">26</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">active_pin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                <span class="mi">27</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">INACTIVE</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span><span class="p">[</span><span class="n">active_pin</span><span class="p">]</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                <span class="n">active_pin</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">INACTIVE</span>
+            <span class="p">)</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># STATE PUBLISHER</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.publish_state">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_state">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">publish_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Publish the current LiDAR monitoring state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">String</span><span class="p">()</span>
+
+        <span class="n">msg</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_state_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># TIMEOUT HANDLING</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.timer_callback">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.timer_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">timer_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Monitor command and manual override timeouts.</span>
+
+<span class="sd">        Resets the monitoring state if no valid command or manual override message</span>
+<span class="sd">        has been received within the configured timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clock</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># --------------------------------------------------------</span>
+        <span class="c1"># MANUAL OVERRIDE TIMEOUT</span>
+        <span class="c1"># --------------------------------------------------------</span>
+
+        <span class="n">manual_override_delta</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_manual_override_msg_time</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">nanoseconds</span> <span class="o">/</span> <span class="mf">1e9</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">manual_override_delta</span>
+                <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_timeout_sec</span>
+            <span class="p">):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;MANUAL OVERRIDE TIMEOUT -&gt; returning to normal field selection&#39;</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">publish_state</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_gpio_state</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">publish_footprint</span><span class="p">()</span>
+
+        <span class="c1"># --------------------------------------------------------</span>
+        <span class="c1"># CMD VEL TIMEOUT</span>
+        <span class="c1"># --------------------------------------------------------</span>
+
+        <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_cmd_time</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">nanoseconds</span> <span class="o">/</span> <span class="mf">1e9</span>
+
+        <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout_sec</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">!=</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">manual_override_active</span><span class="p">:</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">STOP</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">publish_state</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_gpio_state</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">publish_footprint</span><span class="p">()</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s1">&#39;cmd_vel timeout -&gt; &#39;</span>
+                        <span class="s1">&#39;STOP field and footprint activated&#39;</span>
+                    <span class="p">)</span></div>
+
+
+    <span class="c1"># ============================================================</span>
+    <span class="c1"># CLEANUP</span>
+    <span class="c1"># ============================================================</span>
+
+<div class="viewcode-block" id="LidarFieldSelector.destroy_node">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.destroy_node">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destroy_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Release GPIO resources before shutting down the node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_available</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">pin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpio_pins</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                    <span class="n">pin</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Value</span><span class="o">.</span><span class="n">ACTIVE</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">gpio_requests</span><span class="p">[</span><span class="n">pin</span><span class="p">]</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../packages/mensabot_utils/safety/lidar_field_selection_node.html#mensabot_utils.lidar_field_selection_node.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Start the LiDAR field selector node.</span>
+
+<span class="sd">    Initializes ROS 2, spins the node and performs a clean shutdown when the node</span>
+<span class="sd">    terminates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rclpy</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="n">node</span> <span class="o">=</span> <span class="n">LidarFieldSelector</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="n">rclpy</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+
+        <span class="k">pass</span>
+
+    <span class="n">node</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">()</span>
+
+    <span class="n">rclpy</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

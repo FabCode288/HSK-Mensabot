@@ -1,0 +1,721 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="classmensabot__hardware_1_1MensabotHardware" kind="class" language="C++" prot="public">
+    <compoundname>mensabot_hardware::MensabotHardware</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">hardware_interface::SystemInterface</basecompoundref>
+    <includes refid="mensabot__hardware_8hpp" local="no">mensabot_hardware.hpp</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a9cf43d1578aa577f95729c88e6f77e24" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int mensabot_hardware::MensabotHardware::serial_fd_</definition>
+        <argsstring></argsstring>
+        <name>serial_fd_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::serial_fd_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="143" column="7" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a82abcd07c6fdf5f18e80fae45b5934a1" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string mensabot_hardware::MensabotHardware::port_</definition>
+        <argsstring></argsstring>
+        <name>port_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::port_</qualifiedname>
+        <initializer>= &quot;/dev/arduino&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="145" column="15" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a42362dfc8a24493579de8a7ea146cd6a" prot="private" static="no" mutable="no">
+        <type><ref refid="unionPacketBuffer" kindref="compound">PacketBuffer</ref></type>
+        <definition>PacketBuffer mensabot_hardware::MensabotHardware::rx_buffer_</definition>
+        <argsstring></argsstring>
+        <name>rx_buffer_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::rx_buffer_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="147" column="16" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1ad38ad828ad16517b36ab0d19d8c9d190" prot="private" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t mensabot_hardware::MensabotHardware::rx_index_</definition>
+        <argsstring></argsstring>
+        <name>rx_index_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::rx_index_</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="149" column="10" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a1b5c8c8c6777829cd59b657f584c6325" prot="private" static="no" mutable="no">
+        <type>rclcpp::Node::SharedPtr</type>
+        <definition>rclcpp::Node::SharedPtr mensabot_hardware::MensabotHardware::node_</definition>
+        <argsstring></argsstring>
+        <name>node_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::node_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="174" column="27" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a0b585087c9d320c43469bc07ac598c00" prot="private" static="no" mutable="no">
+        <type>rclcpp::Subscription&lt; std_msgs::msg::Bool &gt;::SharedPtr</type>
+        <definition>rclcpp::Subscription&lt;std_msgs::msg::Bool&gt;::SharedPtr mensabot_hardware::MensabotHardware::estop_sub_</definition>
+        <argsstring></argsstring>
+        <name>estop_sub_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::estop_sub_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="176" column="36" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="176" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1aa12af252d6b27446a589f4a4547349c7" prot="private" static="no" mutable="no">
+        <type>rclcpp::Publisher&lt; std_msgs::msg::Bool &gt;::SharedPtr</type>
+        <definition>rclcpp::Publisher&lt;std_msgs::msg::Bool&gt;::SharedPtr mensabot_hardware::MensabotHardware::connected_pub_</definition>
+        <argsstring></argsstring>
+        <name>connected_pub_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::connected_pub_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="178" column="33" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1af90cd6652756f0b54b8945b9f579c3a4" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; double &gt;</type>
+        <definition>std::vector&lt;double&gt; mensabot_hardware::MensabotHardware::hw_positions_</definition>
+        <argsstring></argsstring>
+        <name>hw_positions_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::hw_positions_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="184" column="15" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="184" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a6a421740801832724834612049f1d888" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; double &gt;</type>
+        <definition>std::vector&lt;double&gt; mensabot_hardware::MensabotHardware::hw_velocities_</definition>
+        <argsstring></argsstring>
+        <name>hw_velocities_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::hw_velocities_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="186" column="15" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="186" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a48115ca65ed15d737df92f38a0e47d2b" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; double &gt;</type>
+        <definition>std::vector&lt;double&gt; mensabot_hardware::MensabotHardware::hw_commands_</definition>
+        <argsstring></argsstring>
+        <name>hw_commands_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::hw_commands_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="188" column="15" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1ad1ad588a64e3f398afeead6dbada77aa" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool mensabot_hardware::MensabotHardware::connected_</definition>
+        <argsstring></argsstring>
+        <name>connected_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::connected_</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="194" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a75efa843ba17bb4e63ae63b1dee27498" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool mensabot_hardware::MensabotHardware::ready_</definition>
+        <argsstring></argsstring>
+        <name>ready_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::ready_</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="196" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="196" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a24b35fe110a39c5cd82b40d96afb595a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool mensabot_hardware::MensabotHardware::active_</definition>
+        <argsstring></argsstring>
+        <name>active_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::active_</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="198" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a5864be8fde07a672e21a8a941a9aae18" prot="private" static="no" mutable="no">
+        <type>std::atomic&lt; bool &gt;</type>
+        <definition>std::atomic&lt;bool&gt; mensabot_hardware::MensabotHardware::estop_</definition>
+        <argsstring></argsstring>
+        <name>estop_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::estop_</qualifiedname>
+        <initializer>{false}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="200" column="15" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="200" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a6288706c2fb46d1bf3921e1cce72614f" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool mensabot_hardware::MensabotHardware::estop_sent_</definition>
+        <argsstring></argsstring>
+        <name>estop_sent_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::estop_sent_</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="202" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="202" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a49a370abf9c374408bde8de0be1468a7" prot="private" static="no" mutable="no">
+        <type>rclcpp::Time</type>
+        <definition>rclcpp::Time mensabot_hardware::MensabotHardware::last_msg_time_</definition>
+        <argsstring></argsstring>
+        <name>last_msg_time_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::last_msg_time_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="208" column="16" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1aa65a0524bed62b11863e1df21ca3acb1" prot="private" static="no" mutable="no">
+        <type>rclcpp::Time</type>
+        <definition>rclcpp::Time mensabot_hardware::MensabotHardware::last_send_time_</definition>
+        <argsstring></argsstring>
+        <name>last_send_time_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::last_send_time_</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="210" column="16" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="210" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1ad3e38a2a293092c5ac2335a34d86eb7a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool mensabot_hardware::MensabotHardware::timing_initialized_</definition>
+        <argsstring></argsstring>
+        <name>timing_initialized_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::timing_initialized_</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="212" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a8c8cb42ed7475dab1d469fe990c6647f" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double mensabot_hardware::MensabotHardware::heartbeat_timeout_</definition>
+        <argsstring></argsstring>
+        <name>heartbeat_timeout_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::heartbeat_timeout_</qualifiedname>
+        <initializer>= 1.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="214" column="10" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="214" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classmensabot__hardware_1_1MensabotHardware_1a09adc0191e8a8da451cc1e53824371cf" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double mensabot_hardware::MensabotHardware::send_period_</definition>
+        <argsstring></argsstring>
+        <name>send_period_</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::send_period_</qualifiedname>
+        <initializer>= 0.02</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="216" column="10" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="216" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a931b4e8d2e9fc33220fab8ca13a28658" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>hardware_interface::CallbackReturn</type>
+        <definition>hardware_interface::CallbackReturn mensabot_hardware::MensabotHardware::on_init</definition>
+        <argsstring>(const hardware_interface::HardwareInfo &amp;info) override</argsstring>
+        <name>on_init</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::on_init</qualifiedname>
+        <param>
+          <type>const hardware_interface::HardwareInfo &amp;</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+<para>Initialize the hardware interface. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Hardware interface implementation for the Mensabot platform. </para>
+        </detaileddescription>
+        <inbodydescription>
+<para>Initialize the hardware interface.</para>
+<para>Creates the internal ROS node, initializes publishers and subscribers, configures the serial interface and prepares all internal state variables.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>info</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Hardware information provided by ros2_control.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>CallbackReturn::SUCCESS on successful initialization, otherwise CallbackReturn::ERROR.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="96" column="38" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="32" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a97a537b839f0a980afc6f0e38d6458f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; hardware_interface::StateInterface &gt;</type>
+        <definition>std::vector&lt; hardware_interface::StateInterface &gt; mensabot_hardware::MensabotHardware::export_state_interfaces</definition>
+        <argsstring>() override</argsstring>
+        <name>export_state_interfaces</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::export_state_interfaces</qualifiedname>
+        <briefdescription>
+<para>Export wheel state interfaces. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Export the robot state interfaces.</para>
+<para>Provides position and velocity state interfaces for both drive wheels.</para>
+<para><simplesect kind="return"><para>Vector containing all exported state interfaces.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="103" column="3" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="116" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a7d4f16e05f6b2f009f124e2b91a44238" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; hardware_interface::CommandInterface &gt;</type>
+        <definition>std::vector&lt; hardware_interface::CommandInterface &gt; mensabot_hardware::MensabotHardware::export_command_interfaces</definition>
+        <argsstring>() override</argsstring>
+        <name>export_command_interfaces</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::export_command_interfaces</qualifiedname>
+        <briefdescription>
+<para>Export wheel command interfaces. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Export the robot command interfaces.</para>
+<para>Provides velocity command interfaces for both drive wheels.</para>
+<para><simplesect kind="return"><para>Vector containing all exported command interfaces.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="109" column="3" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="152" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a40a1df08b54a05ca99c48947eb845dd4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>hardware_interface::CallbackReturn</type>
+        <definition>hardware_interface::CallbackReturn mensabot_hardware::MensabotHardware::on_activate</definition>
+        <argsstring>(const rclcpp_lifecycle::State &amp;previous_state) override</argsstring>
+        <name>on_activate</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::on_activate</qualifiedname>
+        <param>
+          <type>const rclcpp_lifecycle::State &amp;</type>
+          <declname>previous_state</declname>
+        </param>
+        <briefdescription>
+<para>Activate the hardware interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Activate the hardware interface.</para>
+<para>Called when the controller manager activates the hardware component.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>previous_state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Previous lifecycle state.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>CallbackReturn::SUCCESS.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="114" column="38" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="179" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1ab8164adca7ea274b639dceb51a17a79c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>hardware_interface::CallbackReturn</type>
+        <definition>hardware_interface::CallbackReturn mensabot_hardware::MensabotHardware::on_deactivate</definition>
+        <argsstring>(const rclcpp_lifecycle::State &amp;previous_state) override</argsstring>
+        <name>on_deactivate</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::on_deactivate</qualifiedname>
+        <param>
+          <type>const rclcpp_lifecycle::State &amp;</type>
+          <declname>previous_state</declname>
+        </param>
+        <briefdescription>
+<para>Deactivate the hardware interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Deactivate the hardware interface.</para>
+<para>Closes the serial connection and releases hardware resources.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>previous_state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Previous lifecycle state.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>CallbackReturn::SUCCESS.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="120" column="38" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="199" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a8f81290e85c61b1500651a19597331f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>hardware_interface::return_type</type>
+        <definition>hardware_interface::return_type mensabot_hardware::MensabotHardware::read</definition>
+        <argsstring>(const rclcpp::Time &amp;time, const rclcpp::Duration &amp;period) override</argsstring>
+        <name>read</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::read</qualifiedname>
+        <param>
+          <type>const rclcpp::Time &amp;</type>
+          <declname>time</declname>
+        </param>
+        <param>
+          <type>const rclcpp::Duration &amp;</type>
+          <declname>period</declname>
+        </param>
+        <briefdescription>
+<para>Read data from the hardware interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Read data from the hardware interface.</para>
+<para>Processes incoming serial packets, updates the communication state, monitors heartbeat timeouts and updates the wheel state information.</para>
+<para>During simulation of the hardware communication, wheel positions are estimated from the commanded wheel velocities.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>time</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Current ROS time. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>period</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Control period.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>hardware_interface::return_type::OK.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="126" column="35" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="223" bodyend="322"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1af45c29c1fbef3a367394b1bb2ca3041c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>hardware_interface::return_type</type>
+        <definition>hardware_interface::return_type mensabot_hardware::MensabotHardware::write</definition>
+        <argsstring>(const rclcpp::Time &amp;time, const rclcpp::Duration &amp;period) override</argsstring>
+        <name>write</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::write</qualifiedname>
+        <param>
+          <type>const rclcpp::Time &amp;</type>
+          <declname>time</declname>
+        </param>
+        <param>
+          <type>const rclcpp::Duration &amp;</type>
+          <declname>period</declname>
+        </param>
+        <briefdescription>
+<para>Write commands to the hardware interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Send commands to the motor controller.</para>
+<para>Implements the communication state machine by handling connection establishment, emergency stop commands, reset requests and velocity transmission.</para>
+<para>Velocity commands are converted into the fixed-point packet format before being transmitted via the serial interface.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>time</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Current ROS time. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>period</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Control period.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>hardware_interface::return_type::OK.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="133" column="35" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="326" bodyend="411"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a78ca6cd46612623ec85042fdd94a391d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void mensabot_hardware::MensabotHardware::send_packet</definition>
+        <argsstring>(uint8_t type, int16_t value1=0, int16_t value2=0)</argsstring>
+        <name>send_packet</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::send_packet</qualifiedname>
+        <param>
+          <type>uint8_t</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>int16_t</type>
+          <declname>value1</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int16_t</type>
+          <declname>value2</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Send a communication packet. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Build and transmit a communication packet.</para>
+<para>Creates a packet with header, payload and checksum before sending it over the serial interface.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="structPacket" kindref="compound">Packet</ref> type. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First payload value. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Second payload value.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="154" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="433" bodyend="468"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1a9371a1373bdab0f1544d787872bf52ed" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool mensabot_hardware::MensabotHardware::read_packet</definition>
+        <argsstring>(Packet &amp;packet)</argsstring>
+        <name>read_packet</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::read_packet</qualifiedname>
+        <param>
+          <type><ref refid="structPacket" kindref="compound">Packet</ref> &amp;</type>
+          <declname>packet</declname>
+        </param>
+        <briefdescription>
+<para>Read a packet from the serial interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Receive and validate a communication packet.</para>
+<para>Reads incoming serial data byte by byte, reconstructs complete packets and validates their checksum before returning the received packet.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>packet</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output packet.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if a valid packet was received, otherwise false.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="162" column="8" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="470" bodyend="539"/>
+      </memberdef>
+      <memberdef kind="function" id="classmensabot__hardware_1_1MensabotHardware_1af1e3ca6ff97ebab044755242325ab337" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t mensabot_hardware::MensabotHardware::calculate_checksum</definition>
+        <argsstring>(const Packet &amp;packet)</argsstring>
+        <name>calculate_checksum</name>
+        <qualifiedname>mensabot_hardware::MensabotHardware::calculate_checksum</qualifiedname>
+        <param>
+          <type>const <ref refid="structPacket" kindref="compound">Packet</ref> &amp;</type>
+          <declname>packet</declname>
+        </param>
+        <briefdescription>
+<para>Calculate the packet checksum. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Calculate the packet checksum.</para>
+<para>Generates the checksum used for packet integrity verification.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>packet</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="structPacket" kindref="compound">Packet</ref> used for checksum calculation.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Calculated checksum.</para>
+</simplesect>
+</para>
+        </inbodydescription>
+        <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="167" column="12" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/src/mensabot_hardware.cpp" bodystart="414" bodyend="431"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Hardware interface implementation for the Mensabot platform. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>ros2_control hardware interface for the Mensabot platform.</para>
+<para>This class provides the connection between the ROS 2 control framework and the Arduino-based motor controller. It manages serial communication, controller state transitions, heartbeat monitoring and command exchange. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>hardware_interface::SystemInterface</label>
+      </node>
+      <node id="1">
+        <label>mensabot_hardware::MensabotHardware</label>
+        <link refid="classmensabot__hardware_1_1MensabotHardware"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>hardware_interface::SystemInterface</label>
+      </node>
+      <node id="1">
+        <label>mensabot_hardware::MensabotHardware</label>
+        <link refid="classmensabot__hardware_1_1MensabotHardware"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="88" column="1" bodyfile="/home/fabko/ros2_mensabot_ws/src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="89" bodyend="217"/>
+    <listofallmembers>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a24b35fe110a39c5cd82b40d96afb595a" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>active_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1af1e3ca6ff97ebab044755242325ab337" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>calculate_checksum</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1ad1ad588a64e3f398afeead6dbada77aa" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>connected_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1aa12af252d6b27446a589f4a4547349c7" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>connected_pub_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a5864be8fde07a672e21a8a941a9aae18" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>estop_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a6288706c2fb46d1bf3921e1cce72614f" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>estop_sent_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a0b585087c9d320c43469bc07ac598c00" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>estop_sub_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a7d4f16e05f6b2f009f124e2b91a44238" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>export_command_interfaces</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a97a537b839f0a980afc6f0e38d6458f9" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>export_state_interfaces</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a8c8cb42ed7475dab1d469fe990c6647f" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>heartbeat_timeout_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a48115ca65ed15d737df92f38a0e47d2b" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>hw_commands_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1af90cd6652756f0b54b8945b9f579c3a4" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>hw_positions_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a6a421740801832724834612049f1d888" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>hw_velocities_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a49a370abf9c374408bde8de0be1468a7" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>last_msg_time_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1aa65a0524bed62b11863e1df21ca3acb1" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>last_send_time_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a1b5c8c8c6777829cd59b657f584c6325" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>node_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a40a1df08b54a05ca99c48947eb845dd4" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>on_activate</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1ab8164adca7ea274b639dceb51a17a79c" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>on_deactivate</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a931b4e8d2e9fc33220fab8ca13a28658" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>on_init</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a82abcd07c6fdf5f18e80fae45b5934a1" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>port_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a8f81290e85c61b1500651a19597331f5" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>read</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a9371a1373bdab0f1544d787872bf52ed" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>read_packet</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a75efa843ba17bb4e63ae63b1dee27498" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>ready_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a42362dfc8a24493579de8a7ea146cd6a" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>rx_buffer_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1ad38ad828ad16517b36ab0d19d8c9d190" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>rx_index_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a78ca6cd46612623ec85042fdd94a391d" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>send_packet</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a09adc0191e8a8da451cc1e53824371cf" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>send_period_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1a9cf43d1578aa577f95729c88e6f77e24" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>serial_fd_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1ad3e38a2a293092c5ac2335a34d86eb7a" prot="private" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>timing_initialized_</name></member>
+      <member refid="classmensabot__hardware_1_1MensabotHardware_1af45c29c1fbef3a367394b1bb2ca3041c" prot="public" virt="non-virtual"><scope>mensabot_hardware::MensabotHardware</scope><name>write</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

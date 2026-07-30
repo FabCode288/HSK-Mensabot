@@ -60,9 +60,13 @@
 <li class="toctree-l1"><a class="reference internal" href="repository.html">Repository Structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build.html">Build</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-workflow">Documentation Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sphinx">Sphinx</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#doxygen">Doxygen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-api-documentation">Python API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c-api-documentation">C++ API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#github-pages">GitHub Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-maintenance">Documentation Maintenance</a></li>
 </ul>
 </li>
 </ul>
@@ -81,6 +85,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
       <li class="breadcrumb-item active">Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/documentation.rst.txt" rel="nofollow"> View page source</a>
@@ -93,25 +98,95 @@
              
   <section id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h1>
-<p>The project documentation is generated using Sphinx and Doxygen.</p>
+<p>The HSK-MensaBot project documentation is generated using a combination of Sphinx, Doxygen and GitHub Pages. This workflow combines manually written documentation with automatically generated API references to provide a consistent and maintainable documentation system.</p>
+<section id="documentation-workflow">
+<h2>Documentation Workflow<a class="headerlink" href="#documentation-workflow" title="Link to this heading"></a></h2>
+<p>The documentation is generated from several sources. Markdown and reStructuredText documents form the main documentation, while Python and C++ source code are processed automatically to generate the API reference.</p>
+<p>The complete documentation workflow is illustrated below:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/sphinx_documentation_diagramm.png"><img alt="MensaBot software architecture" src="_images/sphinx_documentation_diagramm.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Overview of the Mensabot documentation architecture.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
 <section id="sphinx">
 <h2>Sphinx<a class="headerlink" href="#sphinx" title="Link to this heading"></a></h2>
-<p>Generate the HTML documentation:</p>
+<p>Sphinx is used as the primary documentation framework. It generates the complete HTML documentation from the reStructuredText source files and integrates both the Python and C++ API documentation into a single documentation website.</p>
+<p>The documentation can be generated locally using:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
 make<span class="w"> </span>html
 </pre></div>
 </div>
-</section>
-<section id="doxygen">
-<h2>Doxygen<a class="headerlink" href="#doxygen" title="Link to this heading"></a></h2>
-<p>Generate the XML documentation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doxygen<span class="w"> </span>Doxyfile
+<p>The generated HTML files are stored in:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>docs/build/html/
 </pre></div>
 </div>
 </section>
+<section id="python-api-documentation">
+<h2>Python API Documentation<a class="headerlink" href="#python-api-documentation" title="Link to this heading"></a></h2>
+<p>The Python API documentation is generated automatically using the Sphinx <code class="docutils literal notranslate"><span class="pre">autodoc</span></code> extension. Module documentation, classes and functions are extracted directly from the Python docstrings, ensuring that the API reference always reflects the current implementation.</p>
+<p>Whenever Python source code is modified, the API documentation is updated automatically during the next Sphinx build.</p>
+</section>
+<section id="c-api-documentation">
+<h2>C++ API Documentation<a class="headerlink" href="#c-api-documentation" title="Link to this heading"></a></h2>
+<p>The C++ API documentation is generated using Doxygen. Source code comments are converted into XML files, which are subsequently imported into Sphinx through the Breathe extension.</p>
+<p>Generate the Doxygen XML files using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doxygen<span class="w"> </span>Doxyfile
+</pre></div>
+</div>
+<p>The generated XML files are written to:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>docs/build/doxygen/xml/
+</pre></div>
+</div>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
+<p>The documentation system is configured using several configuration files located inside the <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">conf.py</span></code></p></td>
+<td><p>Sphinx configuration</p></td>
+<td><p>Main Sphinx configuration including extensions and theme.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Doxyfile</span></code></p></td>
+<td><p>Doxygen configuration</p></td>
+<td><p>Configuration used to generate the C++ XML documentation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code></p></td>
+<td><p>Documentation build</p></td>
+<td><p>Provides build targets such as <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code></p></td>
+<td><p>Python dependencies</p></td>
+<td><p>Lists the required Python packages for documentation generation.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="github-pages">
 <h2>GitHub Pages<a class="headerlink" href="#github-pages" title="Link to this heading"></a></h2>
-<p>The documentation is automatically built and published using GitHub Actions after every push to the repository.</p>
+<p>The published project documentation is hosted using GitHub Pages. After changes have been committed and pushed to the repository, GitHub Actions automatically builds the documentation and publishes the generated HTML pages.</p>
+<p>This allows the latest version of the documentation to be accessed directly through the project’s GitHub Pages website without requiring a local Sphinx installation.</p>
+</section>
+<section id="documentation-maintenance">
+<h2>Documentation Maintenance<a class="headerlink" href="#documentation-maintenance" title="Link to this heading"></a></h2>
+<p>To keep the documentation synchronized with the implementation, the following workflow is recommended:</p>
+<ol class="arabic simple">
+<li><p>Update the source code.</p></li>
+<li><p>Update the corresponding Python docstrings or Doxygen comments.</p></li>
+<li><p>Regenerate the Doxygen XML files (if C++ code was modified).</p></li>
+<li><p>Build the Sphinx documentation locally.</p></li>
+<li><p>Verify the generated HTML pages before committing changes.</p></li>
+<li><p>Push the changes to the repository to trigger automatic publication via GitHub Pages.</p></li>
+</ol>
 </section>
 </section>
 

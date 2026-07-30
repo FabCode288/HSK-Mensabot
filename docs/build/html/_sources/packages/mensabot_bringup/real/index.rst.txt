@@ -1,5 +1,5 @@
-Real Robot
-==========
+Real Launch Files
+=================
 
 
 This section documents all launch files available for operating the physical MensaBot.

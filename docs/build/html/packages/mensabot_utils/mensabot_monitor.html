@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; HSK-Mensabot 1.0 documentation</title>
+  <title>Mensabot Monitor &mdash; HSK-Mensabot 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
@@ -19,8 +19,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Developer Guide" href="../../developer_guide.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="simulation_publisher_node.html" /> 
+    <link rel="next" title="Velocity Transformation Node" href="cmd_vel_transform_node.html" />
+    <link rel="prev" title="Simulation Publisher Node" href="simulation_publisher_node.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,9 +51,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Software Architecture</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Packages</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_bringup/index.html">mensabot_bringup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_navigation/index.html">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_hardware/index.html">Mensabot Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">mensabot_utils</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#modules">Modules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="safety/index.html">Safety</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_publisher_node.html">Simulation Publisher Node</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Mensabot Monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cmd_vel_transform_node.html">Velocity Transformation Node</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
 <ul>
@@ -80,7 +95,7 @@
           <li class="breadcrumb-item"><a href="../../api_reference.html">API Reference</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Packages</a></li>
           <li class="breadcrumb-item"><a href="index.html">mensabot_utils</a></li>
-      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="breadcrumb-item active">Mensabot Monitor</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/packages/mensabot_utils/mensabot_monitor.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -90,13 +105,484 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
+  <section id="mensabot-monitor">
+<h1>Mensabot Monitor<a class="headerlink" href="#mensabot-monitor" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">Mensabot</span> <span class="pre">Monitor</span></code> is a graphical monitoring application for the HSK-MensaBot. It combines a ROS 2 monitoring node with a PyQt6-based graphical user interface to visualize the current robot state, safety information and diagnostic data in real time.</p>
+<p>The application subscribes to the most relevant ROS topics of the robot software stack and presents the received information in a unified dashboard. In addition, it provides live velocity plots, a topic watchdog and status indicators to simplify system monitoring during development, testing and operation.</p>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The application provides the following functionality:</p>
+<ul class="simple">
+<li><p>Displays the current robot pose and motion.</p></li>
+<li><p>Visualizes the complete velocity command chain.</p></li>
+<li><p>Displays the current navigation goal state.</p></li>
+<li><p>Monitors the hardware connection state.</p></li>
+<li><p>Displays the current emergency stop state.</p></li>
+<li><p>Visualizes the active LiDAR monitoring field.</p></li>
+<li><p>Displays the active speed limit.</p></li>
+<li><p>Monitors front and rear safety scanner states.</p></li>
+<li><p>Displays IMU measurements.</p></li>
+<li><p>Provides a topic watchdog for communication diagnostics.</p></li>
+<li><p>Visualizes live linear and angular velocity plots.</p></li>
+</ul>
+</section>
+<section id="launch-command">
+<h2>Launch Command<a class="headerlink" href="#launch-command" title="Link to this heading"></a></h2>
+<p>The monitoring application can be started using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>src/mensabot_utils/mensabot_utils/mensabot_monitor.py
+</pre></div>
+</div>
+</section>
+<section id="subscribed-topics">
+<h2>Subscribed Topics<a class="headerlink" href="#subscribed-topics" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>Message Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/odom</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nav_msgs/Odometry</span></code></p></td>
+<td><p>Robot pose and velocity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/cmd_vel_smoothed</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/Twist</span></code></p></td>
+<td><p>Smoothed velocity command generated by Nav2.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/cmd_vel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/Twist</span></code></p></td>
+<td><p>Velocity command after safety filtering.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/mensabot_base_controller/cmd_vel_out</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/TwistStamped</span></code></p></td>
+<td><p>Velocity command forwarded to the robot controller.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/hardware/connected</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/Bool</span></code></p></td>
+<td><p>Hardware connection state.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/manual_override</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/Bool</span></code></p></td>
+<td><p>Manual override status.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/estop</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/Bool</span></code></p></td>
+<td><p>Emergency stop status.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/field_state</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/String</span></code></p></td>
+<td><p>Active LiDAR monitoring field.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/speed_limit</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nav2_msgs/SpeedLimit</span></code></p></td>
+<td><p>Active speed limitation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/lidars/front/output_paths</span></code></p></td>
+<td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">sick_safetyscanners2_interfaces/OutputPaths</span></code> | Front safety scanner status.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/lidars/rear/output_paths</span></code></p></td>
+<td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">sick_safetyscanners2_interfaces/OutputPaths</span></code> | Rear safety scanner status.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/navigate_to_pose/_action/status</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">action_msgs/GoalStatusArray</span></code></p></td>
+<td><p>Current navigation goal status.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/imu/data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sensor_msgs/Imu</span></code></p></td>
+<td><p>IMU orientation and angular velocity.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="displayed-information">
+<h2>Displayed Information<a class="headerlink" href="#displayed-information" title="Link to this heading"></a></h2>
+<p>The graphical interface provides several monitoring panels, including:</p>
+<ul class="simple">
+<li><p>Overall robot state</p></li>
+<li><p>Navigation goal status</p></li>
+<li><p>Robot pose</p></li>
+<li><p>Motion state</p></li>
+<li><p>Active LiDAR monitoring field</p></li>
+<li><p>Hardware connection</p></li>
+<li><p>Emergency stop status</p></li>
+<li><p>Manual override state</p></li>
+<li><p>Speed limit</p></li>
+<li><p>IMU measurements</p></li>
+<li><p>Front and rear warning and protective field status</p></li>
+<li><p>Velocity command chain</p></li>
+<li><p>Topic watchdog</p></li>
+<li><p>Live linear velocity plots</p></li>
+<li><p>Live angular velocity plots</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<p>The application consists of two main components:</p>
+<ul class="simple">
+<li><p>A ROS 2 monitoring node that subscribes to the required ROS interfaces.</p></li>
+<li><p>A PyQt6 graphical user interface that visualizes the received data in real time.</p></li>
+</ul>
+<p>Communication between both components is implemented using a dedicated worker thread and Qt signals to ensure a responsive user interface during continuous ROS communication.</p>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<p>The monitoring application is described in the project documentation.</p>
+<p>Project Documentation</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/docs/monitoring/README.md">Monitoring Documentation</a></p>
+<p>Repository</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_utils/mensabot_utils/mensabot_monitor.py">Mensabot Monitor</a></p>
+</section>
+<section id="module-mensabot_utils.mensabot_monitor">
+<span id="api-reference"></span><h2>API Reference<a class="headerlink" href="#module-mensabot_utils.mensabot_monitor" title="Link to this heading"></a></h2>
+<p>Graphical monitoring application for the Mensabot platform.</p>
+<p>The application combines a ROS 2 monitoring node with a PyQt6 user interface
+to visualize robot state, safety information, velocity commands, diagnostics
+and live telemetry.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.yaw_from_quaternion">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">yaw_from_quaternion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#yaw_from_quaternion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.yaw_from_quaternion" title="Link to this definition"></a></dt>
+<dd><p>Convert a quaternion orientation into a yaw angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>q</strong> – Quaternion representing the robot orientation.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Yaw angle in radians.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.ValueCard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">ValueCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#ValueCard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.ValueCard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QFrame</span></code></p>
+<p>Reusable GUI widget for displaying a labeled value.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.ValueCard.set_value">
+<span class="sig-name descname"><span class="pre">set_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#ValueCard.set_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.ValueCard.set_value" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – Value to display.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.BoolCard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">BoolCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#BoolCard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.BoolCard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mensabot_utils.mensabot_monitor.ValueCard" title="mensabot_utils.mensabot_monitor.ValueCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueCard</span></code></a></p>
+<p>Card widget for displaying boolean states.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.BoolCard.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#BoolCard.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.BoolCard.set_state" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed boolean state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – Current boolean state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.StateCard">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">StateCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#StateCard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.StateCard" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mensabot_utils.mensabot_monitor.ValueCard" title="mensabot_utils.mensabot_monitor.ValueCard"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueCard</span></code></a></p>
+<p>Card widget for displaying textual system states.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.StateCard.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#2874a6'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#StateCard.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.StateCard.set_state" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed system state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – State description.</p></li>
+<li><p><strong>color</strong> – Background color of the card.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">RosWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#RosWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>Background worker executing the ROS 2 event loop.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.data_changed">
+<span class="sig-name descname"><span class="pre">data_changed</span></span><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.data_changed" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.ros_error">
+<span class="sig-name descname"><span class="pre">ros_error</span></span><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.ros_error" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#RosWorker.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.run" title="Link to this definition"></a></dt>
+<dd><p>Start the ROS 2 executor and process incoming messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.RosWorker.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#RosWorker.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.RosWorker.stop" title="Link to this definition"></a></dt>
+<dd><p>Request the worker thread to terminate.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">MonitorNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node providing monitoring data for the graphical interface.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.mark">
+<span class="sig-name descname"><span class="pre">mark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.mark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.mark" title="Link to this definition"></a></dt>
+<dd><p>Update the timestamp of the latest received message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topic_key</strong> – Identifier of the monitored topic.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.emit">
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.emit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.emit" title="Link to this definition"></a></dt>
+<dd><p>Forward updated monitoring data to the graphical interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.bool_cb">
+<span class="sig-name descname"><span class="pre">bool_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.bool_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.bool_cb" title="Link to this definition"></a></dt>
+<dd><p>Process incoming boolean messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.twist_cb">
+<span class="sig-name descname"><span class="pre">twist_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.twist_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.twist_cb" title="Link to this definition"></a></dt>
+<dd><p>Process incoming velocity commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.odom_cb">
+<span class="sig-name descname"><span class="pre">odom_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.odom_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.odom_cb" title="Link to this definition"></a></dt>
+<dd><p>Process incoming odometry messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.field_cb">
+<span class="sig-name descname"><span class="pre">field_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.field_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.field_cb" title="Link to this definition"></a></dt>
+<dd><p>Process the current LiDAR monitoring state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.speed_limit_cb">
+<span class="sig-name descname"><span class="pre">speed_limit_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.speed_limit_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.speed_limit_cb" title="Link to this definition"></a></dt>
+<dd><p>Process speed limit updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.scanner_cb">
+<span class="sig-name descname"><span class="pre">scanner_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.scanner_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.scanner_cb" title="Link to this definition"></a></dt>
+<dd><p>Process LiDAR safety scanner status messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.goal_cb">
+<span class="sig-name descname"><span class="pre">goal_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.goal_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.goal_cb" title="Link to this definition"></a></dt>
+<dd><p>Process navigation goal status updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.imu_cb">
+<span class="sig-name descname"><span class="pre">imu_cb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.imu_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.imu_cb" title="Link to this definition"></a></dt>
+<dd><p>Process IMU measurements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MonitorNode.watchdog_cb">
+<span class="sig-name descname"><span class="pre">watchdog_cb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MonitorNode.watchdog_cb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MonitorNode.watchdog_cb" title="Link to this definition"></a></dt>
+<dd><p>Monitor message reception times for all subscribed topics.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">MensabotMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<p>Main window of the Mensabot monitoring application.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.build_ui">
+<span class="sig-name descname"><span class="pre">build_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.build_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.build_ui" title="Link to this definition"></a></dt>
+<dd><p>Create and arrange all graphical user interface elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.apply_style">
+<span class="sig-name descname"><span class="pre">apply_style</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.apply_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.apply_style" title="Link to this definition"></a></dt>
+<dd><p>Apply the graphical style sheet to the user interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.start_ros">
+<span class="sig-name descname"><span class="pre">start_ros</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.start_ros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.start_ros" title="Link to this definition"></a></dt>
+<dd><p>Start the background ROS worker thread.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.on_ros_error">
+<span class="sig-name descname"><span class="pre">on_ros_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.on_ros_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.on_ros_error" title="Link to this definition"></a></dt>
+<dd><p>Display ROS communication errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.on_data">
+<span class="sig-name descname"><span class="pre">on_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.on_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.on_data" title="Link to this definition"></a></dt>
+<dd><p>Update the graphical interface with newly received monitoring data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.set_twist_card">
+<span class="sig-name descname"><span class="pre">set_twist_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">card</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.set_twist_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.set_twist_card" title="Link to this definition"></a></dt>
+<dd><p>Update a velocity display card.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.derive_motion">
+<span class="sig-name descname"><span class="pre">derive_motion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.derive_motion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.derive_motion" title="Link to this definition"></a></dt>
+<dd><p>Determine the current robot motion from controller commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current motion state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_motion_state">
+<span class="sig-name descname"><span class="pre">update_motion_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_motion_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_motion_state" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed robot motion state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_field_match">
+<span class="sig-name descname"><span class="pre">update_field_match</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_field_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_field_match" title="Link to this definition"></a></dt>
+<dd><p>Check whether the selected LiDAR field matches the robot motion.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_overall_state">
+<span class="sig-name descname"><span class="pre">update_overall_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_overall_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_overall_state" title="Link to this definition"></a></dt>
+<dd><p>Determine and display the overall system status.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.any_protective_triggered">
+<span class="sig-name descname"><span class="pre">any_protective_triggered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.any_protective_triggered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.any_protective_triggered" title="Link to this definition"></a></dt>
+<dd><p>Check whether any protective field is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if a protective field is active.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.any_warning_triggered">
+<span class="sig-name descname"><span class="pre">any_warning_triggered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.any_warning_triggered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.any_warning_triggered" title="Link to this definition"></a></dt>
+<dd><p>Check whether any warning field is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if a warning field is active.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_watchdog">
+<span class="sig-name descname"><span class="pre">update_watchdog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ages</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_watchdog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_watchdog" title="Link to this definition"></a></dt>
+<dd><p>Update the topic watchdog indicators.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.update_plots">
+<span class="sig-name descname"><span class="pre">update_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.update_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.update_plots" title="Link to this definition"></a></dt>
+<dd><p>Update the live velocity plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.toggle_auto_follow">
+<span class="sig-name descname"><span class="pre">toggle_auto_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.toggle_auto_follow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.toggle_auto_follow" title="Link to this definition"></a></dt>
+<dd><p>Enable or disable automatic plot following.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.change_time_window">
+<span class="sig-name descname"><span class="pre">change_time_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.change_time_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.change_time_window" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed plot time window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.center_plots">
+<span class="sig-name descname"><span class="pre">center_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.center_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.center_plots" title="Link to this definition"></a></dt>
+<dd><p>Re-center the live plots and enable automatic following.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.user_changed_plot">
+<span class="sig-name descname"><span class="pre">user_changed_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.user_changed_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.user_changed_plot" title="Link to this definition"></a></dt>
+<dd><p>Disable automatic following after manual plot interaction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.MensabotMonitor.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#MensabotMonitor.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.MensabotMonitor.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Stop all background components before closing the application.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.mensabot_monitor.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.mensabot_monitor.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mensabot_utils/mensabot_monitor.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.mensabot_monitor.main" title="Link to this definition"></a></dt>
+<dd><p>Start the Mensabot monitoring application.</p>
+</dd></dl>
+
+</section>
+</section>
+
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="simulation_publisher_node.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="simulation_publisher_node.html" class="btn btn-neutral float-left" title="Simulation Publisher Node" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cmd_vel_transform_node.html" class="btn btn-neutral float-right" title="Velocity Transformation Node" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

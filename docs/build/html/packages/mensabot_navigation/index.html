@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mensabot_navigation &mdash; HSK-Mensabot 1.0 documentation</title>
+  <title>Navigation &mdash; HSK-Mensabot 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
@@ -19,7 +19,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="mensabot_hardware" href="../mensabot_hardware/index.html" />
+    <link rel="next" title="Mensabot Hardware" href="../mensabot_hardware/index.html" />
     <link rel="prev" title="mapping_sim.launch.py" href="../mensabot_bringup/simulation/mapping_sim.html" /> 
 </head>
 
@@ -55,14 +55,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference.html">API Reference</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Packages</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../mensabot_bringup/index.html">mensabot_bringup</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">mensabot_navigation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#nodes">Nodes</a><ul class="simple">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Navigation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#available-configuration-files">Available Configuration Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-files">Configuration Files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#navigation-yaml">navigation.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amcl-localization-yaml">amcl_localization.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#slam-toolbox-localization-yaml">slam_toolbox_localization.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#slam-toolbox-mapping-yaml">slam_toolbox_mapping.yaml</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#further-documentation">Further Documentation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../mensabot_hardware/index.html">mensabot_hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_hardware/index.html">Mensabot Hardware</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mensabot_utils/index.html">mensabot_utils</a></li>
 </ul>
 </li>
@@ -91,7 +96,7 @@
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../api_reference.html">API Reference</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Packages</a></li>
-      <li class="breadcrumb-item active">mensabot_navigation</li>
+      <li class="breadcrumb-item active">Navigation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/packages/mensabot_navigation/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,17 +106,71 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="mensabot-navigation">
-<h1>mensabot_navigation<a class="headerlink" href="#mensabot-navigation" title="Link to this heading"></a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">mensabot_navigation</span></code> package contains the ROS 2 navigation stack configuration and localization components.</p>
+  <section id="navigation">
+<h1>Navigation<a class="headerlink" href="#navigation" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">mensabot_navigation</span></code> package contains all configuration files required for the ROS 2 navigation stack of the MensaBot.</p>
+<p>These parameter files define the behavior of localization, mapping and autonomous navigation for both the physical robot and the Gazebo simulation. They allow the navigation system to be adapted without modifying the application source code.</p>
+<section id="available-configuration-files">
+<h2>Available Configuration Files<a class="headerlink" href="#available-configuration-files" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">navigation.yaml</span></code></p></td>
+<td><p>Navigation2 configuration including planners, controllers,
+costmaps and behavior tree settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">amcl_localization.yaml</span></code></p></td>
+<td><p>Configuration of the Adaptive Monte Carlo Localization
+(AMCL) node.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">slam_toolbox_localization.yaml</span></code></p></td>
+<td><p>Configuration of SLAM Toolbox in localization mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">slam_toolbox_mapping.yaml</span></code></p></td>
+<td><p>Configuration of SLAM Toolbox for creating occupancy
+grid maps.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="nodes">
-<h2>Nodes<a class="headerlink" href="#nodes" title="Link to this heading"></a></h2>
-<p>The following nodes are documented in this package.</p>
-<div class="toctree-wrapper compound">
-</div>
+<section id="configuration-files">
+<h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
+<section id="navigation-yaml">
+<h3>navigation.yaml<a class="headerlink" href="#navigation-yaml" title="Link to this heading"></a></h3>
+<p>This file contains the complete Navigation2 configuration of the MensaBot. It defines the behavior of the global planner, local controller, costmaps, recovery behaviors and additional Navigation2 components.</p>
+<p>Repository:
+<a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_navigation/config/navigation.yaml">navigation.yaml</a></p>
+</section>
+<section id="amcl-localization-yaml">
+<h3>amcl_localization.yaml<a class="headerlink" href="#amcl-localization-yaml" title="Link to this heading"></a></h3>
+<p>This file configures the Adaptive Monte Carlo Localization (AMCL) algorithm. It defines the localization parameters used to estimate the robot pose within an existing occupancy grid map.</p>
+<p>Repository:
+<a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_navigation/config/amcl_localization.yaml">amcl_localization.yaml</a></p>
+</section>
+<section id="slam-toolbox-localization-yaml">
+<h3>slam_toolbox_localization.yaml<a class="headerlink" href="#slam-toolbox-localization-yaml" title="Link to this heading"></a></h3>
+<p>This file configures SLAM Toolbox in localization mode. It is used to localize the robot within an existing map using the SLAM Toolbox localization pipeline.</p>
+<p>Repository:
+<a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_navigation/config/slam_toolbox_localization.yaml">slam_toolbox_localization.yaml</a></p>
+</section>
+<section id="slam-toolbox-mapping-yaml">
+<h3>slam_toolbox_mapping.yaml<a class="headerlink" href="#slam-toolbox-mapping-yaml" title="Link to this heading"></a></h3>
+<p>This file configures SLAM Toolbox in mapping mode. It defines the parameters used while generating new occupancy grid maps.</p>
+<p>Repository:
+<a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_navigation/config/slam_toolbox_mapping.yaml">slam_toolbox_mapping.yaml</a></p>
+</section>
+</section>
+<section id="further-documentation">
+<h2>Further Documentation<a class="headerlink" href="#further-documentation" title="Link to this heading"></a></h2>
+<p>A detailed description of the navigation architecture, localization pipeline, mapping process and configuration can be found in the project documentation.</p>
+<p>Project Documentation:</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/docs/navigation/README.md">Navigation Documentation</a></p>
+<p>Repository:</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/tree/main/src/mensabot_navigation/config">mensabot_navigation/config</a></p>
 </section>
 </section>
 
@@ -120,7 +179,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../mensabot_bringup/simulation/mapping_sim.html" class="btn btn-neutral float-left" title="mapping_sim.launch.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../mensabot_hardware/index.html" class="btn btn-neutral float-right" title="mensabot_hardware" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../mensabot_hardware/index.html" class="btn btn-neutral float-right" title="Mensabot Hardware" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

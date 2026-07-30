@@ -49,7 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Software Architecture</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#software-layers">Software Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#package-organization">Package Organization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#software-pipeline">Software Pipeline</a></li>
@@ -62,7 +61,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Software Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#software-layers">Software Layers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#package-organization">Package Organization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#software-pipeline">Software Pipeline</a></li>
@@ -110,8 +108,6 @@
              
   <section id="software-architecture">
 <h1>Software Architecture<a class="headerlink" href="#software-architecture" title="Link to this heading"></a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The MensaBot software is based on a modular ROS 2 architecture. Individual functionalities are implemented as independent ROS 2 packages that communicate through standardized ROS interfaces such as topics, services, actions, and the TF framework.</p>
 <p>This architecture enables both simulation and operation on the physical robot while sharing nearly the same software stack. Only the hardware-specific interfaces differ between both operating modes.</p>
 <figure class="align-center" id="id1">
@@ -121,7 +117,6 @@
 <p><span class="caption-text">Overview of the MensaBot software architecture.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-</section>
 <section id="software-layers">
 <h2>Software Layers<a class="headerlink" href="#software-layers" title="Link to this heading"></a></h2>
 <p>The software is organized into several functional layers:</p>

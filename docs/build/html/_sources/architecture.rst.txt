@@ -1,9 +1,6 @@
 Software Architecture
 =====================
 
-Overview
---------
-
 The MensaBot software is based on a modular ROS 2 architecture. Individual functionalities are implemented as independent ROS 2 packages that communicate through standardized ROS interfaces such as topics, services, actions, and the TF framework.
 
 This architecture enables both simulation and operation on the physical robot while sharing nearly the same software stack. Only the hardware-specific interfaces differ between both operating modes.

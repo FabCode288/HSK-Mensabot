@@ -1,9 +1,6 @@
 Introduction
 ============
 
-Overview
---------
-
 MensaBot is a ROS 2-based mobile robot platform designed for autonomous indoor navigation. The project combines navigation, localization, hardware control, functional safety, and simulation within a unified software architecture.
 
 The software supports both simulation and operation on the physical robot while maintaining a nearly identical software stack in both environments.

@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safety Control Node &mdash; HSK-Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="LiDAR Field Selection Node" href="lidar_field_selection_node.html" />
+    <link rel="prev" title="Safety" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            HSK-Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Software Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../mensabot_bringup/index.html">mensabot_bringup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mensabot_navigation/index.html">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mensabot_hardware/index.html">Mensabot Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">mensabot_utils</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#modules">Modules</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">Safety</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../simulation_publisher_node.html">Simulation Publisher Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../mensabot_monitor.html">Mensabot Monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_vel_transform_node.html">Velocity Transformation Node</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">HSK-Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../api_reference.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Packages</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">mensabot_utils</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Safety</a></li>
+      <li class="breadcrumb-item active">Safety Control Node</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/packages/mensabot_utils/safety/safety_control_node.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="safety-control-node">
+<h1>Safety Control Node<a class="headerlink" href="#safety-control-node" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">SafetyControlNode</span></code> is the central software safety component of the HSK-MensaBot. It supervises the current safety state of the robot by combining information from the safety laser scanners, the hardware interface and the emergency stop circuit.</p>
+<p>Based on the current operating state, the node publishes speed limitations, emergency stop information and filtered velocity commands. In addition, it performs the automatic reset of the safety relay once all safety conditions have returned to a valid state.</p>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The node performs the following safety-related tasks:</p>
+<ul class="simple">
+<li><p>Monitors the front and rear safety laser scanners.</p></li>
+<li><p>Evaluates warning and protective field violations.</p></li>
+<li><p>Supervises the hardware connection state.</p></li>
+<li><p>Monitors the emergency stop relay.</p></li>
+<li><p>Automatically resets the safety relay after a valid release.</p></li>
+<li><p>Limits the maximum driving speed inside warning fields.</p></li>
+<li><p>Stops all robot motion during emergency stop conditions.</p></li>
+<li><p>Publishes the current emergency stop state for other software components.</p></li>
+</ul>
+</section>
+<section id="subscribed-topics">
+<h2>Subscribed Topics<a class="headerlink" href="#subscribed-topics" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>Message Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/lidars/front/output_paths</span></code></p></td>
+<td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">sick_safetyscanners2_interfaces/OutputPaths</span></code> | Front safety scanner monitoring information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/lidars/rear/output_paths</span></code></p></td>
+<td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">sick_safetyscanners2_interfaces/OutputPaths</span></code> | Rear safety scanner monitoring information.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/hardware/connected</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/Bool</span></code></p></td>
+<td><p>Indicates whether communication with the motor controller is available.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/cmd_vel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/Twist</span></code></p></td>
+<td><p>Incoming velocity commands generated by the navigation stack.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="published-topics">
+<h2>Published Topics<a class="headerlink" href="#published-topics" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>Message Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/speed_limit</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nav2_msgs/SpeedLimit</span></code></p></td>
+<td><p>Current speed limitation used by the navigation stack.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/estop</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/Bool</span></code></p></td>
+<td><p>Current emergency stop state.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/cmd_vel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/Twist</span></code></p></td>
+<td><p>Safety-filtered velocity commands forwarded to the robot.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">simulation</span></code></p></td>
+<td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">false</span></code> | Enables simulation mode by disabling GPIO access and hardware-specific functionality.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<p>The overall safety architecture, hardware safety circuit and software safety concept are described in the project documentation.</p>
+<p>Project Documentation</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/docs/safety/README.md">Safety Documentation</a></p>
+<p>Repository</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_utils/mensabot_utils/safety_control_node.py">Safety Control Node</a></p>
+</section>
+<section id="module-mensabot_utils.safety_control_node">
+<span id="api-reference"></span><h2>API Reference<a class="headerlink" href="#module-mensabot_utils.safety_control_node" title="Link to this heading"></a></h2>
+<p>Implements the central safety controller for the Mensabot platform.</p>
+<p>The node combines hardware emergency stop signals, LiDAR safety scanner
+information and hardware connection status to enforce safe robot operation.
+It publishes speed limits, emergency stop states and filtered velocity
+commands.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.safety_control_node.</span></span><span class="sig-name descname"><span class="pre">SafetyControlNode</span></span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node responsible for monitoring and enforcing the robot safety state.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.front_scanner_callback">
+<span class="sig-name descname"><span class="pre">front_scanner_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sick_safetyscanners2_interfaces.msg.OutputPaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.front_scanner_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.front_scanner_callback" title="Link to this definition"></a></dt>
+<dd><p>Process the front LiDAR safety scanner state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Front scanner monitoring data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.rear_scanner_callback">
+<span class="sig-name descname"><span class="pre">rear_scanner_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sick_safetyscanners2_interfaces.msg.OutputPaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.rear_scanner_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.rear_scanner_callback" title="Link to this definition"></a></dt>
+<dd><p>Process the rear LiDAR safety scanner state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Rear scanner monitoring data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.update_safety_state">
+<span class="sig-name descname"><span class="pre">update_safety_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.update_safety_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.update_safety_state" title="Link to this definition"></a></dt>
+<dd><p>Determine the global safety state from the LiDAR scanner states.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.connected_callback">
+<span class="sig-name descname"><span class="pre">connected_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">std_msgs.msg.Bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.connected_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.connected_callback" title="Link to this definition"></a></dt>
+<dd><p>Update the hardware connection state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Hardware connection status.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.cmd_vel_callback">
+<span class="sig-name descname"><span class="pre">cmd_vel_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">geometry_msgs.msg.Twist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.cmd_vel_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.cmd_vel_callback" title="Link to this definition"></a></dt>
+<dd><p>Forward velocity commands only if safe operation is permitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Incoming velocity command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.timer_callback">
+<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.timer_callback" title="Link to this definition"></a></dt>
+<dd><p>Execute the cyclic safety supervision.</p>
+<p>Monitors the hardware emergency stop input, performs automatic relay reset,
+updates the emergency stop state and publishes the corresponding speed limit.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.publish_speed_limit">
+<span class="sig-name descname"><span class="pre">publish_speed_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.publish_speed_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.publish_speed_limit" title="Link to this definition"></a></dt>
+<dd><p>Publish the currently active speed limit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Speed limit as a percentage.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.is_estop_active">
+<span class="sig-name descname"><span class="pre">is_estop_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.is_estop_active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.is_estop_active" title="Link to this definition"></a></dt>
+<dd><p>Determine whether an emergency stop condition is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if robot motion must be stopped.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.publish_zero_twist">
+<span class="sig-name descname"><span class="pre">publish_zero_twist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.publish_zero_twist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.publish_zero_twist" title="Link to this definition"></a></dt>
+<dd><p>Publish a zero velocity command to stop the robot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.SafetyControlNode.destroy_node">
+<span class="sig-name descname"><span class="pre">destroy_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#SafetyControlNode.destroy_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.SafetyControlNode.destroy_node" title="Link to this definition"></a></dt>
+<dd><p>Release GPIO resources before shutting down the node.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.safety_control_node.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.safety_control_node.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/safety_control_node.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.safety_control_node.main" title="Link to this definition"></a></dt>
+<dd><p>Start the Safety Control node.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Safety" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lidar_field_selection_node.html" class="btn btn-neutral float-right" title="LiDAR Field Selection Node" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
