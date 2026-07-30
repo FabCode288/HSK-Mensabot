@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software Architecture &mdash; HSK-Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api_reference.html" />
+    <link rel="prev" title="Quick Start" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            HSK-Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="user_guide.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Software Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#software-layers">Software Layers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#package-organization">Package Organization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#software-pipeline">Software Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#further-information">Further Information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Software Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#software-layers">Software Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#package-organization">Package Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#software-pipeline">Software Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-information">Further Information</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packages/index.html">Packages</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HSK-Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="user_guide.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Software Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="software-architecture">
+<h1>Software Architecture<a class="headerlink" href="#software-architecture" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The MensaBot software is based on a modular ROS 2 architecture. Individual functionalities are implemented as independent ROS 2 packages that communicate through standardized ROS interfaces such as topics, services, actions, and the TF framework.</p>
+<p>This architecture enables both simulation and operation on the physical robot while sharing nearly the same software stack. Only the hardware-specific interfaces differ between both operating modes.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/dataflow.png"><img alt="MensaBot software architecture" src="_images/dataflow.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Overview of the MensaBot software architecture.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="software-layers">
+<h2>Software Layers<a class="headerlink" href="#software-layers" title="Link to this heading"></a></h2>
+<p>The software is organized into several functional layers:</p>
+<ul class="simple">
+<li><p>Sensor Layer</p></li>
+<li><p>Localization Layer</p></li>
+<li><p>Navigation Layer</p></li>
+<li><p>Safety Layer</p></li>
+<li><p>Motion Control Layer</p></li>
+<li><p>Hardware Layer</p></li>
+</ul>
+<p>Each layer is responsible for a dedicated task and communicates with neighboring layers through well-defined ROS 2 interfaces.</p>
+</section>
+<section id="package-organization">
+<h2>Package Organization<a class="headerlink" href="#package-organization" title="Link to this heading"></a></h2>
+<p>The ROS 2 workspace consists of multiple packages, each implementing a specific subsystem.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Package</p></th>
+<th class="head"><p>Responsibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mensabot_bringup</p></td>
+<td><p>Launch files for simulation and real hardware</p></td>
+</tr>
+<tr class="row-odd"><td><p>mensabot_description</p></td>
+<td><p>Robot model and URDF description</p></td>
+</tr>
+<tr class="row-even"><td><p>mensabot_navigation</p></td>
+<td><p>Navigation and localization configuration</p></td>
+</tr>
+<tr class="row-odd"><td><p>mensabot_hardware</p></td>
+<td><p>ros2_control hardware interface</p></td>
+</tr>
+<tr class="row-even"><td><p>mensabot_simulation</p></td>
+<td><p>Gazebo simulation environment</p></td>
+</tr>
+<tr class="row-odd"><td><p>mensabot_utils</p></td>
+<td><p>Utility and safety nodes</p></td>
+</tr>
+</tbody>
+</table>
+<p>Additional third-party ROS packages are integrated for sensor drivers, localization, and navigation.</p>
+</section>
+<section id="software-pipeline">
+<h2>Software Pipeline<a class="headerlink" href="#software-pipeline" title="Link to this heading"></a></h2>
+<p>During normal operation, the software executes the following processing sequence:</p>
+<ol class="arabic simple">
+<li><p>Sensors acquire environmental and motion data.</p></li>
+<li><p>Localization estimates the current robot pose.</p></li>
+<li><p>The navigation stack calculates the desired robot motion.</p></li>
+<li><p>The safety system validates all motion commands.</p></li>
+<li><p>Velocity commands are converted for the drive controller.</p></li>
+<li><p>The hardware interface transmits commands to the motor controller.</p></li>
+<li><p>The robot executes the requested movement.</p></li>
+</ol>
+</section>
+<section id="further-information">
+<h2>Further Information<a class="headerlink" href="#further-information" title="Link to this heading"></a></h2>
+<p>The following sections of this documentation describe the individual software components in greater detail:</p>
+<ul class="simple">
+<li><p>API Reference</p></li>
+<li><p>Launch Files</p></li>
+<li><p>Navigation</p></li>
+<li><p>Hardware Interface</p></li>
+<li><p>Utility Nodes</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -18,9 +18,7 @@
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Launch Files" href="launch_files.html" />
-    <link rel="prev" title="Mensabot Utility Nodes" href="api/mensabot_utils.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,26 +40,25 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Python API</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">C++ API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mensabot-hardware-plugin">Mensabot Hardware Plugin</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardwareE"><code class="docutils literal notranslate"><span class="pre">mensabot_hardware::MensabotHardware</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware7on_initERKN18hardware_interface12HardwareInfoE"><code class="docutils literal notranslate"><span class="pre">on_init()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware23export_state_interfacesEv"><code class="docutils literal notranslate"><span class="pre">export_state_interfaces()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware25export_command_interfacesEv"><code class="docutils literal notranslate"><span class="pre">export_command_interfaces()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware11on_activateERKN16rclcpp_lifecycle5StateE"><code class="docutils literal notranslate"><span class="pre">on_activate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware13on_deactivateERKN16rclcpp_lifecycle5StateE"><code class="docutils literal notranslate"><span class="pre">on_deactivate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware4readERKN6rclcpp4TimeERKN6rclcpp8DurationE"><code class="docutils literal notranslate"><span class="pre">read()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N17mensabot_hardware16MensabotHardware5writeERKN6rclcpp4TimeERKN6rclcpp8DurationE"><code class="docutils literal notranslate"><span class="pre">write()</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Software Architecture</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packages/index.html">Packages</a></li>
 </ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="launch_files.html">Launch Files</a></li>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
 
         </div>
@@ -92,70 +89,17 @@
 <h1>C++ API<a class="headerlink" href="#c-api" title="Link to this heading"></a></h1>
 <section id="mensabot-hardware-plugin">
 <h2>Mensabot Hardware Plugin<a class="headerlink" href="#mensabot-hardware-plugin" title="Link to this heading"></a></h2>
-<dl class="cpp class">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardwareE">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardwareE"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardwareE"></span><span id="mensabot_hardware::MensabotHardware"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MensabotHardware</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SystemInterface</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardwareE" title="Link to this definition"></a><br /></dt>
-<dd><p>Hardware interface implementation for the Mensabot platform. </p>
-<p>ros2_control hardware interface for the Mensabot platform.</p>
-<p>This class provides the connection between the ROS 2 control framework and the Arduino-based motor controller. It manages serial communication, controller state transitions, heartbeat monitoring and command exchange. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware7on_initERKN18hardware_interface12HardwareInfoE">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware7on_initERKN18hardware_interface12HardwareInfoE"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware7on_initERKN18hardware_interface12HardwareInfoE"></span><span id="mensabot_hardware::MensabotHardware::on_init__hardware_interface::HardwareInfoCR"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1a931b4e8d2e9fc33220fab8ca13a28658"></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CallbackReturn</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">on_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">HardwareInfo</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">info</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware7on_initERKN18hardware_interface12HardwareInfoE" title="Link to this definition"></a><br /></dt>
-<dd><p>Initialize the hardware interface. </p>
-<p>Hardware interface implementation for the Mensabot platform. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware23export_state_interfacesEv">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware23export_state_interfacesEv"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware23export_state_interfacesEv"></span><span id="mensabot_hardware::MensabotHardware::export_state_interfaces"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1a97a537b839f0a980afc6f0e38d6458f9"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">StateInterface</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">export_state_interfaces</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware23export_state_interfacesEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Export wheel state interfaces. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware25export_command_interfacesEv">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware25export_command_interfacesEv"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware25export_command_interfacesEv"></span><span id="mensabot_hardware::MensabotHardware::export_command_interfaces"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1a7d4f16e05f6b2f009f124e2b91a44238"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CommandInterface</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">export_command_interfaces</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware25export_command_interfacesEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Export wheel command interfaces. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware11on_activateERKN16rclcpp_lifecycle5StateE">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware11on_activateERKN16rclcpp_lifecycle5StateE"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware11on_activateERKN16rclcpp_lifecycle5StateE"></span><span id="mensabot_hardware::MensabotHardware::on_activate__rclcpp_lifecycle::StateCR"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1a40a1df08b54a05ca99c48947eb845dd4"></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CallbackReturn</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">on_activate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">rclcpp_lifecycle</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">State</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">previous_state</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware11on_activateERKN16rclcpp_lifecycle5StateE" title="Link to this definition"></a><br /></dt>
-<dd><p>Activate the hardware interface. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware13on_deactivateERKN16rclcpp_lifecycle5StateE">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware13on_deactivateERKN16rclcpp_lifecycle5StateE"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware13on_deactivateERKN16rclcpp_lifecycle5StateE"></span><span id="mensabot_hardware::MensabotHardware::on_deactivate__rclcpp_lifecycle::StateCR"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1ab8164adca7ea274b639dceb51a17a79c"></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CallbackReturn</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">on_deactivate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">rclcpp_lifecycle</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">State</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">previous_state</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware13on_deactivateERKN16rclcpp_lifecycle5StateE" title="Link to this definition"></a><br /></dt>
-<dd><p>Deactivate the hardware interface. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware4readERKN6rclcpp4TimeERKN6rclcpp8DurationE">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware4readERKN6rclcpp4TimeERKN6rclcpp8DurationE"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware4readERKN6rclcpp4TimeERKN6rclcpp8DurationE"></span><span id="mensabot_hardware::MensabotHardware::read__rclcpp::TimeCR.rclcpp::DurationCR"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1a8f81290e85c61b1500651a19597331f5"></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">return_type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">rclcpp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Time</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">time</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">rclcpp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Duration</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">period</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware4readERKN6rclcpp4TimeERKN6rclcpp8DurationE" title="Link to this definition"></a><br /></dt>
-<dd><p>Read data from the hardware interface. </p>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17mensabot_hardware16MensabotHardware5writeERKN6rclcpp4TimeERKN6rclcpp8DurationE">
-<span id="_CPPv3N17mensabot_hardware16MensabotHardware5writeERKN6rclcpp4TimeERKN6rclcpp8DurationE"></span><span id="_CPPv2N17mensabot_hardware16MensabotHardware5writeERKN6rclcpp4TimeERKN6rclcpp8DurationE"></span><span id="mensabot_hardware::MensabotHardware::write__rclcpp::TimeCR.rclcpp::DurationCR"></span><span class="target" id="classmensabot__hardware_1_1MensabotHardware_1af45c29c1fbef3a367394b1bb2ca3041c"></span><span class="n"><span class="pre">hardware_interface</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">return_type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">rclcpp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Time</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">time</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">rclcpp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Duration</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">period</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17mensabot_hardware16MensabotHardware5writeERKN6rclcpp4TimeERKN6rclcpp8DurationE" title="Link to this definition"></a><br /></dt>
-<dd><p>Write commands to the hardware interface. </p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenclass: Cannot find file: /home/fabko/ros2_mensabot_ws/docs/build/doxygen/xml/index.xml</p>
 </div>
-</dd></dl>
-
 </section>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="api/mensabot_utils.html" class="btn btn-neutral float-left" title="Mensabot Utility Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="launch_files.html" class="btn btn-neutral float-right" title="Launch Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

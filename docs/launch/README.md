@@ -14,8 +14,8 @@ The launch files are located in the `mensabot_bringup` package and are separated
 launch/
 
 ├── Real/
-│   ├── real_bringup.launch.py
-│   ├── real_complete.launch.py
+│   ├── real_bringup_robot.launch.py
+│   ├── real_complete_bringup.launch.py
 │   ├── localization_real_amcl.launch.py
 │   ├── navigation_real.launch.py
 │   ├── mapping_real.launch.py
@@ -40,7 +40,7 @@ The launch files are organized into different operating modes depending on the d
 
 | Mode                 | Description                                                                                                                            |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Bringup**          | Starts the robot hardware or simulated robot without localization or navigation. Intended for testing, debugging and manual operation. |
+| **Bringup Robot**          | Starts the robot hardware or simulated robot without localization or navigation. Intended for testing, debugging and manual operation. |
 | **Localization**     | Starts AMCL localization using an existing map without autonomous navigation.                                                          |
 | **Navigation**       | Starts autonomous navigation using a previously created map.                                                                           |
 | **Mapping**          | Starts SLAM Toolbox to create a new map of the environment.                                                                            |
@@ -56,8 +56,8 @@ The following launch files are available for operating the physical HSK-Mensabot
 
 | Launch File                        | Description                                                                                                                                           |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `real_bringup.launch.py`           | Starts the hardware interface, controllers, sensors, safety system and all required hardware components. Navigation and localization are not started. |
-| `real_complete.launch.py`          | Starts the complete robot including hardware, localization and autonomous navigation.                                                                 |
+| `real_bringup_robot.launch.py`           | Starts the hardware interface, controllers, sensors, safety system and all required hardware components. Navigation and localization are not started. |
+| `real_complete_bringup.launch.py`          | Starts the complete robot including hardware, localization and autonomous navigation.                                                                 |
 | `mapping_real.launch.py`           | Starts SLAM Toolbox for creating a new map of the environment.                                                                                        |
 | `navigation_real.launch.py`        | Starts autonomous navigation using an existing map.                                                                                                   |
 | `localization_real_amcl.launch.py` | Starts AMCL localization using a previously generated map.                                                                                            |
@@ -86,15 +86,15 @@ Some launch files provide optional launch arguments for additional functionality
 
 | Launch File              | Argument            | Description                                                        |
 | ------------------------ | ------------------- | ------------------------------------------------------------------ |
-| `real_bringup.launch.py` | `lidar_reset:=true` | Performs an automatic reset of both LiDAR scanners during startup. |
+| `real_bringup_robot.launch.py` | `lidar_reset:=true` | Performs an automatic reset of both LiDAR scanners during startup. |
 
 > **Note**
-> The `lidar_reset` launch argument is only available for `real_bringup.launch.py`. It is **not** supported by `real_complete.launch.py`.
+> The `lidar_reset` launch argument is only available for `real_bringup_robot.launch.py`. It is **not** supported by `real_complete_bringup.launch.py`.
 
 Example:
 
 ```bash
-ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
+ros2 launch mensabot_bringup real_bringup_robot.launch.py lidar_reset:=true
 ```
 
 ---

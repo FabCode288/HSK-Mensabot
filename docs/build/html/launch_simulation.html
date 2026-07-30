@@ -18,9 +18,7 @@
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Debug Monitor" href="start_monitor.html" />
-    <link rel="prev" title="Real Robot Launch Files" href="launch_real.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,20 +40,25 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cpp_api.html">C++ API</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="launch_files.html">Launch Files</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="launch_real.html">Real Robot Launch Files</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulation Launch Files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#sim-complete-bringup-launch-py">sim_complete_bringup.launch.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sim-bringup-robot-launch-py">sim_bringup_robot.launch.py</a></li>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Software Architecture</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="start_monitor.html">Debug Monitor</a></li>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packages/index.html">Packages</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
 
         </div>
@@ -72,7 +75,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="launch_files.html">Launch Files</a></li>
       <li class="breadcrumb-item active">Simulation Launch Files</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/launch_simulation.rst.txt" rel="nofollow"> View page source</a>
@@ -87,7 +89,7 @@
 <h1>Simulation Launch Files<a class="headerlink" href="#simulation-launch-files" title="Link to this heading"></a></h1>
 <section id="sim-complete-bringup-launch-py">
 <h2>sim_complete_bringup.launch.py<a class="headerlink" href="#sim-complete-bringup-launch-py" title="Link to this heading"></a></h2>
-<p>Starts the complete simulation with navigation.</p>
+<p>Starts the complete simulation with navigation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 2</span><span class="sd">Launch file for the complete Mensabot simulation system.</span>
 <span class="linenos"> 3</span>
@@ -179,7 +181,7 @@
 </section>
 <section id="sim-bringup-robot-launch-py">
 <h2>sim_bringup_robot.launch.py<a class="headerlink" href="#sim-bringup-robot-launch-py" title="Link to this heading"></a></h2>
-<p>Starts the simulation without localization and navigation.</p>
+<p>Starts the simulation without localization and navigation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">  2</span><span class="sd">Launch file for the Mensabot simulation environment.</span>
 <span class="linenos">  3</span>
@@ -464,10 +466,7 @@
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="launch_real.html" class="btn btn-neutral float-left" title="Real Robot Launch Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="start_monitor.html" class="btn btn-neutral float-right" title="Debug Monitor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

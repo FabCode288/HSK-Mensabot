@@ -12,8 +12,26 @@ This documentation contains the project description and launch files as well as 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: User Guide
 
-   api/modules
-   cpp_api
-   launch_files
+   user_guide
+   introduction
+   installation
+   quick_start
+   architecture
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
+
+   api_reference
+   packages/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Guide
+
+   developer_guide
+   repository
+   build
+   documentation

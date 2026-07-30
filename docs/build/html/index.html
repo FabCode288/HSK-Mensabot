@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Python API" href="api/modules.html" /> 
+    <link rel="next" title="User Guide" href="user_guide.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,11 +41,25 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cpp_api.html">C++ API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="launch_files.html">Launch Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Software Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packages/index.html">Packages</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
 
         </div>
@@ -77,20 +91,80 @@
 <p>Welcome to the documentation of the HSK-Mensabot project.</p>
 <p>This documentation contains the project description and launch files as well as the complete Python and C++ API documentation.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/mensabot_utils.html">Mensabot Utility Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html">Software Architecture</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cpp_api.html">C++ API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cpp_api.html#mensabot-hardware-plugin">Mensabot Hardware Plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#repository-structure">Repository Structure</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="launch_files.html">Launch Files</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="launch_real.html">Real Robot Launch Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_simulation.html">Simulation Launch Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="start_monitor.html">Debug Monitor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#clone-the-repository">Clone the Repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#build-the-workspace">Build the Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#source-the-workspace">Source the Workspace</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#simulation">Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#real-robot">Real Robot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start.html#monitoring">Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Software Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#software-layers">Software Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#package-organization">Package Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#software-pipeline">Software Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#further-information">Further Information</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="packages/index.html">Packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="packages/index.html">Packages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="packages/mensabot_bringup/index.html">mensabot_bringup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages/mensabot_navigation/index.html">mensabot_navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages/mensabot_hardware/index.html">mensabot_hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packages/mensabot_utils/index.html">mensabot_utils</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repository.html">Repository Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="repository.html#main-directories">Main Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="build.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#build-workspace">Build Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#source-workspace">Source Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#clean-build">Clean Build</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#sphinx">Sphinx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#doxygen">Doxygen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#github-pages">GitHub Pages</a></li>
 </ul>
 </li>
 </ul>
@@ -101,7 +175,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="api/modules.html" class="btn btn-neutral float-right" title="Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="user_guide.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
