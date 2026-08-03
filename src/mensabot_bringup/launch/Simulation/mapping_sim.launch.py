@@ -37,7 +37,7 @@ def generate_launch_description():
         LaunchDescription: Launch description for the simulated mapping system.
     """
 
-    pkg_mensabot_simulation = get_package_share_directory('mensabot_simulation')
+    pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
 
     rviz_launch_arg = DeclareLaunchArgument(
         'rviz', default_value='true',
@@ -62,7 +62,7 @@ def generate_launch_description():
     )
 
     slam_toolbox_params_path = os.path.join(
-        get_package_share_directory('mensabot_simulation'),
+        get_package_share_directory('mensabot_navigation'),
         'config',
         'slam_toolbox_mapping.yaml'
     )
@@ -71,7 +71,7 @@ def generate_launch_description():
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', PathJoinSubstitution([pkg_mensabot_simulation, 'rviz', LaunchConfiguration('rviz_config')])],
+        arguments=['-d', PathJoinSubstitution([pkg_mensabot_navigation, 'rviz', LaunchConfiguration('rviz_config')])],
         condition=IfCondition(LaunchConfiguration('rviz')),
         parameters=[
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
