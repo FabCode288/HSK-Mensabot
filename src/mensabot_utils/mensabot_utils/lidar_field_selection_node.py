@@ -422,10 +422,10 @@ class LidarFieldSelector(Node):
             return FieldState.BACKWARD
 
         # PURE ROTATION
-        if linear_x == 0.0 and angular_z > 0.0:
+        if linear_x == 0.0 and angular_z < 0.0:
             return FieldState.ROTATE_LEFT
 
-        if linear_x == 0.0 and angular_z < 0.0:
+        if linear_x == 0.0 and angular_z > 0.0:
             return FieldState.ROTATE_RIGHT
 
         # COMBINED MOVEMENT
