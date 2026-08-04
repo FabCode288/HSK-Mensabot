@@ -54,6 +54,7 @@ sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 echo "[4/16] Enabling SSH service..."
+sudo apt install openssh-server
 sudo systemctl enable ssh
 sudo systemctl start ssh
 
