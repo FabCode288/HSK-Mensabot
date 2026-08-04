@@ -464,7 +464,7 @@ class SafetyControlNode(Node):
                 # Set reset output HIGH
                 self.gpio_request.set_value(
                     self.relay_reset_output_line,
-                    self.Value.ACTIVE
+                    self.Value.INACTIVE
                 )
 
                 self.reset_pulse_active = True
@@ -499,7 +499,7 @@ class SafetyControlNode(Node):
                 try:
                     self.gpio_request.set_value(           # Set reset output LOW
                         self.relay_reset_output_line,
-                        self.Value.INACTIVE
+                        self.Value.ACTIVE
                     )
 
                     self.reset_pulse_active = False
