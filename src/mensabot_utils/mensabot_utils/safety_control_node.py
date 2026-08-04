@@ -97,7 +97,7 @@ class SafetyControlNode(Node):
                         self.relay_reset_output_line:
                         self.gpiod.LineSettings(
                             direction=self.Direction.OUTPUT,
-                            output_value=self.Value.INACTIVE
+                            output_value=self.Value.ACTIVE
                         )
                     }
                 )
