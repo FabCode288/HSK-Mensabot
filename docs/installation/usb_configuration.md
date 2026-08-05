@@ -162,6 +162,7 @@ Step 8 - Use in Software
 Example:
 
 std::string imu_port = "/dev/myimu";
+
 std::string arduino_port = "/dev/arduino";
 
 ------------------------------------------------------------
@@ -196,12 +197,16 @@ Summary
 ------------------------------------------------------------
 
 /dev/arduino -> Arduino Controller
+
 /dev/myimu   -> IMU Sensor
 
 This avoids issues caused by changing Linux serial device numbering.
 
-USB Ports:
-Top Left: Unused
-Top Right: Unused
-Bottom Left: IMU
-Bottom Right: Arduino
+## Current USB Port Assignment
+
+| Raspberry Pi USB Port | Assigned Device          |
+| --------------------- | ------------------------ |
+| Upper Left            | Available                |
+| Upper Right           | Available                |
+| Lower Left            | IMU                      |
+| Lower Right           | Arduino Motor Controller |
