@@ -180,6 +180,16 @@ sudo reboot
 ```
 
 ------------------------------------------------------------
+Step 9 - Install libary for IMU
+------------------------------------------------------------
+
+Follow this Link: https://www.yahboom.net/study/IMU_Sensor
+
+Go to: ROS Application Cases --> ROS2 Applications --> 1. IMU data printing
+
+Download the Code in the download box and follow the Instruction step 3.
+
+------------------------------------------------------------
 Notes
 ------------------------------------------------------------
 
