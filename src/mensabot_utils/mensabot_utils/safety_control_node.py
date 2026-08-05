@@ -446,7 +446,7 @@ class SafetyControlNode(Node):
 
         should_attempt_reset = (
             not self.simulation_mode and
-            self.safety_state == "NORMAL" and
+            (self.safety_state == "NORMAL" or self.safety_state == "WARNING") and
             self.estop_gpio_active and
             not self.reset_pulse_active and
             (current_time - self.last_reset_attempt_time)
