@@ -149,6 +149,7 @@ ls -l /dev/arduino
 Expected result:
 
 /dev/myimu -> ttyUSB0
+
 /dev/arduino -> ttyUSB1
 
 The target ttyUSBX numbers may change.
