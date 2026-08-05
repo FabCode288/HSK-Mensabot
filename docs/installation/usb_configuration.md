@@ -79,12 +79,12 @@ Use udevadm to inspect each device.
 
 Example for IMU:
 ```bash
-udevadm info -a -n /dev/ttyUSB0
+udevadm info -q property -n /dev/ttyUSB0
 ```
 
 Example for Arduino:
 ```bash
-udevadm info -a -n /dev/ttyUSB1
+udevadm info -q property -n /dev/ttyUSB1
 ```
 Search the output for:
 
