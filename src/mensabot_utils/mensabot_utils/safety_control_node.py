@@ -71,7 +71,7 @@ class SafetyControlNode(Node):
                 # LOW  -> relays open / ESTOP
                 # --------------------------------------------------
 
-                self.relay_status_input_line = 13
+                self.relay_status_input_line = 6
 
                 # --------------------------------------------------
                 # GPIO OUTPUT
@@ -412,8 +412,8 @@ class SafetyControlNode(Node):
                     self.relay_status_input_line
                 )
 
-                # HIGH -> relays open
-                self.estop_gpio_active = not bool(
+                # LOW -> relays open
+                self.estop_gpio_active = bool(
                     gpio_state
                 )
                 self.get_logger().debug(
