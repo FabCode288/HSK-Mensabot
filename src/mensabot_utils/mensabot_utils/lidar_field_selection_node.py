@@ -160,8 +160,8 @@ class LidarFieldSelector(Node):
             FieldState.FORWARD: [
                 [0.55, 0.45],
                 [0.55, -0.45],
-                [-0.85, -0.45],
-                [-0.85, 0.45],
+                [-0.80, -0.45],
+                [-0.80, 0.45],
             ],
 
             # --------------------------------------------------------
@@ -194,10 +194,12 @@ class LidarFieldSelector(Node):
             # --------------------------------------------------------
 
             FieldState.ROTATE_LEFT: [
-                [0.40, 0.45],
                 [0.40, -0.45],
-                [-0.85, -0.75],
-                [-0.85, 0.45],
+                [0.40, 0.45],
+                [0.00, 0.45],
+                [-0.40, 0.75],
+                [-0.85, 0.25],
+                [-0.85, -0.45],
             ],
 
             # --------------------------------------------------------
@@ -216,8 +218,10 @@ class LidarFieldSelector(Node):
             FieldState.ROTATE_RIGHT: [
                 [0.40, 0.45],
                 [0.40, -0.45],
-                [-0.85, -0.45],
-                [-0.85, 0.75],
+                [0.00, -0.45],
+                [-0.70, -0.75],
+                [-0.85, -0.25],
+                [-0.85, 0.45],
             ],
 
             # --------------------------------------------------------
@@ -429,6 +433,12 @@ class LidarFieldSelector(Node):
             return FieldState.ROTATE_RIGHT
 
         # COMBINED MOVEMENT
+        if abs(linear_x) < 0.15 and angular_z < -0.3:
+            return FieldState.ROTATE_LEFT
+
+        if abs(linear_x) < 0.15 and angular_z > 0.3:
+            return FieldState.ROTATE_RIGHT
+
         # Forward / Backward has priority
 
         if linear_x > 0.0:
