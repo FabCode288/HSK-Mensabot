@@ -38,7 +38,7 @@ The API documentation can be found here: https://fabcode288.github.io/HSK-Mensab
 # Project Overview
 
 <p align="center">
-  <img src="docs/images/Real_Robot_V1.jpg" width="45%">
+  <img src="docs/images/Real_Robot_V1.jpg" width="50%">
   <img src="docs/images/gazebo_robot.png" width="45%">
 </p>
 
