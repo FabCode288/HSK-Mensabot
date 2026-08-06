@@ -90,8 +90,10 @@ ros2_mensabot_ws/
 ├── docs/
 ├── scripts/
 ├── src/
-├── README.md
-└── LICENSE
+├── ChangeLog
+├── LICENSE
+├── README
+└── Third_party
 
 ```
 
@@ -244,14 +246,14 @@ Additional documentation can be found in the **[docs/](docs/)** directory.
 | Monitoring | Mensabot Monitor |
 | USB Configuration | USB mapping and udev rules |
 | Launch Files | Launch file documentation |
-| Third-Party Software | External open-source software and licenses ([Third_Party.md](Third_Party.md)) |
+| Third-Party Software | External open-source software and licenses ([Third_Party.md](Third_party.md)) |
 ---
 
 # Third-Party Software
 
 This project integrates several third-party open-source components from the ROS ecosystem.
 
-A complete overview of all external dependencies, their purpose, repository links, and applicable licenses is available in the **[Third-Party Software Overview](Third_Party.md)**.
+A complete overview of all external dependencies, their purpose, repository links, and applicable licenses is available in the **[Third-Party Software Overview](Third_party.md)**.
 
 Please refer to the respective repositories for licensing information.
 
