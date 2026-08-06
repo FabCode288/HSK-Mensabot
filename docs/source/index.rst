@@ -10,21 +10,17 @@ Welcome to the documentation of the HSK-Mensabot project.
 
 This documentation contains the project description and launch files as well as the complete Python and C++ API documentation.
 
-.. list-table::
-   :widths: 50 50
+.. figure:: ../images/gazebo_robot.png
+   :width: 60%
    :align: center
 
-   * - .. figure:: ../images/gazebo_robot.png
-          :width: 100%
-          :align: center
+   Overview of the Mensabot in the simulation environment.
 
-          Overview of the Mensabot in the simulation environment.
+.. figure:: ../images/Real_Robot_V1.jpg
+   :width: 60%
+   :align: center
 
-     - .. figure:: ../images/Real_Robot_V1.png
-          :width: 100%
-          :align: center
-
-          Overview of the Mensabot in the real environment.
+   Overview of the Mensabot in the real environment.
 
 
 .. toctree::

@@ -522,10 +522,10 @@
             <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">BACKWARD</span>
 
         <span class="c1"># PURE ROTATION</span>
-        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_LEFT</span>
 
-        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">linear_x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">angular_z</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">FieldState</span><span class="o">.</span><span class="n">ROTATE_RIGHT</span>
 
         <span class="c1"># COMBINED MOVEMENT</span>
