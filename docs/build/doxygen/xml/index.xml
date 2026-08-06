@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.8" xml:lang="en-US">
+  <compound refid="classmensabot__hardware_1_1MensabotHardware" kind="class"><name>mensabot_hardware::MensabotHardware</name>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a9cf43d1578aa577f95729c88e6f77e24" kind="variable"><name>serial_fd_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a82abcd07c6fdf5f18e80fae45b5934a1" kind="variable"><name>port_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a42362dfc8a24493579de8a7ea146cd6a" kind="variable"><name>rx_buffer_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1ad38ad828ad16517b36ab0d19d8c9d190" kind="variable"><name>rx_index_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a1b5c8c8c6777829cd59b657f584c6325" kind="variable"><name>node_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a0b585087c9d320c43469bc07ac598c00" kind="variable"><name>estop_sub_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1aa12af252d6b27446a589f4a4547349c7" kind="variable"><name>connected_pub_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1af90cd6652756f0b54b8945b9f579c3a4" kind="variable"><name>hw_positions_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a6a421740801832724834612049f1d888" kind="variable"><name>hw_velocities_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a48115ca65ed15d737df92f38a0e47d2b" kind="variable"><name>hw_commands_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1ad1ad588a64e3f398afeead6dbada77aa" kind="variable"><name>connected_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a75efa843ba17bb4e63ae63b1dee27498" kind="variable"><name>ready_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a24b35fe110a39c5cd82b40d96afb595a" kind="variable"><name>active_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a5864be8fde07a672e21a8a941a9aae18" kind="variable"><name>estop_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a6288706c2fb46d1bf3921e1cce72614f" kind="variable"><name>estop_sent_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a49a370abf9c374408bde8de0be1468a7" kind="variable"><name>last_msg_time_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1aa65a0524bed62b11863e1df21ca3acb1" kind="variable"><name>last_send_time_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1ad3e38a2a293092c5ac2335a34d86eb7a" kind="variable"><name>timing_initialized_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a8c8cb42ed7475dab1d469fe990c6647f" kind="variable"><name>heartbeat_timeout_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a09adc0191e8a8da451cc1e53824371cf" kind="variable"><name>send_period_</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a931b4e8d2e9fc33220fab8ca13a28658" kind="function"><name>on_init</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a97a537b839f0a980afc6f0e38d6458f9" kind="function"><name>export_state_interfaces</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a7d4f16e05f6b2f009f124e2b91a44238" kind="function"><name>export_command_interfaces</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a40a1df08b54a05ca99c48947eb845dd4" kind="function"><name>on_activate</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1ab8164adca7ea274b639dceb51a17a79c" kind="function"><name>on_deactivate</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a8f81290e85c61b1500651a19597331f5" kind="function"><name>read</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1af45c29c1fbef3a367394b1bb2ca3041c" kind="function"><name>write</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a78ca6cd46612623ec85042fdd94a391d" kind="function"><name>send_packet</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1a9371a1373bdab0f1544d787872bf52ed" kind="function"><name>read_packet</name></member>
+    <member refid="classmensabot__hardware_1_1MensabotHardware_1af1e3ca6ff97ebab044755242325ab337" kind="function"><name>calculate_checksum</name></member>
+  </compound>
+  <compound refid="structPacket" kind="struct"><name>Packet</name>
+    <member refid="structPacket_1a671250914fe003bcbec91ee85a824f24" kind="variable"><name>header1</name></member>
+    <member refid="structPacket_1aa0a9b6797c2cebbb0cb8d331dc137f9e" kind="variable"><name>header2</name></member>
+    <member refid="structPacket_1a496cc4e5c913eefa002539663d147cfb" kind="variable"><name>type</name></member>
+    <member refid="structPacket_1adf5d26ceb3843ffd0dbe9d01d62dd663" kind="variable"><name>value1</name></member>
+    <member refid="structPacket_1afe96735ac0d310d28e2633d9676aa462" kind="variable"><name>value2</name></member>
+    <member refid="structPacket_1aad15af326b21493494d358a5544b702a" kind="variable"><name>checksum</name></member>
+  </compound>
+  <compound refid="unionPacketBuffer" kind="union"><name>PacketBuffer</name>
+    <member refid="unionPacketBuffer_1a6a625a85930bb80e7f48aa75a32c5955" kind="variable"><name>packet</name></member>
+    <member refid="unionPacketBuffer_1ae8e01775f1770b4fb4c97613609d9bc3" kind="variable"><name>bytes</name></member>
+  </compound>
+  <compound refid="namespacehardware__interface" kind="namespace"><name>hardware_interface</name>
+  </compound>
+  <compound refid="namespacemensabot__hardware" kind="namespace"><name>mensabot_hardware</name>
+  </compound>
+  <compound refid="mensabot__hardware_8hpp" kind="file"><name>mensabot_hardware.hpp</name>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56" kind="enum"><name>PacketType</name></member>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56a56f5f292a54ae899fed23930aa7f3595" kind="enumvalue"><name>PKT_PING</name></member>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56ae962795f1da90b332baeff5b31ed0d2a" kind="enumvalue"><name>PKT_READY</name></member>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56aa9cbc7cde4d04651ea571a538f47769f" kind="enumvalue"><name>PKT_HB</name></member>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56a106dd207fbec39c3f4470928f5cca9da" kind="enumvalue"><name>PKT_CMD</name></member>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56a0371cae0848acb963a80cb55b2638f2a" kind="enumvalue"><name>PKT_ESTOP</name></member>
+    <member refid="mensabot__hardware_8hpp_1a0628f13bcd4685c7a4b4a9f1aad83b56a2e55699c823e0bdbb6483c62df9fd1f3" kind="enumvalue"><name>PKT_RESET</name></member>
+  </compound>
+  <compound refid="mensabot__hardware_8cpp" kind="file"><name>mensabot_hardware.cpp</name>
+  </compound>
+  <compound refid="dir_cb2c93cb746f1a9a3005dc79398f4777" kind="dir"><name>src/mensabot_hardware/include</name>
+  </compound>
+  <compound refid="dir_82ccf1723c051228cb86db83a783368d" kind="dir"><name>src/mensabot_hardware</name>
+  </compound>
+  <compound refid="dir_cf96f8cb78d1e93308081f2e55eb7f4d" kind="dir"><name>src/mensabot_hardware/include/mensabot_hardware</name>
+  </compound>
+  <compound refid="dir_68267d1309a1af8e8297ef4c3efbcdba" kind="dir"><name>src</name>
+  </compound>
+  <compound refid="dir_4bd1deb483b5c245936883abf2167d12" kind="dir"><name>src/mensabot_hardware/src</name>
+  </compound>
+</doxygenindex>

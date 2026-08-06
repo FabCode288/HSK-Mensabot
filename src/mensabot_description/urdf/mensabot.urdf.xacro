@@ -5,11 +5,12 @@
   <xacro:arg name="use_sim" default="false"/>
   <xacro:arg name="model_only" default="False" />
 
-  <!-- nur wenn Simulation -->
+  <!-- Include Gazebo-specific plugins only in simulation. -->
   <xacro:if value="$(arg use_sim)">
     <xacro:include filename="$(find mensabot_description)/urdf/mensabot.gazebo" />
   </xacro:if>
   
+  <!-- Load the real ros2_control hardware interface on the physical robot. -->
   <xacro:unless value="$(arg use_sim)">
     <xacro:include filename="$(find mensabot_description)/urdf/mensabot.ros2_control_real.xacro" />
     <xacro:mensabot_ros2_control/>

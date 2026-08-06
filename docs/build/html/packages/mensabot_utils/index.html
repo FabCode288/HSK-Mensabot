@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mensabot_utils &mdash; HSK-Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Safety" href="safety/index.html" />
+    <link rel="prev" title="Mensabot Hardware" href="../mensabot_hardware/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HSK-Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Software Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_bringup/index.html">mensabot_bringup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_navigation/index.html">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mensabot_hardware/index.html">Mensabot Hardware</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">mensabot_utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modules">Modules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="safety/index.html">Safety</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_publisher_node.html">Simulation Publisher Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mensabot_monitor.html">Mensabot Monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cmd_vel_transform_node.html">Velocity Transformation Node</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HSK-Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api_reference.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Packages</a></li>
+      <li class="breadcrumb-item active">mensabot_utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/packages/mensabot_utils/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mensabot-utils">
+<h1>mensabot_utils<a class="headerlink" href="#mensabot-utils" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">mensabot_utils</span></code> package contains additional Python-based ROS 2 nodes that extend the functionality of the HSK-MensaBot software stack.</p>
+<p>Unlike the core packages responsible for navigation or hardware control, these nodes implement project-specific features such as software safety mechanisms, simulation support, monitoring and command processing. Most of the nodes are started automatically by the corresponding bringup launch files, while the monitoring application can also be executed independently.</p>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Link to this heading"></a></h2>
+<p>The package is divided into the following functional modules:</p>
+<p><strong>Safety</strong></p>
+<p>Contains nodes implementing software-based safety functions, including safety supervision, dynamic safety field selection and LiDAR reset functionality.</p>
+<p><strong>Simulation</strong></p>
+<p>Provides helper nodes that simulate hardware-specific information unavailable in Gazebo, allowing the software architecture to operate consistently in both simulation and on the physical robot.</p>
+<p><strong>Monitoring</strong></p>
+<p>Contains the graphical MensaMonitor application, which visualizes the current robot state and diagnostic information during development and testing.</p>
+<p><strong>Transformation</strong></p>
+<p>Provides utility nodes for processing ROS 2 messages before they are forwarded to other software components.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="safety/index.html">Safety</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="safety/index.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="safety/safety_control_node.html">Safety Control Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="safety/lidar_field_selection_node.html">LiDAR Field Selection Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="safety/lidar_reset.html">LiDAR Reset Utility</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulation_publisher_node.html">Simulation Publisher Node</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation_publisher_node.html#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation_publisher_node.html#published-topics">Published Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation_publisher_node.html#simulation-behaviour">Simulation Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation_publisher_node.html#related-documentation">Related Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation_publisher_node.html#module-mensabot_utils.simulation_publisher_node">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simulation_publisher_node.html#mensabot_utils.simulation_publisher_node.SafetySimInputs"><code class="docutils literal notranslate"><span class="pre">SafetySimInputs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation_publisher_node.html#mensabot_utils.simulation_publisher_node.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mensabot_monitor.html">Mensabot Monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#launch-command">Launch Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#subscribed-topics">Subscribed Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#displayed-information">Displayed Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#related-documentation">Related Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mensabot_monitor.html#module-mensabot_utils.mensabot_monitor">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.yaw_from_quaternion"><code class="docutils literal notranslate"><span class="pre">yaw_from_quaternion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.ValueCard"><code class="docutils literal notranslate"><span class="pre">ValueCard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.BoolCard"><code class="docutils literal notranslate"><span class="pre">BoolCard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.StateCard"><code class="docutils literal notranslate"><span class="pre">StateCard</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.RosWorker"><code class="docutils literal notranslate"><span class="pre">RosWorker</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.MonitorNode"><code class="docutils literal notranslate"><span class="pre">MonitorNode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.MensabotMonitor"><code class="docutils literal notranslate"><span class="pre">MensabotMonitor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mensabot_monitor.html#mensabot_utils.mensabot_monitor.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cmd_vel_transform_node.html">Velocity Transformation Node</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cmd_vel_transform_node.html#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd_vel_transform_node.html#subscribed-topics">Subscribed Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd_vel_transform_node.html#published-topics">Published Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd_vel_transform_node.html#transformation">Transformation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd_vel_transform_node.html#related-documentation">Related Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd_vel_transform_node.html#module-mensabot_utils.cmd_vel_transform_node">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cmd_vel_transform_node.html#mensabot_utils.cmd_vel_transform_node.TwistToStamped"><code class="docutils literal notranslate"><span class="pre">TwistToStamped</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cmd_vel_transform_node.html#mensabot_utils.cmd_vel_transform_node.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../mensabot_hardware/index.html" class="btn btn-neutral float-left" title="Mensabot Hardware" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="safety/index.html" class="btn btn-neutral float-right" title="Safety" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

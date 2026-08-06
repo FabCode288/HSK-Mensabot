@@ -1,5 +1,25 @@
-import os
+"""
+Launch file for the Nav2 navigation stack in simulation.
 
+This launch file starts the ROS 2 Navigation (Nav2) stack in the simulation
+environment using the project-specific navigation configuration. Simulation
+time is enabled and RViz can optionally be launched for visualization.
+
+Launch Arguments:
+    rviz (bool):
+        Enables or disables RViz startup.
+
+    rviz_config (str):
+        Name of the RViz configuration file.
+
+    use_sim_time (bool):
+        Enables simulation time provided by Gazebo.
+
+    params_file:
+        Navigation parameter file used to configure the Nav2 stack.
+"""
+
+import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
@@ -10,6 +30,18 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
+
+    """
+    Create the launch description for the simulated Nav2 navigation stack.
+
+    The launch description starts the Nav2 navigation stack using simulation
+    time and the project-specific navigation configuration. RViz can optionally
+    be launched for visualizing the navigation process.
+
+    Returns:
+        LaunchDescription: Launch description for the simulated navigation
+        system.
+    """
 
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
 

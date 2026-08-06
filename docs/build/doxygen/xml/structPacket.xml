@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="structPacket" kind="struct" language="C++" prot="public">
+    <compoundname>Packet</compoundname>
+    <includes refid="mensabot__hardware_8hpp" local="no">mensabot_hardware.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structPacket_1a671250914fe003bcbec91ee85a824f24" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t Packet::header1</definition>
+        <argsstring></argsstring>
+        <name>header1</name>
+        <qualifiedname>Packet::header1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="37" column="11" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structPacket_1aa0a9b6797c2cebbb0cb8d331dc137f9e" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t Packet::header2</definition>
+        <argsstring></argsstring>
+        <name>header2</name>
+        <qualifiedname>Packet::header2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="38" column="11" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structPacket_1a496cc4e5c913eefa002539663d147cfb" prot="public" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t Packet::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>Packet::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="40" column="11" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structPacket_1adf5d26ceb3843ffd0dbe9d01d62dd663" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t Packet::value1</definition>
+        <argsstring></argsstring>
+        <name>value1</name>
+        <qualifiedname>Packet::value1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="42" column="11" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structPacket_1afe96735ac0d310d28e2633d9676aa462" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t Packet::value2</definition>
+        <argsstring></argsstring>
+        <name>value2</name>
+        <qualifiedname>Packet::value2</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="43" column="11" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structPacket_1aad15af326b21493494d358a5544b702a" prot="public" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t Packet::checksum</definition>
+        <argsstring></argsstring>
+        <name>checksum</name>
+        <qualifiedname>Packet::checksum</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="45" column="12" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" line="35" column="1" bodyfile="src/mensabot_hardware/include/mensabot_hardware/mensabot_hardware.hpp" bodystart="36" bodyend="46"/>
+    <listofallmembers>
+      <member refid="structPacket_1aad15af326b21493494d358a5544b702a" prot="public" virt="non-virtual"><scope>Packet</scope><name>checksum</name></member>
+      <member refid="structPacket_1a671250914fe003bcbec91ee85a824f24" prot="public" virt="non-virtual"><scope>Packet</scope><name>header1</name></member>
+      <member refid="structPacket_1aa0a9b6797c2cebbb0cb8d331dc137f9e" prot="public" virt="non-virtual"><scope>Packet</scope><name>header2</name></member>
+      <member refid="structPacket_1a496cc4e5c913eefa002539663d147cfb" prot="public" virt="non-virtual"><scope>Packet</scope><name>type</name></member>
+      <member refid="structPacket_1adf5d26ceb3843ffd0dbe9d01d62dd663" prot="public" virt="non-virtual"><scope>Packet</scope><name>value1</name></member>
+      <member refid="structPacket_1afe96735ac0d310d28e2633d9676aa462" prot="public" virt="non-virtual"><scope>Packet</scope><name>value2</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

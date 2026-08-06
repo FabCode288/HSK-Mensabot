@@ -1,3 +1,12 @@
+/**
+ * @file mensabot_hardware.hpp
+ * @brief Declaration of the Mensabot ros2_control hardware interface.
+ *
+ * Defines the communication protocol, packet structures and the
+ * MensabotHardware class implementing the ros2_control
+ * hardware_interface::SystemInterface.
+ */
+
 #ifndef MENSABOT_HARDWARE__MENSABOT_HARDWARE_HPP_
 #define MENSABOT_HARDWARE__MENSABOT_HARDWARE_HPP_
 
@@ -65,30 +74,62 @@ enum PacketType : uint8_t
 namespace mensabot_hardware
 {
 
+/**
+ * @brief Hardware interface implementation for the Mensabot platform.
+ */
+
+/**
+ * @brief ros2_control hardware interface for the Mensabot platform.
+ *
+ * This class provides the connection between the ROS 2 control framework
+ * and the Arduino-based motor controller. It manages serial communication,
+ * controller state transitions, heartbeat monitoring and command exchange.
+ */
 class MensabotHardware : public hardware_interface::SystemInterface
 {
 public:
   RCLCPP_SHARED_PTR_DEFINITIONS(MensabotHardware)
 
+  /**
+   * @brief Initialize the hardware interface.
+   */
   hardware_interface::CallbackReturn on_init(
     const hardware_interface::HardwareInfo & info) override;
 
+  /**
+   * @brief Export wheel state interfaces.
+   */
   std::vector<hardware_interface::StateInterface>
   export_state_interfaces() override;
 
+  /**
+   * @brief Export wheel command interfaces.
+   */
   std::vector<hardware_interface::CommandInterface>
   export_command_interfaces() override;
 
+  /**
+   * @brief Activate the hardware interface.
+   */
   hardware_interface::CallbackReturn on_activate(
     const rclcpp_lifecycle::State & previous_state) override;
 
+  /**
+   * @brief Deactivate the hardware interface.
+   */
   hardware_interface::CallbackReturn on_deactivate(
     const rclcpp_lifecycle::State & previous_state) override;
 
+  /**
+   * @brief Read data from the hardware interface.
+   */
   hardware_interface::return_type read(
     const rclcpp::Time & time,
     const rclcpp::Duration & period) override;
 
+  /**
+   * @brief Write commands to the hardware interface.
+   */
   hardware_interface::return_type write(
     const rclcpp::Time & time,
     const rclcpp::Duration & period) override;
@@ -107,13 +148,22 @@ private:
 
   size_t rx_index_ = 0;
 
+  /**
+   * @brief Send a communication packet.
+   */
   void send_packet(
     uint8_t type,
     int16_t value1 = 0,
     int16_t value2 = 0);
 
+  /**
+   * @brief Read a packet from the serial interface.
+   */
   bool read_packet(Packet & packet);
 
+  /**
+   * @brief Calculate the packet checksum.
+   */
   uint16_t calculate_checksum(
     const Packet & packet);
 

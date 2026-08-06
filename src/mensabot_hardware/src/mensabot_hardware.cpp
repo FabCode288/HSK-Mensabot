@@ -1,3 +1,16 @@
+/**
+ * @file mensabot_hardware.cpp
+ * @brief ROS 2 hardware interface for the Mensabot platform.
+ *
+ * This file implements the ros2_control SystemInterface used to connect the
+ * ROS 2 control framework with the Arduino-based motor controller via a
+ * serial communication interface.
+ *
+ * Besides transmitting wheel velocity commands, the hardware interface
+ * manages the communication state machine, heartbeat monitoring, emergency
+ * stop handling and packet-based data exchange.
+ */
+
 #include "mensabot_hardware/mensabot_hardware.hpp"
 
 #include <fcntl.h>
@@ -12,10 +25,24 @@
 
 namespace mensabot_hardware
 {
+  /**
+  * @brief Hardware interface implementation for the Mensabot platform.
+  */
 
 hardware_interface::CallbackReturn MensabotHardware::on_init(
   const hardware_interface::HardwareInfo & info)
 {
+  /**
+  * @brief Initialize the hardware interface.
+  *
+  * Creates the internal ROS node, initializes publishers and subscribers,
+  * configures the serial interface and prepares all internal state variables.
+  *
+  * @param info Hardware information provided by ros2_control.
+  *
+  * @return CallbackReturn::SUCCESS on successful initialization,
+  *         otherwise CallbackReturn::ERROR.
+  */
   if (hardware_interface::SystemInterface::on_init(info) !=
       hardware_interface::CallbackReturn::SUCCESS)
   {
@@ -88,6 +115,14 @@ hardware_interface::CallbackReturn MensabotHardware::on_init(
 std::vector<hardware_interface::StateInterface>
 MensabotHardware::export_state_interfaces()
 {
+  /**
+  * @brief Export the robot state interfaces.
+  *
+  * Provides position and velocity state interfaces for both drive wheels.
+  *
+  * @return Vector containing all exported state interfaces.
+  */
+
   std::vector<hardware_interface::StateInterface> interfaces;
 
   interfaces.emplace_back(
@@ -116,6 +151,14 @@ MensabotHardware::export_state_interfaces()
 std::vector<hardware_interface::CommandInterface>
 MensabotHardware::export_command_interfaces()
 {
+  /**
+  * @brief Export the robot command interfaces.
+  *
+  * Provides velocity command interfaces for both drive wheels.
+  *
+  * @return Vector containing all exported command interfaces.
+  */
+
   std::vector<hardware_interface::CommandInterface> interfaces;
 
   interfaces.emplace_back(
@@ -134,8 +177,18 @@ MensabotHardware::export_command_interfaces()
 // ================= ACTIVATE =================
 
 hardware_interface::CallbackReturn MensabotHardware::on_activate(
-  const rclcpp_lifecycle::State &)
+    const rclcpp_lifecycle::State &previous_state)
 {
+    /**
+     * @brief Activate the hardware interface.
+     *
+     * Called when the controller manager activates the hardware component.
+     *
+     * @param previous_state Previous lifecycle state.
+     *
+     * @return CallbackReturn::SUCCESS.
+     */
+
   RCLCPP_INFO(
     rclcpp::get_logger("MensabotHardware"),
     "Hardware Interface ACTIVATED");
@@ -144,8 +197,18 @@ hardware_interface::CallbackReturn MensabotHardware::on_activate(
 }
 
 hardware_interface::CallbackReturn MensabotHardware::on_deactivate(
-  const rclcpp_lifecycle::State &)
+  const rclcpp_lifecycle::State &previous_state)
 {
+  /**
+   * @brief Deactivate the hardware interface.
+   *
+   * Closes the serial connection and releases hardware resources.
+   *
+   * @param previous_state Previous lifecycle state.
+   *
+   * @return CallbackReturn::SUCCESS.
+   */
+
   close(serial_fd_);
 
   RCLCPP_INFO(
@@ -161,6 +224,20 @@ hardware_interface::return_type MensabotHardware::read(
   const rclcpp::Time & time,
   const rclcpp::Duration & period)
 {
+  /**
+  * @brief Read data from the hardware interface.
+  *
+  * Processes incoming serial packets, updates the communication state,
+  * monitors heartbeat timeouts and updates the wheel state information.
+  *
+  * During simulation of the hardware communication, wheel positions are
+  * estimated from the commanded wheel velocities.
+  *
+  * @param time Current ROS time.
+  * @param period Control period.
+  *
+  * @return hardware_interface::return_type::OK.
+  */
   // ROS CALLBACKS
   rclcpp::spin_some(node_);
 
@@ -225,7 +302,8 @@ hardware_interface::return_type MensabotHardware::read(
     active_ = false;
   }
 
-  // Fake Odom
+  // Estimate wheel positions from commanded velocities because the current
+  // hardware does not provide encoder feedback.
   if (active_ && connected_) {
 
     hw_positions_[0] += hw_commands_[0] * period.seconds();
@@ -249,6 +327,21 @@ hardware_interface::return_type MensabotHardware::write(
   const rclcpp::Time & time,
   const rclcpp::Duration &)
 {
+  /**
+  * @brief Send commands to the motor controller.
+  *
+  * Implements the communication state machine by handling connection
+  * establishment, emergency stop commands, reset requests and velocity
+  * transmission.
+  *
+  * Velocity commands are converted into the fixed-point packet format before
+  * being transmitted via the serial interface.
+  *
+  * @param time Current ROS time.
+  * @param period Control period.
+  *
+  * @return hardware_interface::return_type::OK.
+  */
   // RATE LIMIT
   if ((time - last_send_time_).seconds() < send_period_) {
     return hardware_interface::return_type::OK;
@@ -321,6 +414,16 @@ hardware_interface::return_type MensabotHardware::write(
 uint16_t MensabotHardware::calculate_checksum(
   const Packet& packet)
 {
+  /**
+  * @brief Calculate the packet checksum.
+  *
+  * Generates the checksum used for packet integrity verification.
+  *
+  * @param packet Packet used for checksum calculation.
+  *
+  * @return Calculated checksum.
+  */
+
   return static_cast<uint16_t>(
     packet.type ^
     packet.value1 ^
@@ -332,6 +435,17 @@ void MensabotHardware::send_packet(
   int16_t value1,
   int16_t value2)
 {
+  /**
+  * @brief Build and transmit a communication packet.
+  *
+  * Creates a packet with header, payload and checksum before sending it over
+  * the serial interface.
+  *
+  * @param type Packet type.
+  * @param value1 First payload value.
+  * @param value2 Second payload value.
+  */
+
   PacketBuffer tx;
 
   tx.packet.header1 = 0xAA;
@@ -356,6 +470,17 @@ void MensabotHardware::send_packet(
 bool MensabotHardware::read_packet(
   Packet& packet)
 {
+  /**
+  * @brief Receive and validate a communication packet.
+  *
+  * Reads incoming serial data byte by byte, reconstructs complete packets and
+  * validates their checksum before returning the received packet.
+  *
+  * @param packet Output packet.
+  *
+  * @return True if a valid packet was received, otherwise false.
+  */
+
   uint8_t byte;
 
   while (::read(serial_fd_, &byte, 1) > 0)

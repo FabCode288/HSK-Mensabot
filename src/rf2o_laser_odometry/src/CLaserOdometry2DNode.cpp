@@ -159,11 +159,11 @@ void CLaserOdometry2DNode::publish()
 
   // Pose covariance (estimated)
   // x
-  odom.pose.covariance[0] = 0.1;
+  odom.pose.covariance[0] = 0.05;
   // y
-  odom.pose.covariance[7] = 0.1;
+  odom.pose.covariance[7] = 0.05;
   // yaw
-  odom.pose.covariance[35] = 0.10;
+  odom.pose.covariance[35] = 0.01;
 
   // Twist covariance
   // vx

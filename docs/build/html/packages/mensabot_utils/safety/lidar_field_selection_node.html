@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiDAR Field Selection Node &mdash; HSK-Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="LiDAR Reset Utility" href="lidar_reset.html" />
+    <link rel="prev" title="Safety Control Node" href="safety_control_node.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            HSK-Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Software Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../mensabot_bringup/index.html">mensabot_bringup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mensabot_navigation/index.html">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mensabot_hardware/index.html">Mensabot Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">mensabot_utils</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#modules">Modules</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">Safety</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../simulation_publisher_node.html">Simulation Publisher Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../mensabot_monitor.html">Mensabot Monitor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_vel_transform_node.html">Velocity Transformation Node</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">HSK-Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../api_reference.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Packages</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">mensabot_utils</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Safety</a></li>
+      <li class="breadcrumb-item active">LiDAR Field Selection Node</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/packages/mensabot_utils/safety/lidar_field_selection_node.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lidar-field-selection-node">
+<h1>LiDAR Field Selection Node<a class="headerlink" href="#lidar-field-selection-node" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">LidarFieldSelector</span></code> node automatically selects the active LiDAR monitoring field based on the current robot motion. It evaluates the commanded robot velocity, updates the safety scanner field selection via GPIO outputs and publishes a matching dynamic robot footprint for the local Nav2 costmap.</p>
+<p>The node ensures that the active safety scanner configuration and the navigation footprint remain synchronized. In addition, it supports a manual override mode for recovery situations and automatically returns to the default monitoring state if command or override timeouts occur.</p>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The node performs the following tasks:</p>
+<ul class="simple">
+<li><p>Determines the current robot motion state from commanded velocities.</p></li>
+<li><p>Selects the corresponding LiDAR monitoring field.</p></li>
+<li><p>Controls the GPIO outputs connected to the safety scanners.</p></li>
+<li><p>Publishes the active monitoring state.</p></li>
+<li><p>Publishes a dynamic robot footprint for the local Nav2 costmap.</p></li>
+<li><p>Supports manual override mode for recovery procedures.</p></li>
+<li><p>Monitors command and manual override timeouts.</p></li>
+</ul>
+</section>
+<section id="subscribed-topics">
+<h2>Subscribed Topics<a class="headerlink" href="#subscribed-topics" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>Message Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/mensabot_base_controller/cmd_vel_out</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/TwistStamped</span></code></p></td>
+<td><p>Velocity commands used to determine the active monitoring field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/manual_override</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/Bool</span></code></p></td>
+<td><p>Enables or disables manual override mode.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="published-topics">
+<h2>Published Topics<a class="headerlink" href="#published-topics" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Topic</p></th>
+<th class="head"><p>Message Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/safety/field_state</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std_msgs/String</span></code></p></td>
+<td><p>Currently active LiDAR monitoring state.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/local_costmap/footprint</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">geometry_msgs/Polygon</span></code></p></td>
+<td><p>Dynamic robot footprint used by the local Nav2 costmap.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">simulation</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p></td>
+<td><p>Enables simulation mode by disabling GPIO communication with the safety scanners.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="monitoring-states">
+<h2>Monitoring States<a class="headerlink" href="#monitoring-states" title="Link to this heading"></a></h2>
+<p>The node supports the following monitoring states:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">STOP</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FORWARD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BACKWARD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ROTATE_LEFT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ROTATE_RIGHT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MANUAL_OVERRIDE</span></code></p></li>
+</ul>
+<p>Each monitoring state activates the corresponding LiDAR monitoring field and publishes a matching robot footprint for collision checking.</p>
+</section>
+<section id="related-documentation">
+<h2>Related Documentation<a class="headerlink" href="#related-documentation" title="Link to this heading"></a></h2>
+<p>The dynamic safety field concept and the synchronization between the active LiDAR monitoring field and the navigation footprint are described in the project documentation.</p>
+<p>Project Documentation</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/docs/safety/README.md">Safety Documentation</a></p>
+<p>Repository</p>
+<p><a class="reference external" href="https://github.com/FabCode288/HSK-Mensabot/blob/main/src/mensabot_utils/mensabot_utils/lidar_field_selection_node.py">LiDAR Field Selection Node</a></p>
+</section>
+<section id="module-mensabot_utils.lidar_field_selection_node">
+<span id="api-reference"></span><h2>API Reference<a class="headerlink" href="#module-mensabot_utils.lidar_field_selection_node" title="Link to this heading"></a></h2>
+<p>Selects the active LiDAR monitoring field based on the robot’s motion state.</p>
+<p>The node evaluates the commanded robot motion, selects the corresponding
+LiDAR monitoring field, updates the GPIO outputs for the safety scanner and
+publishes the matching Nav2 footprint.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_field_selection_node.</span></span><span class="sig-name descname"><span class="pre">FieldState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#FieldState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enumeration of all supported LiDAR monitoring states.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.STOP">
+<span class="sig-name descname"><span class="pre">STOP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.STOP" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.FORWARD">
+<span class="sig-name descname"><span class="pre">FORWARD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.FORWARD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.BACKWARD">
+<span class="sig-name descname"><span class="pre">BACKWARD</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.BACKWARD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_LEFT">
+<span class="sig-name descname"><span class="pre">ROTATE_LEFT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_LEFT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_RIGHT">
+<span class="sig-name descname"><span class="pre">ROTATE_RIGHT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.ROTATE_RIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.FieldState.MANUAL_OVERRIDE">
+<span class="sig-name descname"><span class="pre">MANUAL_OVERRIDE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></span><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.FieldState.MANUAL_OVERRIDE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_field_selection_node.</span></span><span class="sig-name descname"><span class="pre">LidarFieldSelector</span></span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<p>ROS 2 node for selecting LiDAR monitoring fields.</p>
+<p>The node determines the robot’s current motion state from velocity commands,
+controls the LiDAR field selection via GPIO outputs and updates the dynamic
+Nav2 footprint accordingly.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.manual_override_callback">
+<span class="sig-name descname"><span class="pre">manual_override_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">std_msgs.msg.Bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.manual_override_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.manual_override_callback" title="Link to this definition"></a></dt>
+<dd><p>Handle manual override requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Manual override state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.cmd_vel_callback">
+<span class="sig-name descname"><span class="pre">cmd_vel_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">geometry_msgs.msg.TwistStamped</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.cmd_vel_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.cmd_vel_callback" title="Link to this definition"></a></dt>
+<dd><p>Process commanded robot velocities and update the active monitoring field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – Commanded robot velocity.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.determine_state">
+<span class="sig-name descname"><span class="pre">determine_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linear_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.FieldState" title="mensabot_utils.lidar_field_selection_node.FieldState"><span class="pre">FieldState</span></a></span></span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.determine_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.determine_state" title="Link to this definition"></a></dt>
+<dd><p>Determine the LiDAR monitoring state from the commanded motion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linear_x</strong> – Linear velocity in x-direction.</p></li>
+<li><p><strong>angular_z</strong> – Angular velocity around the z-axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Selected monitoring state.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mensabot_utils.lidar_field_selection_node.FieldState" title="mensabot_utils.lidar_field_selection_node.FieldState">FieldState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_footprint">
+<span class="sig-name descname"><span class="pre">publish_footprint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.publish_footprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_footprint" title="Link to this definition"></a></dt>
+<dd><p>Publish the footprint corresponding to the current monitoring state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.set_gpio_state">
+<span class="sig-name descname"><span class="pre">set_gpio_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.set_gpio_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.set_gpio_state" title="Link to this definition"></a></dt>
+<dd><p>Update the GPIO outputs according to the selected monitoring field.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_state">
+<span class="sig-name descname"><span class="pre">publish_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.publish_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.publish_state" title="Link to this definition"></a></dt>
+<dd><p>Publish the current LiDAR monitoring state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.timer_callback">
+<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.timer_callback" title="Link to this definition"></a></dt>
+<dd><p>Monitor command and manual override timeouts.</p>
+<p>Resets the monitoring state if no valid command or manual override message
+has been received within the configured timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.LidarFieldSelector.destroy_node">
+<span class="sig-name descname"><span class="pre">destroy_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#LidarFieldSelector.destroy_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.LidarFieldSelector.destroy_node" title="Link to this definition"></a></dt>
+<dd><p>Release GPIO resources before shutting down the node.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mensabot_utils.lidar_field_selection_node.main">
+<span class="sig-prename descclassname"><span class="pre">mensabot_utils.lidar_field_selection_node.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mensabot_utils/lidar_field_selection_node.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mensabot_utils.lidar_field_selection_node.main" title="Link to this definition"></a></dt>
+<dd><p>Start the LiDAR field selector node.</p>
+<p>Initializes ROS 2, spins the node and performs a clean shutdown when the node
+terminates.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="safety_control_node.html" class="btn btn-neutral float-left" title="Safety Control Node" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lidar_reset.html" class="btn btn-neutral float-right" title="LiDAR Reset Utility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,5 +1,27 @@
-import os
+"""
+Launch file for AMCL-based localization in simulation.
 
+This launch file starts the Nav2 localization stack using Adaptive Monte
+Carlo Localization (AMCL) in the simulation environment. The simulation map
+and project-specific localization parameters are loaded while simulation time
+is enabled.
+
+After the localization components have been initialized, a global
+localization request is executed to distribute the initial particle set
+across the entire map.
+
+Launch Arguments:
+    use_sim_time (bool):
+        Enables simulation time provided by Gazebo.
+
+    params_file:
+        AMCL parameter file.
+
+    map:
+        Occupancy grid map used for localization.
+"""
+
+import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -8,6 +30,18 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
+    """
+    Create the launch description for the simulated AMCL localization system.
+
+    The launch description starts the Nav2 localization stack using simulation
+    time, loads the configured map and AMCL parameters, and performs a global
+    localization request after the localization lifecycle nodes have become
+    active.
+
+    Returns:
+        LaunchDescription: Launch description for the simulated localization
+        system.
+    """
 
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
 

@@ -1,3 +1,21 @@
+"""
+Launch file for SLAM-based map creation in simulation.
+
+This launch file starts the SLAM Toolbox in asynchronous online mapping mode
+within the simulation environment. Simulation time is enabled and RViz can be
+optionally launched for real-time visualization of the mapping process.
+
+Launch Arguments:
+    rviz (bool):
+        Enables or disables RViz startup.
+
+    rviz_config (str):
+        Name of the RViz configuration file used for mapping.
+
+    use_sim_time (bool):
+        Enables simulation time provided by Gazebo.
+"""
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -8,8 +26,18 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+    """
+    Create the launch description for the simulated mapping system.
 
-    pkg_mensabot_simulation = get_package_share_directory('mensabot_simulation')
+    The launch description starts the SLAM Toolbox using simulation time and the
+    project-specific mapping configuration. RViz can optionally be launched to
+    visualize the generated occupancy grid map during the mapping process.
+
+    Returns:
+        LaunchDescription: Launch description for the simulated mapping system.
+    """
+
+    pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
 
     rviz_launch_arg = DeclareLaunchArgument(
         'rviz', default_value='true',
@@ -34,7 +62,7 @@ def generate_launch_description():
     )
 
     slam_toolbox_params_path = os.path.join(
-        get_package_share_directory('mensabot_simulation'),
+        get_package_share_directory('mensabot_navigation'),
         'config',
         'slam_toolbox_mapping.yaml'
     )
@@ -43,7 +71,7 @@ def generate_launch_description():
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', PathJoinSubstitution([pkg_mensabot_simulation, 'rviz', LaunchConfiguration('rviz_config')])],
+        arguments=['-d', PathJoinSubstitution([pkg_mensabot_navigation, 'rviz', LaunchConfiguration('rviz_config')])],
         condition=IfCondition(LaunchConfiguration('rviz')),
         parameters=[
             {'use_sim_time': LaunchConfiguration('use_sim_time')},

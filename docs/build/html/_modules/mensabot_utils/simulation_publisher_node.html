@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mensabot_utils.simulation_publisher_node &mdash; HSK-Mensabot 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            HSK-Mensabot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Software Architecture</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packages/index.html">Packages</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../repository.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build.html">Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HSK-Mensabot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mensabot_utils.simulation_publisher_node</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mensabot_utils.simulation_publisher_node</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides simulated safety inputs for the Mensabot platform.</span>
+
+<span class="sd">This node publishes dummy hardware connection and LiDAR safety scanner</span>
+<span class="sd">messages, allowing the Safety Control Node to operate unchanged in the</span>
+<span class="sd">simulation environment.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">rclpy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rclpy.node</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">std_msgs.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bool</span>
+
+<span class="c1"># SICK Safety Scanner Message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sick_safetyscanners2_interfaces.msg</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputPaths</span>
+
+
+<div class="viewcode-block" id="SafetySimInputs">
+<a class="viewcode-back" href="../../packages/mensabot_utils/simulation_publisher_node.html#mensabot_utils.simulation_publisher_node.SafetySimInputs">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SafetySimInputs</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ROS 2 node providing simulated safety hardware signals.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize publishers, timers and simulation states.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;safety_sim_inputs&#39;</span><span class="p">)</span>
+
+        <span class="c1"># ======================================================</span>
+        <span class="c1"># DESCRIPTION</span>
+        <span class="c1"># ======================================================</span>
+        <span class="c1">#</span>
+        <span class="c1"># This node provides dummy safety scanner signals</span>
+        <span class="c1"># for simulation.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Purpose:</span>
+        <span class="c1"># - Simulate hardware connection state</span>
+        <span class="c1"># - Simulate front scanner output paths</span>
+        <span class="c1"># - Simulate rear scanner output paths</span>
+        <span class="c1">#</span>
+        <span class="c1"># This allows the real Safety Control Node</span>
+        <span class="c1"># to run unchanged in simulation.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Published Topics:</span>
+        <span class="c1">#</span>
+        <span class="c1"># /hardware/connected</span>
+        <span class="c1">#</span>
+        <span class="c1"># /lidars/front/output_paths</span>
+        <span class="c1">#</span>
+        <span class="c1"># /lidars/rear/output_paths</span>
+        <span class="c1">#</span>
+        <span class="c1"># ======================================================</span>
+
+        <span class="c1"># ======================================================</span>
+        <span class="c1"># PUBLISHERS</span>
+        <span class="c1"># ======================================================</span>
+
+        <span class="c1"># Simulated hardware connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connected_pub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_publisher</span><span class="p">(</span>
+            <span class="n">Bool</span><span class="p">,</span>
+            <span class="s1">&#39;/hardware/connected&#39;</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Simulated front safety scanner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">front_scanner_pub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_publisher</span><span class="p">(</span>
+            <span class="n">OutputPaths</span><span class="p">,</span>
+            <span class="s1">&#39;/lidars/front/output_paths&#39;</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Simulated rear safety scanner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_scanner_pub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_publisher</span><span class="p">(</span>
+            <span class="n">OutputPaths</span><span class="p">,</span>
+            <span class="s1">&#39;/lidars/rear/output_paths&#39;</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ======================================================</span>
+        <span class="c1"># TIMER</span>
+        <span class="c1"># ======================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_timer</span><span class="p">(</span>
+            <span class="mf">0.5</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timer_callback</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ======================================================</span>
+        <span class="c1"># SIMULATION STATES</span>
+        <span class="c1"># ======================================================</span>
+        <span class="c1">#</span>
+        <span class="c1"># Change these values for testing.</span>
+        <span class="c1">#</span>
+        <span class="c1"># TRUE  -&gt; field free / safe</span>
+        <span class="c1"># FALSE -&gt; field violated</span>
+        <span class="c1">#</span>
+        <span class="c1"># status[0] -&gt; protective stop field</span>
+        <span class="c1"># status[1] -&gt; warning field</span>
+        <span class="c1">#</span>
+        <span class="c1"># ======================================================</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">front_protective_stop_safe</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">front_warning_safe</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_protective_stop_safe</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_warning_safe</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Safety Simulation Input Node started&#39;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ==========================================================</span>
+    <span class="c1"># TIMER CALLBACK</span>
+    <span class="c1"># ==========================================================</span>
+
+<div class="viewcode-block" id="SafetySimInputs.timer_callback">
+<a class="viewcode-back" href="../../packages/mensabot_utils/simulation_publisher_node.html#mensabot_utils.simulation_publisher_node.SafetySimInputs.timer_callback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">timer_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Publish simulated hardware connection and LiDAR safety scanner messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># ------------------------------------------------------</span>
+        <span class="c1"># HARDWARE CONNECTED</span>
+        <span class="c1"># ------------------------------------------------------</span>
+
+        <span class="n">connected_msg</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">()</span>
+
+        <span class="n">connected_msg</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">connected_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+            <span class="n">connected_msg</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------</span>
+        <span class="c1"># FRONT SCANNER</span>
+        <span class="c1"># ------------------------------------------------------</span>
+
+        <span class="n">front_msg</span> <span class="o">=</span> <span class="n">OutputPaths</span><span class="p">()</span>
+
+        <span class="c1"># status[0] -&gt; protective stop</span>
+        <span class="c1"># status[1] -&gt; warning field</span>
+
+        <span class="n">front_msg</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">front_protective_stop_safe</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">front_warning_safe</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Optional additional fields</span>
+        <span class="n">front_msg</span><span class="o">.</span><span class="n">is_safe</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+        <span class="n">front_msg</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+
+        <span class="n">front_msg</span><span class="o">.</span><span class="n">active_monitoring_case</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">front_scanner_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+            <span class="n">front_msg</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------</span>
+        <span class="c1"># REAR SCANNER</span>
+        <span class="c1"># ------------------------------------------------------</span>
+
+        <span class="n">rear_msg</span> <span class="o">=</span> <span class="n">OutputPaths</span><span class="p">()</span>
+
+        <span class="n">rear_msg</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rear_protective_stop_safe</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rear_warning_safe</span>
+        <span class="p">]</span>
+
+        <span class="n">rear_msg</span><span class="o">.</span><span class="n">is_safe</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+        <span class="n">rear_msg</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+
+        <span class="n">rear_msg</span><span class="o">.</span><span class="n">active_monitoring_case</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_scanner_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+            <span class="n">rear_msg</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># ==============================================================</span>
+<span class="c1"># MAIN</span>
+<span class="c1"># ==============================================================</span>
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../packages/mensabot_utils/simulation_publisher_node.html#mensabot_utils.simulation_publisher_node.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Start the Safety Simulation Input node.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rclpy</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="n">node</span> <span class="o">=</span> <span class="n">SafetySimInputs</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="n">rclpy</span><span class="o">.</span><span class="n">spin</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+
+        <span class="k">pass</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+
+        <span class="n">node</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">()</span>
+
+        <span class="n">rclpy</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Fabian K.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 #ros2 topic pub /safety/manual_override std_msgs/msg/Bool "{data: true}" -r 10
 
+"""
+Implements the central safety controller for the Mensabot platform.
+
+The node combines hardware emergency stop signals, LiDAR safety scanner
+information and hardware connection status to enforce safe robot operation.
+It publishes speed limits, emergency stop states and filtered velocity
+commands.
+"""
+
 import time
 
 import rclpy
@@ -16,8 +25,14 @@ from sick_safetyscanners2_interfaces.msg import OutputPaths
 
 
 class SafetyControlNode(Node):
+    """
+    ROS 2 node responsible for monitoring and enforcing the robot safety state.
+    """
 
     def __init__(self):
+        """
+        Initialize parameters, GPIO interfaces, ROS interfaces and internal states.
+        """
         super().__init__('safety_control_node')
 
         # ======================================================
@@ -56,7 +71,7 @@ class SafetyControlNode(Node):
                 # LOW  -> relays open / ESTOP
                 # --------------------------------------------------
 
-                self.relay_status_input_line = 13
+                self.relay_status_input_line = 6
 
                 # --------------------------------------------------
                 # GPIO OUTPUT
@@ -82,7 +97,7 @@ class SafetyControlNode(Node):
                         self.relay_reset_output_line:
                         self.gpiod.LineSettings(
                             direction=self.Direction.OUTPUT,
-                            output_value=self.Value.INACTIVE
+                            output_value=self.Value.ACTIVE
                         )
                     }
                 )
@@ -239,6 +254,12 @@ class SafetyControlNode(Node):
     # 1 and 3 are warning fields
 
     def front_scanner_callback(self, msg: OutputPaths):
+        """
+        Process the front LiDAR safety scanner state.
+
+        Args:
+            msg: Front scanner monitoring data.
+        """
 
         self.front_protective_stop = any(
             len(msg.status) > i and not msg.status[i]
@@ -257,6 +278,12 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def rear_scanner_callback(self, msg: OutputPaths):
+        """
+        Process the rear LiDAR safety scanner state.
+
+        Args:
+            msg: Rear scanner monitoring data.
+        """
 
         self.rear_protective_stop = any(
             len(msg.status) > i and not msg.status[i]
@@ -275,6 +302,9 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def update_safety_state(self):
+        """
+        Determine the global safety state from the LiDAR scanner states.
+        """
 
         protective_stop_active = (
             self.front_protective_stop or
@@ -304,6 +334,12 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def connected_callback(self, msg: Bool):
+        """
+        Update the hardware connection state.
+
+        Args:
+            msg: Hardware connection status.
+        """
 
         self.hardware_connected = msg.data
 
@@ -330,6 +366,12 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def cmd_vel_callback(self, msg: Twist):
+        """
+        Forward velocity commands only if safe operation is permitted.
+
+        Args:
+            msg: Incoming velocity command.
+        """
 
         # BLOCK MOVEMENT ON ESTOP
         if self.is_estop_active():
@@ -351,6 +393,12 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def timer_callback(self):
+        """
+        Execute the cyclic safety supervision.
+
+        Monitors the hardware emergency stop input, performs automatic relay reset,
+        updates the emergency stop state and publishes the corresponding speed limit.
+        """
 
         # ======================================================
         # GPIO RELAY STATUS INPUT
@@ -364,8 +412,8 @@ class SafetyControlNode(Node):
                     self.relay_status_input_line
                 )
 
-                # HIGH -> relays open
-                self.estop_gpio_active = not bool(
+                # LOW -> relays open
+                self.estop_gpio_active = bool(
                     gpio_state
                 )
                 self.get_logger().debug(
@@ -398,7 +446,7 @@ class SafetyControlNode(Node):
 
         should_attempt_reset = (
             not self.simulation_mode and
-            self.safety_state == "NORMAL" and
+            (self.safety_state == "NORMAL" or self.safety_state == "WARNING") and
             self.estop_gpio_active and
             not self.reset_pulse_active and
             (current_time - self.last_reset_attempt_time)
@@ -416,7 +464,7 @@ class SafetyControlNode(Node):
                 # Set reset output HIGH
                 self.gpio_request.set_value(
                     self.relay_reset_output_line,
-                    self.Value.ACTIVE
+                    self.Value.INACTIVE
                 )
 
                 self.reset_pulse_active = True
@@ -451,7 +499,7 @@ class SafetyControlNode(Node):
                 try:
                     self.gpio_request.set_value(           # Set reset output LOW
                         self.relay_reset_output_line,
-                        self.Value.INACTIVE
+                        self.Value.ACTIVE
                     )
 
                     self.reset_pulse_active = False
@@ -554,6 +602,12 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def publish_speed_limit(self, value):
+        """
+        Publish the currently active speed limit.
+
+        Args:
+            value: Speed limit as a percentage.
+        """
 
         self.current_speed_limit = value
 
@@ -569,6 +623,12 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def is_estop_active(self):
+        """
+        Determine whether an emergency stop condition is active.
+
+        Returns:
+            bool: True if robot motion must be stopped.
+        """
 
         # Safety relays open
         if self.estop_gpio_active:
@@ -585,6 +645,9 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def publish_zero_twist(self):
+        """
+        Publish a zero velocity command to stop the robot.
+        """
 
         zero_msg = Twist()
 
@@ -605,6 +668,9 @@ class SafetyControlNode(Node):
     # ==========================================================
 
     def destroy_node(self):
+        """
+        Release GPIO resources before shutting down the node.
+        """
 
         try:
 
@@ -623,7 +689,10 @@ class SafetyControlNode(Node):
 # ==============================================================
 
 def main(args=None):
-
+    """
+    Start the Safety Control node.
+    """
+    
     rclpy.init(args=args)
 
     node = SafetyControlNode()

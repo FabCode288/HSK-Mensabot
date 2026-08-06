@@ -1,3 +1,18 @@
+"""
+Launch file for SLAM-based map creation.
+
+This launch file starts the SLAM Toolbox in asynchronous online mapping mode
+and optionally launches RViz for real-time visualization of the mapping
+process.
+
+Launch Arguments:
+    rviz (bool):
+        Enables or disables RViz startup.
+
+    rviz_config (str):
+        Name of the RViz configuration file used for mapping.
+"""
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -8,6 +23,16 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
+    """
+    Create the launch description for the mapping system.
+
+    The launch description starts the SLAM Toolbox using the project-specific
+    mapping configuration and optionally launches RViz to visualize the generated
+    map during operation.
+
+    Returns:
+        LaunchDescription: Launch description for the mapping system.
+    """
 
     pkg_mensabot_navigation = get_package_share_directory('mensabot_navigation')
 
