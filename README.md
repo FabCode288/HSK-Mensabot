@@ -39,7 +39,7 @@ The API documentation can be found here: https://fabcode288.github.io/HSK-Mensab
 
 <p align="center">
   <img src="docs/images/Real_Robot_V1.jpg" width="50%">
-  <img src="docs/images/gazebo_robot.png" width="45%">
+  <img src="docs/images/gazebo_robot.png" width="46%">
 </p>
 
 The software architecture has been developed with a strong focus on modularity, maintainability, and hardware abstraction. The project demonstrates how ROS2 can be used to integrate navigation, localization, hardware control, and functional safety into a single robotic platform.
