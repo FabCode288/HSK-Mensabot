@@ -71,7 +71,7 @@ The repository contains all software required to operate the robot, including si
 # System Architecture
 
 <p align="center">
-  <img src="docs/images/real_rqt_graph.png">
+  <img src="docs/images/dataflow.png">
 </p>
 
 The robot software is organized into multiple independent ROS2 packages. Navigation, localization, hardware control, safety, monitoring, and simulation are implemented as separate components communicating via ROS2 topics, services, and actions.
