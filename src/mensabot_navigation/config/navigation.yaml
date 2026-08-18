@@ -46,7 +46,7 @@ controller_server:
     # MPPI parameters
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 100 #40
+      time_steps: 80 #40
       model_dt: 0.05
       batch_size: 1000 #800 #2000 @ 30 Hz or 1000 @ 50 Hz are good values
       ax_max: 4.0 #m/s^2
@@ -61,7 +61,7 @@ controller_server:
       vy_max: 0.0 #No moting in y direction
       wz_max: 0.5 #rad/s
       iteration_count: 1
-      prune_distance: 1.2 #reduce from 1.7
+      prune_distance: 1.7
       transform_tolerance: 0.1
       temperature: 0.3
       gamma: 0.015 #Usually not needed to change gamma
