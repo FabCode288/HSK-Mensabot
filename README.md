@@ -29,7 +29,7 @@ The API documentation can be found here: https://fabcode288.github.io/HSK-Mensab
 - [Running the System](#running-the-system)
 - [Repository Packages](#repository-packages)
 - [Documentation](#documentation)
-- [Current Issues] (#current-issues)
+- [Current Issues](#current-issues)
 - [Third-Party Projects](#third-party-projects)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -93,7 +93,7 @@ ros2_mensabot_ws/
 ├── src/
 ├── ChangeLog.md
 ├── LICENSE.md
-├── README
+├── README.md
 └── Third_party.md
 
 ```
