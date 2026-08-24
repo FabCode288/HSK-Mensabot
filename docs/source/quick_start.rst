@@ -16,7 +16,7 @@ To start only the simulation environment without navigation and localization:
 
 .. code-block:: bash
 
-   ros2 launch mensabot_bringup sim_bringup.launch.py
+   ros2 launch mensabot_bringup sim_bringup_robot.launch.py
 
 Real Robot
 ----------
@@ -31,7 +31,7 @@ To start only the robot hardware without navigation and localization:
 
 .. code-block:: bash
 
-   ros2 launch mensabot_bringup real_bringup.launch.py
+   ros2 launch mensabot_bringup real_bringup_robot.launch.py
 
 Monitoring
 ----------
