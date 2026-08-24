@@ -29,6 +29,7 @@ The API documentation can be found here: https://fabcode288.github.io/HSK-Mensab
 - [Running the System](#running-the-system)
 - [Repository Packages](#repository-packages)
 - [Documentation](#documentation)
+- [Current Issues] (#current-issues)
 - [Third-Party Projects](#third-party-projects)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -248,6 +249,15 @@ Additional documentation can be found in the **[docs/](docs/)** directory.
 | Launch Files | Launch file documentation |
 | Third-Party Software | External open-source software and licenses ([Third_Party.md](Third_party.md)) |
 ---
+
+# Current Issues
+
+- **Migration to TwistStamped:** Nav2 can now directly publish `TwistStamped` messages. The current `cmd_vel_transform_node`, which converts `Twist` to `TwistStamped`, is therefore no longer required. The system should be migrated to use `TwistStamped` directly and the transformation node removed.
+
+- **IMU Coordinate Frames:** The coordinate frames of the raw IMU data and processed IMU data are currently inconsistent. The frame orientations must be aligned to ensure a consistent coordinate system throughout the localization pipeline. This inconsistency causes increasing odometry errors over time, resulting in noticeable jittering of the robot.
+
+---
+
 
 # Third-Party Software
 
