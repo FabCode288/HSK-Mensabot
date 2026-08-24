@@ -46,19 +46,19 @@ controller_server:
     # MPPI parameters
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 80 #40
+      time_steps: 100 #80
       model_dt: 0.05
       batch_size: 1000 #800 #2000 @ 30 Hz or 1000 @ 50 Hz are good values
       ax_max: 4.0 #m/s^2
       ax_min: -4.0 #m/s^2
-      ay_max: 0.0 #No moting in y direction
-      az_max: 4.0 #No moting in z direction
+      ay_max: 0.0 #No motion in y direction
+      az_max: 4.0 #No motion in z direction
       vx_std: 0.2
       vy_std: 0.2
       wz_std: 0.2 
       vx_max: 0.5 #m/s
       vx_min: -0.5 #m/s
-      vy_max: 0.0 #No moting in y direction
+      vy_max: 0.0 #No motion in y direction
       wz_max: 0.5 #rad/s
       iteration_count: 1
       prune_distance: 1.7
@@ -68,7 +68,7 @@ controller_server:
       motion_model: "DiffDrive"
       visualize: true #turn false for better performance, true for debugging
       regenerate_noises: true
-      open_loop: false #false for usiung odometry feedback, true for using last command velocities as input to the model
+      open_loop: false #false for using odometry feedback, true for using last command velocities as input to the model
       TrajectoryVisualizer:
         trajectory_step: 5
         time_step: 3
