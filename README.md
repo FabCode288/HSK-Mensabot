@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![University](https://img.shields.io/badge/Kempten-University-red)
 
-## A ROS2-Based Autonomous Mobile Robot Platform
+## A ROS2-based Autonomous Mobile Robot Platform
 
 Developed at **Kempten University of Applied Sciences (Hochschule Kempten)**.
 
@@ -91,10 +91,10 @@ ros2_mensabot_ws/
 ├── docs/
 ├── scripts/
 ├── src/
-├── ChangeLog
-├── LICENSE
+├── ChangeLog.md
+├── LICENSE.md
 ├── README
-└── Third_party
+└── Third_party.md
 
 ```
 
@@ -169,7 +169,7 @@ ros2 launch mensabot_bringup sim_complete_bringup.launch.py
 
 Start the simulation without navigation and localization:
 ```bash
-ros2 launch mensabot_bringup sim_bringup.launch.py
+ros2 launch mensabot_bringup sim_bringup_robot.launch.py
 ```
 
 Further information: **[docs/simulation](docs/simulation)**.
@@ -187,12 +187,12 @@ ros2 launch mensabot_bringup real_complete_bringup.launch.py
 
 Start the robot without navigation and localization:
 ```bash
-ros2 launch mensabot_bringup real_bringup.launch.py
+ros2 launch mensabot_bringup real_bringup_robot.launch.py
 ```
 
 Start the robot without navigation and localization while performing a LiDAR reset:
 ```bash
-ros2 launch mensabot_bringup real_bringup.launch.py lidar_reset:=true
+ros2 launch mensabot_bringup real_bringup_robot.launch.py lidar_reset:=true
 ```
 
 Start RViz on your computer:
@@ -211,7 +211,7 @@ Start an external GUI for debugging information:
 python3 src/mensabot_utils/mensabot_utils/mensabot_monitor.py
 ```
 
-For morme detailed information: **[docs/monitoring](docs/monitoring/)**.
+For more detailed information: **[docs/monitoring](docs/monitoring/)**.
 
 # Repository Packages
 
@@ -283,6 +283,6 @@ This project was developed at
 
 **Kempten University of Applied Sciences (Hochschule Kempten)**
 
-as part of the **HSK-MensaBot** project.
+as part of the **HSK-Mensabot** project.
 
 Special thanks to everyone involved in the development of the robot platform and to the open-source ROS community for providing the software foundation used throughout this project.
