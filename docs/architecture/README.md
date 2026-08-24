@@ -13,13 +13,13 @@ The repository is organized into four primary components.
 ```text
 HSK-Mensabot/
 
-├── Arduino_Code/
+├── arduino_code/
 ├── docs/
 ├── scripts/
 ├── src/
 ├── README.md
-├── LICENSE
-└── THIRD_PARTY.md
+├── LICENSE.md
+└── Third_party.md
 ```
 
 | Directory      | Description                                                                                           |
@@ -136,7 +136,7 @@ AMCL
 Nav2 Planner
       │
       ▼
-Controller Server
+Velocity Commands
 ```
 
 The navigation stack receives a merged laser scan, estimates the robot pose, computes a collision-free path and generates velocity commands.

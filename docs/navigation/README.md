@@ -124,7 +124,7 @@ The navigation system is configured using several YAML configuration files.
 | ------------------------ | ----------------------------------------------------------------------- |
 | `navigation.yaml`        | Navigation2 configuration including planners, controllers and costmaps. |
 | `amcl_localization.yaml` | AMCL localization parameters.                                           |
-| `ekf.yaml`               | Extended Kalman Filter configuration.                                   |
+| `ekf.yaml`               | Extended Kalman Filter configuration. (In mensabot_bringup)             |
 
 These files define the behavior of the navigation stack and allow the system to be adapted to different robot platforms without modifying the application code.
 
